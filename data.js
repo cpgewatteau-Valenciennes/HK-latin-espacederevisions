@@ -30,10 +30,9 @@
 
 const STRUCTURE = [
   {
-    nom: "Exercices",
+    nom: "Révisions",
     fichiers: [
-      { nom: "Exercice 1 — Identification des modèles de déclinaison et de conjugaison (chronométré)", url: "exercice-1-identification-modeles.html", pictos: ["decl","conj"] },
-      { nom: "Identifier les modèles — déclinaisons et conjugaisons", url: "identifier-modeles-decl-conjOK.html", pictos: ["decl","conj"] }
+      { nom: "Révision latin", url: "revision-latin.html", pictos: ["mix"] }
     ]
   }
 ];
