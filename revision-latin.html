@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Révisions latin — cas, fonctions, déclinaisons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --stone: #EDE6D6;
+    --stone-dim: #E1D8C4;
+    --ink: #2B2620;
+    --ink-soft: #5C5445;
+    --laurel: #3F5D4E;
+    --laurel-deep: #2C4238;
+    --oxide: #A8462F;
+    --bronze: #B8975A;
+    --card: #F6F1E5;
+    --line: rgba(43,38,32,0.16);
+    --good: #3F5D4E;
+    --bad: #A8462F;
+    --shadow: 0 1px 0 rgba(43,38,32,0.25);
+    --radius: 4px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --stone: #1C1A16;
+      --stone-dim: #211E19;
+      --ink: #EDE6D6;
+      --ink-soft: #B9AF9A;
+      --laurel: #74967F;
+      --laurel-deep: #9CC0A6;
+      --oxide: #D98066;
+      --bronze: #D9B87C;
+      --card: #241F19;
+      --line: rgba(237,230,214,0.16);
+      --good: #74967F;
+      --bad: #D98066;
+      --shadow: 0 1px 0 rgba(0,0,0,0.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --stone: #1C1A16;
+    --stone-dim: #211E19;
+    --ink: #EDE6D6;
+    --ink-soft: #B9AF9A;
+    --laurel: #74967F;
+    --laurel-deep: #9CC0A6;
+    --oxide: #D98066;
+    --bronze: #D9B87C;
+    --card: #241F19;
+    --line: rgba(237,230,214,0.16);
+    --good: #74967F;
+    --bad: #D98066;
+    --shadow: 0 1px 0 rgba(0,0,0,0.4);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--stone);
+    color:var(--ink);
+    font-family:"Crimson Pro", Georgia, "Times New Roman", serif;
+    font-size:18px;
+    line-height:1.5;
+    padding-bottom:4rem;
+  }
+  h1,h2,h3{
+    font-family:"Cinzel", Georgia, serif;
+    font-weight:700;
+    letter-spacing:0.01em;
+    margin:0 0 0.4em 0;
+    color:var(--ink);
+  }
+  a{color:var(--laurel-deep);}
+
+  .wrap{max-width:880px;margin:0 auto;padding:0 1.4rem;}
+
+  header.hero{
+    border-bottom:3px double var(--ink-soft);
+    padding:2.6rem 0 1.6rem 0;
+    background:
+      linear-gradient(var(--stone-dim), var(--stone-dim));
+  }
+  header.hero .wrap{text-align:center;}
+  header.hero .eyebrow{
+    font-family:"Cinzel",serif;
+    font-size:0.78rem;
+    letter-spacing:0.28em;
+    color:var(--bronze);
+    margin-bottom:0.9rem;
+    text-transform:uppercase;
+  }
+  header.hero h1{
+    font-size:clamp(1.7rem, 4.2vw, 2.6rem);
+    text-transform:uppercase;
+    line-height:1.25;
+  }
+  header.hero p.sub{
+    max-width:56ch;
+    margin:0.9rem auto 0 auto;
+    color:var(--ink-soft);
+    font-size:1.05rem;
+  }
+
+  nav.tabs{
+    position:sticky; top:0; z-index:10;
+    background:var(--stone-dim);
+    border-bottom:1px solid var(--line);
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  nav.tabs .wrap{
+    display:flex; gap:0.5rem;
+    padding:0.8rem 1.4rem;
+  }
+  nav.tabs button{
+    flex:0 0 auto;
+    font-family:"Crimson Pro",serif;
+    font-weight:600;
+    font-size:0.98rem;
+    background:var(--card);
+    border:1px solid var(--line);
+    color:var(--ink-soft);
+    padding:0.55rem 1rem;
+    border-radius:20px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  nav.tabs button:hover{color:var(--ink); border-color:var(--ink-soft);}
+  nav.tabs button.active{
+    color:var(--stone);
+    border-color:var(--laurel-deep);
+    background:var(--laurel);
+    box-shadow:var(--shadow);
+  }
+
+  .legend{
+    background:var(--stone-dim);
+    border-bottom:1px solid var(--line);
+    padding:0.6rem 0;
+  }
+  .legend summary{
+    cursor:pointer;
+    font-weight:600;
+    color:var(--bronze);
+    font-size:0.95rem;
+    list-style:none;
+  }
+  .legend summary::-webkit-details-marker{display:none;}
+  .legend summary::before{content:"❔ "; }
+  .legend[open] summary::before{content:"▾ ";}
+  .legend ul{
+    margin:0.7rem 0 0.2rem 0;
+    padding-left:1.2rem;
+    font-size:0.92rem;
+    color:var(--ink-soft);
+  }
+  .legend li{margin-bottom:0.35rem;}
+  .legend li strong{color:var(--ink);}
+  nav.tabs button:focus-visible, button:focus-visible, input:focus-visible, [tabindex]:focus-visible{
+    outline:2px solid var(--laurel);
+    outline-offset:2px;
+  }
+
+  main{padding-top:1.8rem;}
+  .panel{display:none;}
+  .panel.active{display:block; animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+  @media (prefers-reduced-motion: reduce){
+    .panel.active{animation:none;}
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:1.3rem 1.5rem;
+    box-shadow:var(--shadow);
+  }
+  .stack > * + *{margin-top:1.1rem;}
+
+  table.ref{
+    width:100%;
+    border-collapse:collapse;
+    font-size:1rem;
+  }
+  table.ref th, table.ref td{
+    text-align:left;
+    padding:0.55rem 0.7rem;
+    border-bottom:1px solid var(--line);
+  }
+  table.ref th{
+    font-family:"Cinzel",serif;
+    font-size:0.78rem;
+    letter-spacing:0.06em;
+    color:var(--ink-soft);
+    font-weight:500;
+  }
+  table.ref td.mono, td.mono{
+    font-variant-numeric:tabular-nums;
+    color:var(--laurel-deep);
+    font-weight:600;
+  }
+  .note{color:var(--ink-soft); font-size:0.95rem;}
+  .prep-note{color:var(--oxide); font-size:0.88rem; font-weight:600;}
+
+  .btn{
+    font-family:"Crimson Pro",serif;
+    font-weight:600;
+    font-size:0.98rem;
+    background:var(--laurel);
+    color:var(--stone);
+    border:none;
+    padding:0.6rem 1.1rem;
+    border-radius:var(--radius);
+    cursor:pointer;
+  }
+  .btn:hover{background:var(--laurel-deep); color:var(--ink);}
+  .btn.ghost{
+    background:transparent;
+    color:var(--ink);
+    border:1px solid var(--line);
+  }
+  .btn.ghost:hover{border-color:var(--ink-soft);}
+  .btn:disabled{opacity:0.45; cursor:default;}
+  .row{display:flex; gap:0.6rem; flex-wrap:wrap; align-items:center;}
+
+  /* Flashcards */
+  .deck-choice{display:flex; gap:0.5rem; margin-bottom:1rem;}
+  .flashcard{
+    perspective:1200px;
+    height:220px;
+    cursor:pointer;
+  }
+  .flashcard .inner{
+    position:relative; width:100%; height:100%;
+    transition:transform .5s;
+    transform-style:preserve-3d;
+  }
+  .flashcard.flipped .inner{transform:rotateY(180deg);}
+  .flashcard .face{
+    position:absolute; inset:0;
+    backface-visibility:hidden;
+    display:flex; align-items:center; justify-content:center;
+    text-align:center;
+    border-radius:var(--radius);
+    border:1px solid var(--line);
+    padding:1.4rem;
+    background:var(--card);
+    box-shadow:var(--shadow);
+    font-size:clamp(0.95rem, 2.6vw, 1.3rem);
+    overflow-y:auto;
+  }
+  .flashcard .face.back{
+    transform:rotateY(180deg);
+    background:var(--laurel);
+    color:var(--stone);
+    border-color:var(--laurel-deep);
+    font-size:clamp(0.9rem, 2.3vw, 1.1rem);
+  }
+  .flash-meta{
+    text-align:center; color:var(--ink-soft); font-size:0.9rem; margin-top:0.7rem;
+  }
+
+  /* Quiz */
+  .quiz-score{color:var(--ink-soft); font-size:0.95rem;}
+  .quiz-q{font-size:1.2rem; margin-bottom:1rem;}
+  .options{display:grid; gap:0.6rem;}
+  .opt{
+    text-align:left;
+    background:var(--stone-dim);
+    border:1px solid var(--line);
+    color:var(--ink);
+    padding:0.7rem 0.9rem;
+    border-radius:var(--radius);
+    cursor:pointer;
+    font-family:inherit;
+    font-size:1rem;
+  }
+  .opt:hover{border-color:var(--ink-soft);}
+  .opt.correct{background:var(--good); color:var(--stone); border-color:var(--good);}
+  .opt.wrong{background:var(--bad); color:var(--stone); border-color:var(--bad);}
+  .opt:disabled{cursor:default;}
+  .feedback{min-height:1.6rem; margin-top:0.8rem; font-weight:600;}
+  .feedback.good{color:var(--good);}
+  .feedback.bad{color:var(--bad);}
+
+  /* Matching */
+  .match-cols{display:grid; grid-template-columns:1fr 1fr; gap:0.9rem;}
+  .match-item{
+    background:var(--stone-dim);
+    border:1px solid var(--line);
+    padding:0.6rem 0.8rem;
+    border-radius:var(--radius);
+    cursor:pointer;
+    font-size:0.98rem;
+    margin-bottom:0.55rem;
+  }
+  .match-item.selected{border-color:var(--bronze); box-shadow:0 0 0 2px var(--bronze) inset;}
+  .match-item.solved{background:var(--laurel); color:var(--stone); border-color:var(--laurel-deep); cursor:default;}
+  .match-item.wrong-flash{background:var(--bad); color:var(--stone);}
+  .match-status{color:var(--ink-soft); font-size:0.95rem; margin-top:0.5rem;}
+
+  /* Order exercise */
+  .order-seq{
+    display:flex; flex-wrap:wrap; gap:0.5rem;
+    min-height:3.2rem;
+    padding:0.6rem;
+    border:1px dashed var(--line);
+    border-radius:var(--radius);
+    margin-bottom:1rem;
+  }
+  .order-seq .chip{
+    background:var(--laurel);
+    color:var(--stone);
+    border:1px solid var(--laurel-deep);
+    padding:0.4rem 0.8rem;
+    border-radius:20px;
+    font-size:0.95rem;
+  }
+  .order-seq .chip.ok{background:var(--good);}
+  .order-seq .chip.bad{background:var(--bad);}
+  .order-seq .placeholder{color:var(--ink-soft); font-size:0.9rem; align-self:center;}
+  .order-pool{display:flex; flex-wrap:wrap; gap:0.5rem;}
+  .order-pool button{
+    background:var(--stone-dim);
+    border:1px solid var(--line);
+    color:var(--ink);
+    padding:0.55rem 1rem;
+    border-radius:20px;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:0.98rem;
+  }
+  .order-pool button:hover{border-color:var(--ink-soft);}
+  .order-status{color:var(--ink-soft); font-size:0.95rem; margin:0.8rem 0;}
+
+  /* Table exercise */
+  table.fill{width:100%; border-collapse:collapse;}
+  table.fill th, table.fill td{padding:0.5rem 0.6rem; border-bottom:1px solid var(--line); text-align:left;}
+  table.fill th{font-family:"Cinzel",serif; font-size:0.75rem; letter-spacing:0.06em; color:var(--ink-soft); font-weight:500;}
+  table.fill input{
+    width:100%;
+    font-family:inherit;
+    font-size:1rem;
+    background:var(--stone-dim);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:0.4rem 0.5rem;
+    color:var(--ink);
+  }
+  table.fill input.ok{border-color:var(--good); background:color-mix(in srgb, var(--good) 18%, var(--stone-dim));}
+  table.fill input.bad{border-color:var(--bad); background:color-mix(in srgb, var(--bad) 18%, var(--stone-dim));}
+  table.fill input:disabled{color:var(--ink-soft);}
+  .reveal-answer{
+    font-size:0.85rem;
+    color:var(--oxide);
+    margin-top:0.3rem;
+    display:none;
+  }
+  .reveal-answer.show{display:block;}
+
+  footer{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:0.9rem;
+    margin-top:2.5rem;
+  }
+
+  ::-webkit-scrollbar{height:8px;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Contrôle de mardi</div>
+    <h1>Cas, fonctions &amp; déclinaisons</h1>
+    <p class="sub">Cinq façons de réviser avant le contrôle : les cas et leur fonction, et les terminaisons de génitif qui permettent de reconnaître la déclinaison d'un nom.</p>
+    <p class="sub" style="margin-top:0.5rem; font-size:0.9rem; color:var(--bronze);">↓ Choisis un mode ci-dessous : Flashcards, QCM, Association, Tableau à trous</p>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap">
+    <button data-tab="memo" class="active">Fiche mémo</button>
+    <button data-tab="flash">Flashcards</button>
+    <button data-tab="quiz">QCM</button>
+    <button data-tab="match">Association</button>
+    <button data-tab="order">Ordre des cas</button>
+    <button data-tab="table">Tableau à trous</button>
+  </div>
+</nav>
+
+<details class="legend" open>
+  <summary class="wrap" style="display:block; padding:0.2rem 1.4rem;">Comment utiliser cette page ?</summary>
+  <div class="wrap">
+    <ul>
+      <li><strong>Fiche mémo</strong> — tout le cours sur une page, à relire autant que tu veux.</li>
+      <li><strong>Flashcards</strong> — clique sur la carte (ou le bouton « Retourner ») pour voir la réponse ; « Suivante »/« Précédente » pour changer de carte, « Mélanger » pour changer l'ordre.</li>
+      <li><strong>QCM</strong> — clique sur la réponse qui te semble juste, puis sur « Question suivante » pour continuer.</li>
+      <li><strong>Association</strong> — clique un élément à gauche, puis celui qui lui correspond à droite.</li>
+      <li><strong>Ordre des cas</strong> — clique les 6 cas dans l'ordre où les présentent les grammaires.</li>
+      <li><strong>Tableau à trous</strong> — écris tes réponses dans les cases, puis clique sur « Vérifier ».</li>
+    </ul>
+  </div>
+</details>
+
+<main class="wrap">
+
+  <!-- MEMO -->
+  <section id="memo" class="panel active stack">
+    <div class="card stack">
+      <h2>Les 6 cas et leur fonction</h2>
+      <table class="ref">
+        <thead><tr><th>Cas</th><th>Fonction principale</th></tr></thead>
+        <tbody id="memo-cases"></tbody>
+      </table>
+      <p class="note">Une préposition latine est toujours suivie de l'accusatif et/ou de l'ablatif — jamais d'un autre cas.</p>
+    </div>
+    <div class="card stack">
+      <h2>Les 5 déclinaisons</h2>
+      <table class="ref">
+        <thead><tr><th>N° déclinaison</th><th>Génitif singulier en</th></tr></thead>
+        <tbody id="memo-decl"></tbody>
+      </table>
+      <p class="note">C'est la terminaison du génitif singulier, que donne le dictionnaire, qui indique à quel modèle de déclinaison (1, 2, 3, 4 ou 5) appartient le nom.</p>
+    </div>
+  </section>
+
+  <!-- FLASHCARDS -->
+  <section id="flash" class="panel stack">
+    <div class="card stack">
+      <div class="row deck-choice">
+        <button class="btn ghost active-deck" data-deck="all">Tout</button>
+        <button class="btn ghost" data-deck="cases">Cas → fonctions</button>
+        <button class="btn ghost" data-deck="decl">Déclinaisons</button>
+      </div>
+      <div class="flashcard" id="flashcard">
+        <div class="inner">
+          <div class="face front" id="fc-front"></div>
+          <div class="face back" id="fc-back"></div>
+        </div>
+      </div>
+      <div class="flash-meta" id="fc-meta"></div>
+      <div class="row" style="justify-content:center;">
+        <button class="btn ghost" id="fc-prev">← Précédente</button>
+        <button class="btn" id="fc-flip">Retourner</button>
+        <button class="btn ghost" id="fc-next">Suivante →</button>
+        <button class="btn ghost" id="fc-shuffle">Mélanger</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="panel stack">
+    <div class="card stack">
+      <div class="row" style="justify-content:space-between;">
+        <span class="quiz-score" id="quiz-score">Score : 0 / 0</span>
+        <button class="btn ghost" id="quiz-reset">Recommencer</button>
+      </div>
+      <div class="quiz-q" id="quiz-question"></div>
+      <div class="options" id="quiz-options"></div>
+      <div class="feedback" id="quiz-feedback"></div>
+      <div class="row" style="justify-content:flex-end;">
+        <button class="btn" id="quiz-next" disabled>Question suivante →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MATCHING -->
+  <section id="match" class="panel stack">
+    <div class="card stack">
+      <div class="row deck-choice">
+        <button class="btn ghost active-deck" data-mdeck="cases">Cas ↔ fonctions</button>
+        <button class="btn ghost" data-mdeck="decl">Déclinaison ↔ terminaison</button>
+      </div>
+      <p class="note">Clique un élément à gauche, puis son correspondant à droite. L'ordre affiché ici est mélangé au hasard à chaque partie — ce n'est pas l'ordre suivi par les grammaires (voir l'onglet « Ordre des cas » pour celui-ci).</p>
+      <div class="match-cols">
+        <div id="match-left"></div>
+        <div id="match-right"></div>
+      </div>
+      <div class="match-status" id="match-status"></div>
+      <div class="row">
+        <button class="btn ghost" id="match-restart">Recommencer</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORDER -->
+  <section id="order" class="panel stack">
+    <div class="card stack">
+      <p class="note">Clique les 6 cas dans l'ordre où les présentent les grammaires (celui du tableau de déclinaison).</p>
+      <div>
+        <div class="order-seq" id="order-seq"></div>
+        <div class="order-pool" id="order-pool"></div>
+      </div>
+      <div class="order-status" id="order-status"></div>
+      <div class="row">
+        <button class="btn" id="order-check">Vérifier</button>
+        <button class="btn ghost" id="order-undo">⌫ Retirer le dernier</button>
+        <button class="btn ghost" id="order-restart">Recommencer</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILL TABLE -->
+  <section id="table" class="panel stack">
+    <div class="card stack">
+      <h2>Cas et fonctions</h2>
+      <p class="note">Écris la ou les fonction(s) principale(s) — les abréviations traditionnelles sont acceptées. Indique aussi le(s) cas dont une préposition latine peut être suivie, en ajoutant après la fonction : <strong>+ prépositions</strong>.</p>
+      <p class="note" style="font-weight:700; color:var(--oxide);">ATTENTION ICI LES CAS SONT MIS DANS LE DÉSORDRE.</p>
+      <p class="note" style="font-weight:700; color:var(--oxide);">VEILLE À BIEN APPRENDRE L'ORDRE DES GRAMMAIRES (TU AS UN EXO POUR T'ENTRAÎNER)</p>
+      <table class="fill">
+        <thead><tr><th style="width:35%">Cas</th><th>Fonction</th></tr></thead>
+        <tbody id="fill-cases"></tbody>
+      </table>
+      <div class="row" style="margin-top:0.4rem;">
+        <button class="btn" id="fill-check-cases">Vérifier</button>
+        <button class="btn ghost" id="fill-reset-cases">Effacer</button>
+      </div>
+      <div class="quiz-score" id="fill-score-cases"></div>
+    </div>
+    <div class="card stack">
+      <h2>Déclinaisons</h2>
+      <p class="note">Écris la terminaison du génitif singulier (en majuscules).</p>
+      <table class="fill">
+        <thead><tr><th style="width:35%">N° déclinaison</th><th>Génitif singulier en</th></tr></thead>
+        <tbody id="fill-decl"></tbody>
+      </table>
+      <div class="row" style="margin-top:0.4rem;">
+        <button class="btn" id="fill-check-decl">Vérifier</button>
+        <button class="btn ghost" id="fill-reset-decl">Effacer</button>
+      </div>
+      <div class="quiz-score" id="fill-score-decl"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer></footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var CASES = [
+    {name:"Nominatif", fn:"Sujet (ou attribut du sujet)", prep:false, accept:["sujet","attribut du sujet","attribut"]},
+    {name:"Vocatif", fn:"Apostrophe", prep:false, accept:["apostrophe"]},
+    {name:"Accusatif", fn:"COD — complément d'objet direct", prep:true, accept:["cod","complement d'objet direct"]},
+    {name:"Génitif", fn:"Complément du nom", prep:false, accept:["cdn","complement du nom","compl du nom","compl. du nom","cpl du nom"]},
+    {name:"Datif", fn:"COI / complément d'attribution", prep:false, accept:["coi","complement d'attribution"]},
+    {name:"Ablatif", fn:"Complément circonstanciel", prep:true, accept:["cc","complement circonstanciel","compl circonstanciel","compl. circonstanciel"]}
+  ];
+
+  var DECL = [
+    {n:1, g:"AE", ex:"rosa, rosae"},
+    {n:2, g:"I", ex:"dominus, domini"},
+    {n:3, g:"IS", ex:"rex, regis"},
+    {n:4, g:"US", ex:"manus, manus"},
+    {n:5, g:"EI", ex:"dies, diei"}
+  ];
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var t=a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+  function pick(arr,n,exclude){
+    var pool = arr.filter(function(x){return x!==exclude;});
+    return shuffle(pool).slice(0,n);
+  }
+
+  /* ---------- TABS ---------- */
+  var tabButtons = document.querySelectorAll("nav.tabs button");
+  var panels = document.querySelectorAll(".panel");
+  tabButtons.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      tabButtons.forEach(function(b){b.classList.remove("active");});
+      panels.forEach(function(p){p.classList.remove("active");});
+      btn.classList.add("active");
+      document.getElementById(btn.dataset.tab).classList.add("active");
+    });
+  });
+
+  /* ---------- MEMO ---------- */
+  (function(){
+    var tc = document.getElementById("memo-cases");
+    CASES.forEach(function(c){
+      var tr = document.createElement("tr");
+      var prepLine = c.prep ? "<br><span class='prep-note'>+ après certaines prépositions</span>" : "";
+      tr.innerHTML = "<td>"+c.name+"</td><td>"+c.fn+prepLine+"</td>";
+      tc.appendChild(tr);
+    });
+    var td = document.getElementById("memo-decl");
+    DECL.forEach(function(d){
+      var tr = document.createElement("tr");
+      tr.innerHTML = "<td class='mono'>"+d.n+"e</td><td class='mono'>-"+d.g+"</td>";
+      td.appendChild(tr);
+    });
+  })();
+
+  /* ---------- FLASHCARDS ---------- */
+  (function(){
+    var casesCards = CASES.map(function(c){
+      var back = c.fn;
+      if(c.name === "Ablatif") back = "De nombreux compléments circonstanciels";
+      return {front:c.name, back:back};
+    });
+    var declCards = DECL.map(function(d){return {front:"Déclinaison "+d.n, back:"Génitif singulier en -"+d.g};});
+    var declCardsRev = DECL.map(function(d){return {front:"Génitif en -"+d.g, back:"C'est la "+d.n+"e déclinaison"};});
+    var declExtra = [
+      {front:"Pourquoi le dictionnaire donne-t-il toujours la terminaison du génitif singulier d'un nom ?", back:"Pour pouvoir identifier la déclinaison à laquelle le nom appartient."},
+      {front:"Combien y a-t-il de modèles de déclinaisons en latin ?", back:"5"}
+    ];
+
+    var decks = {
+      all: shuffle(casesCards.concat(declCards, declCardsRev, declExtra)),
+      cases: shuffle(casesCards),
+      decl: shuffle(declCards.concat(declCardsRev, declExtra))
+    };
+    var current = decks.all;
+    var idx = 0;
+
+    var elFront = document.getElementById("fc-front");
+    var elBack = document.getElementById("fc-back");
+    var elCard = document.getElementById("flashcard");
+    var elMeta = document.getElementById("fc-meta");
+
+    function render(){
+      elCard.classList.remove("flipped");
+      elFront.textContent = current[idx].front;
+      elBack.textContent = current[idx].back;
+      elMeta.textContent = (idx+1)+" / "+current.length;
+    }
+    render();
+
+    elCard.addEventListener("click", function(){elCard.classList.toggle("flipped");});
+    document.getElementById("fc-flip").addEventListener("click", function(){elCard.classList.toggle("flipped");});
+    document.getElementById("fc-next").addEventListener("click", function(){
+      idx = (idx+1) % current.length; render();
+    });
+    document.getElementById("fc-prev").addEventListener("click", function(){
+      idx = (idx-1+current.length) % current.length; render();
+    });
+    document.getElementById("fc-shuffle").addEventListener("click", function(){
+      current = shuffle(current); idx = 0; render();
+    });
+
+    document.querySelectorAll("#flash .deck-choice button").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        document.querySelectorAll("#flash .deck-choice button").forEach(function(b){b.classList.remove("active-deck");});
+        btn.classList.add("active-deck");
+        current = shuffle(decks[btn.dataset.deck]);
+        idx = 0; render();
+      });
+    });
+  })();
+
+  /* ---------- QUIZ ---------- */
+  (function(){
+    var score = 0, total = 0;
+    var scoreEl = document.getElementById("quiz-score");
+    var qEl = document.getElementById("quiz-question");
+    var optsEl = document.getElementById("quiz-options");
+    var fbEl = document.getElementById("quiz-feedback");
+    var nextBtn = document.getElementById("quiz-next");
+
+    var generators = [
+      function(){ // cas -> fonction
+        var c = pick(CASES,1)[0];
+        var distract = pick(CASES,3,c).map(function(x){return x.fn;});
+        var options = shuffle(distract.concat([c.fn]));
+        return {q:"Quelle est la fonction principale de l'<b>"+c.name.toLowerCase()+"</b> ?", options:options, correct:c.fn};
+      },
+      function(){ // fonction -> cas
+        var c = pick(CASES,1)[0];
+        var distract = pick(CASES,3,c).map(function(x){return x.name;});
+        var options = shuffle(distract.concat([c.name]));
+        return {q:"À quel cas correspond la fonction : « "+c.fn+" » ?", options:options, correct:c.name};
+      },
+      function(){ // terminaison -> declinaison
+        var d = pick(DECL,1)[0];
+        var distract = pick(DECL,3,d).map(function(x){return "La "+x.n+"e déclinaison";});
+        var options = shuffle(distract.concat(["La "+d.n+"e déclinaison"]));
+        return {q:"Un nom dont le génitif singulier est en <b>-"+d.g+"</b> appartient à quelle déclinaison ?", options:options, correct:"La "+d.n+"e déclinaison"};
+      },
+      function(){ // declinaison -> terminaison
+        var d = pick(DECL,1)[0];
+        var distract = pick(DECL,3,d).map(function(x){return "-"+x.g;});
+        var options = shuffle(distract.concat(["-"+d.g]));
+        return {q:"Quelle est la terminaison du génitif singulier de la <b>"+d.n+"e déclinaison</b> ?", options:options, correct:"-"+d.g};
+      },
+      function(){ // prepositions
+        return {q:"Après une préposition latine, quel(s) cas peut-on trouver ?", options:shuffle(["L'accusatif et/ou l'ablatif","Le génitif et le datif","Le nominatif et le vocatif","Seulement le génitif"]), correct:"L'accusatif et/ou l'ablatif"};
+      },
+      function(){ // nombre de declinaisons
+        return {q:"Combien y a-t-il de déclinaisons en latin ?", options:shuffle(["3","4","5","6"]), correct:"5"};
+      },
+      function(){ // ce qui indique la declinaison
+        return {q:"Qu'est-ce qui permet de savoir à quelle déclinaison appartient un nom ?", options:shuffle(["La terminaison du nominatif singulier","La terminaison du génitif singulier","Le genre du nom","La première lettre du mot"]), correct:"La terminaison du génitif singulier"};
+      },
+      function(){ // ordre des 5 terminaisons
+        var correct = "AE — I — IS — US — EI";
+        var options = shuffle([
+          correct,
+          "I — AE — IS — US — EI",
+          "AE — IS — I — EI — US",
+          "AE — I — US — IS — EI"
+        ]);
+        return {q:"Quel est l'ordre correct des terminaisons de génitif singulier, de la 1ère à la 5e déclinaison ?", options:options, correct:correct};
+      }
+    ];
+
+    var currentQ = null;
+
+    function newQuestion(){
+      fbEl.textContent = "";
+      fbEl.className = "feedback";
+      nextBtn.disabled = true;
+      currentQ = generators[Math.floor(Math.random()*generators.length)]();
+      qEl.innerHTML = currentQ.q;
+      optsEl.innerHTML = "";
+      currentQ.options.forEach(function(opt){
+        var b = document.createElement("button");
+        b.className = "opt";
+        b.textContent = opt;
+        b.addEventListener("click", function(){answer(opt,b);});
+        optsEl.appendChild(b);
+      });
+    }
+
+    function answer(opt, btn){
+      total++;
+      var allBtns = optsEl.querySelectorAll(".opt");
+      allBtns.forEach(function(b){b.disabled = true;});
+      if(opt === currentQ.correct){
+        score++;
+        btn.classList.add("correct");
+        fbEl.textContent = "Exact.";
+        fbEl.className = "feedback good";
+      } else {
+        btn.classList.add("wrong");
+        allBtns.forEach(function(b){
+          if(b.textContent === currentQ.correct) b.classList.add("correct");
+        });
+        fbEl.textContent = "Pas tout à fait — la bonne réponse est surlignée.";
+        fbEl.className = "feedback bad";
+      }
+      scoreEl.textContent = "Score : "+score+" / "+total;
+      nextBtn.disabled = false;
+    }
+
+    nextBtn.addEventListener("click", newQuestion);
+    document.getElementById("quiz-reset").addEventListener("click", function(){
+      score = 0; total = 0;
+      scoreEl.textContent = "Score : 0 / 0";
+      newQuestion();
+    });
+
+    newQuestion();
+  })();
+
+  /* ---------- MATCHING ---------- */
+  (function(){
+    var leftEl = document.getElementById("match-left");
+    var rightEl = document.getElementById("match-right");
+    var statusEl = document.getElementById("match-status");
+    var selectedLeft = null, solvedCount = 0, pairs = [], attempts = 0;
+
+    function buildPairs(deck){
+      if(deck === "cases"){
+        return CASES.map(function(c){return {id:c.name, left:c.name, right:c.fn};});
+      }
+      return DECL.map(function(d){return {id:""+d.n, left:d.n+"e déclinaison", right:"Génitif en -"+d.g};});
+    }
+
+    var currentDeck = "cases";
+
+    function render(){
+      pairs = buildPairs(currentDeck);
+      solvedCount = 0; attempts = 0; selectedLeft = null;
+      statusEl.textContent = "0 / "+pairs.length+" paires trouvées";
+      leftEl.innerHTML = ""; rightEl.innerHTML = "";
+      var leftShuffled = shuffle(pairs);
+      var rightShuffled = shuffle(pairs);
+      leftShuffled.forEach(function(p){
+        var d = document.createElement("div");
+        d.className = "match-item";
+        d.textContent = p.left;
+        d.dataset.id = p.id;
+        d.dataset.side = "left";
+        d.addEventListener("click", onClick);
+        leftEl.appendChild(d);
+      });
+      rightShuffled.forEach(function(p){
+        var d = document.createElement("div");
+        d.className = "match-item";
+        d.textContent = p.right;
+        d.dataset.id = p.id;
+        d.dataset.side = "right";
+        d.addEventListener("click", onClick);
+        rightEl.appendChild(d);
+      });
+    }
+
+    function onClick(e){
+      var el = e.currentTarget;
+      if(el.classList.contains("solved")) return;
+      if(el.dataset.side === "left"){
+        if(selectedLeft) selectedLeft.classList.remove("selected");
+        selectedLeft = el;
+        el.classList.add("selected");
+        return;
+      }
+      // right side clicked
+      if(!selectedLeft) return;
+      attempts++;
+      if(selectedLeft.dataset.id === el.dataset.id){
+        selectedLeft.classList.remove("selected");
+        selectedLeft.classList.add("solved");
+        el.classList.add("solved");
+        solvedCount++;
+        selectedLeft = null;
+        statusEl.textContent = solvedCount+" / "+pairs.length+" paires trouvées ("+attempts+" essais)";
+        if(solvedCount === pairs.length){
+          statusEl.textContent += " — bravo, toutes les paires sont trouvées !";
+        }
+      } else {
+        el.classList.add("wrong-flash");
+        selectedLeft.classList.add("wrong-flash");
+        var sl = selectedLeft;
+        setTimeout(function(){
+          el.classList.remove("wrong-flash");
+          sl.classList.remove("wrong-flash", "selected");
+        }, 450);
+        selectedLeft = null;
+        statusEl.textContent = solvedCount+" / "+pairs.length+" paires trouvées ("+attempts+" essais)";
+      }
+    }
+
+    document.querySelectorAll("#match .deck-choice button").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        document.querySelectorAll("#match .deck-choice button").forEach(function(b){b.classList.remove("active-deck");});
+        btn.classList.add("active-deck");
+        currentDeck = btn.dataset.mdeck;
+        render();
+      });
+    });
+    document.getElementById("match-restart").addEventListener("click", render);
+
+    render();
+  })();
+
+  /* ---------- ORDER (remettre les cas dans l'ordre) ---------- */
+  (function(){
+    var ORDER = ["Nominatif","Vocatif","Accusatif","Génitif","Datif","Ablatif"];
+    var seqEl = document.getElementById("order-seq");
+    var poolEl = document.getElementById("order-pool");
+    var statusEl = document.getElementById("order-status");
+    var checkBtn = document.getElementById("order-check");
+    var sequence = [];
+    var poolOrder = shuffle(ORDER); // ordre d'affichage des boutons, mélangé — distinct de ORDER (l'ordre correct)
+
+    function render(){
+      seqEl.innerHTML = "";
+      if(sequence.length === 0){
+        seqEl.innerHTML = "<span class='placeholder'>Ta réponse apparaîtra ici…</span>";
+      } else {
+        sequence.forEach(function(name){
+          var chip = document.createElement("span");
+          chip.className = "chip";
+          chip.textContent = name;
+          seqEl.appendChild(chip);
+        });
+      }
+      poolEl.innerHTML = "";
+      poolOrder.filter(function(n){return sequence.indexOf(n) === -1;}).forEach(function(name){
+        var b = document.createElement("button");
+        b.textContent = name;
+        b.addEventListener("click", function(){
+          sequence.push(name);
+          statusEl.textContent = "";
+          render();
+        });
+        poolEl.appendChild(b);
+      });
+      checkBtn.disabled = sequence.length !== ORDER.length;
+    }
+
+    checkBtn.addEventListener("click", function(){
+      var chips = seqEl.querySelectorAll(".chip");
+      var allGood = true;
+      chips.forEach(function(chip, i){
+        var ok = sequence[i] === ORDER[i];
+        chip.classList.remove("ok","bad");
+        chip.classList.add(ok ? "ok" : "bad");
+        if(!ok) allGood = false;
+      });
+      statusEl.textContent = allGood
+        ? "Exact, c'est le bon ordre !"
+        : "Pas tout à fait. Ordre correct : " + ORDER.join(" → ");
+    });
+
+    document.getElementById("order-undo").addEventListener("click", function(){
+      sequence.pop();
+      statusEl.textContent = "";
+      render();
+    });
+    document.getElementById("order-restart").addEventListener("click", function(){
+      sequence = [];
+      poolOrder = shuffle(ORDER);
+      statusEl.textContent = "";
+      render();
+    });
+
+    render();
+  })();
+
+  /* ---------- FILL TABLE ---------- */
+  (function(){
+    var casesBody = document.getElementById("fill-cases");
+    var declBody = document.getElementById("fill-decl");
+    var scoreCasesEl = document.getElementById("fill-score-cases");
+    var scoreDeclEl = document.getElementById("fill-score-decl");
+
+    function esc(s){ return s.replace(/"/g,"&quot;"); }
+
+    function buildCases(){
+      casesBody.innerHTML = "";
+      shuffle(CASES).forEach(function(c){
+        var tr = document.createElement("tr");
+        var acceptList = esc(c.accept.concat([c.fn]).join("|"));
+        var display = c.fn + (c.prep ? " + prépositions" : "");
+        tr.innerHTML = "<td>"+c.name+"</td><td>"+
+          "<input type='text' data-answer=\""+acceptList+"\" data-prep=\""+(c.prep?"1":"0")+"\" data-display=\""+esc(display)+"\" data-kind='loose'>"+
+          "<div class='reveal-answer'></div></td>";
+        casesBody.appendChild(tr);
+      });
+    }
+    function buildDecl(){
+      declBody.innerHTML = "";
+      shuffle(DECL).forEach(function(d){
+        var tr = document.createElement("tr");
+        tr.innerHTML = "<td>"+d.n+"e déclinaison</td><td>"+
+          "<input type='text' data-answer='"+d.g+"' data-display='-"+d.g+"' data-kind='exact'>"+
+          "<div class='reveal-answer'></div></td>";
+        declBody.appendChild(tr);
+      });
+    }
+    buildCases(); buildDecl();
+
+    function normalize(s){
+      return s.trim().toLowerCase()
+        .replace(/^-/, "")
+        .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+        .replace(/['’]/g,"")
+        .replace(/\./g,"")
+        .replace(/\s+/g," ")
+        .trim();
+    }
+    // strips every non letter/digit, for a loose "contains" comparison that ignores
+    // spacing, "+" signs, punctuation etc.
+    function compact(s){
+      return normalize(s).replace(/[^a-z0-9]/g,"");
+    }
+
+    function checkGroup(container, scoreEl, extraMsg){
+      var inputs = container.querySelectorAll("input");
+      var correct = 0;
+      inputs.forEach(function(inp){
+        var kind = inp.dataset.kind;
+        var reveal = inp.nextElementSibling;
+        var ok;
+        if(kind === "exact"){
+          ok = normalize(inp.value) === normalize(inp.dataset.answer);
+        } else {
+          var givenC = compact(inp.value);
+          var accepted = inp.dataset.answer.split("|").map(compact);
+          var functionOk = givenC.length > 0 && accepted.some(function(a){ return givenC.indexOf(a) !== -1; });
+          var mentionsPrep = givenC.indexOf("preposition") !== -1;
+          var mustHavePrep = inp.dataset.prep === "1";
+          ok = functionOk && (mustHavePrep ? mentionsPrep : !mentionsPrep);
+        }
+        inp.classList.remove("ok","bad");
+        inp.classList.add(ok ? "ok" : "bad");
+        if(ok){
+          correct++;
+          reveal.classList.remove("show");
+        } else {
+          reveal.textContent = "Réponse : " + inp.dataset.display;
+          reveal.classList.add("show");
+        }
+      });
+      scoreEl.textContent = correct+" / "+inputs.length+" corrects." + (extraMsg ? " ("+extraMsg+")" : "");
+    }
+
+    document.getElementById("fill-check-cases").addEventListener("click", function(){
+      checkGroup(casesBody, scoreCasesEl, "abréviations traditionnelles acceptées ; pense à « + prépositions » quand le cas peut suivre une préposition latine");
+    });
+    document.getElementById("fill-check-decl").addEventListener("click", function(){
+      checkGroup(declBody, scoreDeclEl, "");
+    });
+
+    document.getElementById("fill-reset-cases").addEventListener("click", function(){
+      buildCases();
+      scoreCasesEl.textContent = "";
+    });
+    document.getElementById("fill-reset-decl").addEventListener("click", function(){
+      buildDecl();
+      scoreDeclEl.textContent = "";
+    });
+  })();
+
+})();
+</script>
+</body>
+</html>
