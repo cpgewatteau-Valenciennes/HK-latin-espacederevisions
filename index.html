@@ -8,16 +8,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,500&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --board:#20362c;
-    --board-dark:#182a22;
+    --board:#1f2a44;
+    --board-dark:#141c30;
     --chalk:#f2ede1;
-    --chalk-dim:#c9d6cb;
-    --pastel-yellow:#e7c873;
-    --pastel-pink:#d98a8a;
-    --pastel-blue:#8fb8c9;
+    --chalk-dim:#c6cde0;
+    --pastel-yellow:#e3c27a;
+    --pastel-pink:#e2cfa3;
+    --pastel-blue:#9cc2ad;
     --line: rgba(242,237,225,0.14);
-    --folder-tan:#cdb98a;
-    --folder-tan-dark:#b39f6f;
+    --folder-tan:#d4957a;
+    --folder-tan-dark:#bd7c60;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -79,9 +79,7 @@
   .tree{list-style:none;margin:0;padding:0;}
   .tree > li{margin-bottom:14px;}
 
-  .folder{
-    position:relative;
-  }
+  .folder{ position:relative; }
   .folder-tab{
     display:flex;
     align-items:center;
@@ -110,6 +108,7 @@
     border-radius:6px 6px 0 0;
   }
   .folder-tab:hover{ background:var(--folder-tan-dark); transform:translateX(2px); box-shadow:0 6px 14px rgba(0,0,0,0.24); }
+  .folder-tab:focus-visible{ outline:2px solid var(--pastel-yellow); outline-offset:3px; }
   .folder-tab .chev{
     margin-left:auto;
     font-family:'IBM Plex Mono', monospace;
@@ -119,20 +118,31 @@
   }
   .folder-tab[aria-expanded="true"] .chev{ transform:rotate(90deg); }
 
+  /* Ouverture/fermeture : la hauteur s'adapte au contenu, sans limite fixe */
   .folder-body{
-    overflow:hidden;
-    max-height:0;
-    transition:max-height .25s ease;
+    display:grid;
+    grid-template-rows:0fr;
+    transition:grid-template-rows .25s ease;
     padding-left:18px;
     border-left:2px dashed var(--line);
     margin-left:14px;
   }
-  .folder-body.open{ max-height:2000px; }
+  .folder-body.open{ grid-template-rows:1fr; }
+  .folder-clip{ overflow:hidden; min-height:0; }
   .folder-body-inner{ padding:14px 0 4px 18px; }
 
   /* nested folders slightly different tint */
   .folder-body .folder-tab{ background:var(--pastel-blue); }
   .folder-body .folder-body .folder-tab{ background:var(--pastel-pink); }
+  .folder-body .folder-tab::before{ background:inherit; }
+
+  /* Couleur d'un dossier de premier niveau (propriété "couleur" dans periode.js / index) */
+  .folder-tab[data-couleur="or"],
+  .folder-tab[data-couleur="or"]::before,
+  .folder-tab[data-couleur="vert"],
+  .folder-tab[data-couleur="vert"]::before{ background:#e8c35d; }
+  .folder-tab[data-couleur="or"]:hover,
+  .folder-tab[data-couleur="vert"]:hover{ background:#d4ad45; }
 
   .files{list-style:none;margin:6px 0 4px;padding:0;}
   .files li{margin-bottom:6px;}
@@ -150,8 +160,10 @@
     transition:background .15s ease, border-color .15s ease, transform .15s ease;
   }
   .files a:hover{ background:rgba(255,255,255,0.05); border-color:var(--pastel-yellow); transform:translateX(2px); }
+  .files a:focus-visible{ outline:2px solid var(--pastel-yellow); outline-offset:2px; }
   .picto-row{ display:inline-flex; gap:3px; flex-shrink:0; }
   .picto-row svg{ width:16px; height:16px; border-radius:3px; }
+  .file-icon{ font-size:13px; }
 
   .empty-hint{
     font-family:'IBM Plex Mono', monospace;
@@ -170,10 +182,7 @@
     text-align:center;
   }
 
-  @media (prefers-reduced-motion: reduce){
-    .folder-tab, .folder-body, .chev{ transition:none; }
-  }
-.legend-label{
+  .legend-label{
     font-family:'IBM Plex Mono', monospace;
     font-size:12px;
     color:var(--chalk-dim);
@@ -190,76 +199,129 @@
     font-size:12px;
     color:var(--chalk-dim);
   }
-  .legend-item svg{ width:16px; height:16px; border-radius:3px; flex-shrink:0; }</style>
+  .legend-item svg{ width:16px; height:16px; border-radius:3px; flex-shrink:0; }
+
+  @media (prefers-reduced-motion: reduce){
+    body{ animation:none; }
+    .folder-tab, .folder-body, .chev{ transition:none; }
+  }
+</style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <p class="eyebrow">Hk.2026-2027</p>
     <h1>Espace de révisions</h1>
-   <p>Cliquez sur un dossier pour l'ouvrir. De nouveaux dossiers et documents seront ajoutés au fil de l'année sur ce même lien. Dans chaque exercice, le bouton 🏠 en haut à gauche vous ramène ici à tout moment, sans rien perdre, et le bouton Exercice suivant → en haut à droite vous fait passer directement au suivant.</p>
+    <p>Cliquez sur un dossier pour l'ouvrir. De nouveaux dossiers et documents seront ajoutés au fil de l'année sur ce même lien. Dans chaque exercice, le bouton 🏠 en haut à gauche vous ramène ici à tout moment, sans rien perdre.</p>
     <div class="header-rule"></div>
     <p class="legend-label">Des pictogrammes indiquent la/les dominante(s) de chaque exercice :</p>
     <div class="legend">
-      <span class="legend-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="20" width="60" height="60" rx="8" fill="#1c4e9c"/><path d="M20 40 L80 40 M20 60 L80 60 M40 20 L40 80" stroke="white" stroke-width="6"/></svg> Déclinaisons</span>
-      <span class="legend-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="40" width="20" height="20" rx="3" fill="#c0293b"/><rect x="40" y="40" width="20" height="20" rx="3" fill="#c0293b" opacity="0.55"/><rect x="62" y="40" width="20" height="20" rx="3" fill="#c0293b"/></svg> Conjugaisons</span>
-      <span class="legend-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="22" y="16" width="56" height="68" rx="8" fill="#1e8f5f"/><path d="M32 32 L68 32 M32 48 L68 48 M32 64 L58 64" stroke="white" stroke-width="6" stroke-linecap="round"/></svg> Vocabulaire</span>
-      <span class="legend-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M30 30 Q22 30 22 38 L22 45 Q22 50 17 50 Q22 50 22 55 L22 62 Q22 70 30 70" fill="none" stroke="#6a3fa0" stroke-width="6"/><path d="M70 30 Q78 30 78 38 L78 45 Q78 50 83 50 Q78 50 78 55 L78 62 Q78 70 70 70" fill="none" stroke="#6a3fa0" stroke-width="6"/></svg> Expression française</span>
-<span class="legend-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="20" width="30" height="60" rx="6" fill="#a8792f"/><path d="M48 50 L58 50 M53 44 L58 50 L53 56" stroke="#2b1810" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="62" y="20" width="8" height="60" fill="#002395"/><rect x="70" y="20" width="8" height="60" fill="#ffffff"/><rect x="78" y="20" width="8" height="60" fill="#ED2939"/></svg> Version (latin → français)</span>
-<span class="legend-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="20" width="8" height="60" fill="#002395"/><rect x="22" y="20" width="8" height="60" fill="#ffffff"/><rect x="30" y="20" width="8" height="60" fill="#ED2939"/><path d="M42 50 L52 50 M47 44 L52 50 L47 56" stroke="#2b1810" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="56" y="20" width="30" height="60" rx="6" fill="#a8792f"/></svg> Thème (français → latin)</span>
-      <span class="legend-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="22" r="11" fill="#1e8f5f"/><circle cx="76" cy="42" r="11" fill="#1c4e9c"/><circle cx="66" cy="74" r="11" fill="#e0791a"/><circle cx="34" cy="74" r="11" fill="#6a3fa0"/><circle cx="24" cy="42" r="11" fill="#c0293b"/></svg> Varié</span>
+      <span class="legend-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="20" y="20" width="60" height="60" rx="8" fill="#1c4e9c"/><path d="M20 40 L80 40 M20 60 L80 60 M40 20 L40 80" stroke="white" stroke-width="6"/></svg> Déclinaisons</span>
+      <span class="legend-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="18" y="40" width="20" height="20" rx="3" fill="#c0293b"/><rect x="40" y="40" width="20" height="20" rx="3" fill="#c0293b" opacity="0.55"/><rect x="62" y="40" width="20" height="20" rx="3" fill="#c0293b"/></svg> Conjugaisons</span>
+      <span class="legend-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="22" y="16" width="56" height="68" rx="8" fill="#1e8f5f"/><path d="M32 32 L68 32 M32 48 L68 48 M32 64 L58 64" stroke="white" stroke-width="6" stroke-linecap="round"/></svg> Vocabulaire</span>
+      <span class="legend-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M30 30 Q22 30 22 38 L22 45 Q22 50 17 50 Q22 50 22 55 L22 62 Q22 70 30 70" fill="none" stroke="#6a3fa0" stroke-width="6"/><path d="M70 30 Q78 30 78 38 L78 45 Q78 50 83 50 Q78 50 78 55 L78 62 Q78 70 70 70" fill="none" stroke="#6a3fa0" stroke-width="6"/></svg> Expression française</span>
+      <span class="legend-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="14" y="20" width="30" height="60" rx="6" fill="#a8792f"/><path d="M48 50 L58 50 M53 44 L58 50 L53 56" stroke="#2b1810" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="62" y="20" width="8" height="60" fill="#002395"/><rect x="70" y="20" width="8" height="60" fill="#ffffff"/><rect x="78" y="20" width="8" height="60" fill="#ED2939"/></svg> Version (latin → français)</span>
+      <span class="legend-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="14" y="20" width="8" height="60" fill="#002395"/><rect x="22" y="20" width="8" height="60" fill="#ffffff"/><rect x="30" y="20" width="8" height="60" fill="#ED2939"/><path d="M42 50 L52 50 M47 44 L52 50 L47 56" stroke="#2b1810" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="56" y="20" width="30" height="60" rx="6" fill="#a8792f"/></svg> Thème (français → latin)</span>
+      <span class="legend-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g fill="#1f9a9a"><g transform="rotate(-12 32 60)"><ellipse cx="32" cy="48" rx="12" ry="17"/><ellipse cx="32" cy="76" rx="8" ry="9"/></g><g transform="rotate(12 68 40)"><ellipse cx="68" cy="26" rx="12" ry="17"/><ellipse cx="68" cy="54" rx="8" ry="9"/></g></g></svg> Premiers pas</span>
+      <span class="legend-item"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="50" cy="22" r="11" fill="#1e8f5f"/><circle cx="76" cy="42" r="11" fill="#1c4e9c"/><circle cx="66" cy="74" r="11" fill="#e0791a"/><circle cx="34" cy="74" r="11" fill="#6a3fa0"/><circle cx="24" cy="42" r="11" fill="#c0293b"/></svg> Varié</span>
     </div>
   </header>
 
   <ul class="tree" id="tree"></ul>
 
-  <footer>Mis à jour automatiquement depuis data.js</footer>
+  <footer>Mis à jour automatiquement depuis periode.js</footer>
 </div>
 
-<script src="data.js"></script>
+<script src="periode.js"></script>
 <script>
-  const treeRoot = document.getElementById('tree');function slugify(str){
-    return str.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+  const treeRoot = document.getElementById('tree');
+
+  function slugify(str){
+    return String(str).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
   }
 
   const PICTOS = {
-    decl: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="20" width="60" height="60" rx="8" fill="#1c4e9c"/><path d="M20 40 L80 40 M20 60 L80 60 M40 20 L40 80" stroke="white" stroke-width="6"/></svg>',
-    conj: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="18" y="40" width="20" height="20" rx="3" fill="#c0293b"/><rect x="40" y="40" width="20" height="20" rx="3" fill="#c0293b" opacity="0.55"/><rect x="62" y="40" width="20" height="20" rx="3" fill="#c0293b"/></svg>',
-    voc:  '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="22" y="16" width="56" height="68" rx="8" fill="#1e8f5f"/><path d="M32 32 L68 32 M32 48 L68 48 M32 64 L58 64" stroke="white" stroke-width="6" stroke-linecap="round"/></svg>',
-    mix:  '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="22" r="11" fill="#1e8f5f"/><circle cx="76" cy="42" r="11" fill="#1c4e9c"/><circle cx="66" cy="74" r="11" fill="#e0791a"/><circle cx="34" cy="74" r="11" fill="#6a3fa0"/><circle cx="24" cy="42" r="11" fill="#c0293b"/></svg>',
-    exp:  '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M30 30 Q22 30 22 38 L22 45 Q22 50 17 50 Q22 50 22 55 L22 62 Q22 70 30 70" fill="none" stroke="#6a3fa0" stroke-width="6"/><path d="M70 30 Q78 30 78 38 L78 45 Q78 50 83 50 Q78 50 78 55 L78 62 Q78 70 70 70" fill="none" stroke="#6a3fa0" stroke-width="6"/></svg>',
-    vers: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="20" width="30" height="60" rx="6" fill="#a8792f"/><path d="M48 50 L58 50 M53 44 L58 50 L53 56" stroke="#2b1810" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="62" y="20" width="8" height="60" fill="#002395"/><rect x="70" y="20" width="8" height="60" fill="#ffffff"/><rect x="78" y="20" width="8" height="60" fill="#ED2939"/></svg>',
-    theme:'<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="14" y="20" width="8" height="60" fill="#002395"/><rect x="22" y="20" width="8" height="60" fill="#ffffff"/><rect x="30" y="20" width="8" height="60" fill="#ED2939"/><path d="M42 50 L52 50 M47 44 L52 50 L47 56" stroke="#2b1810" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="56" y="20" width="30" height="60" rx="6" fill="#a8792f"/></svg>'
+    pas:  '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g fill="#1f9a9a"><g transform="rotate(-12 32 60)"><ellipse cx="32" cy="48" rx="12" ry="17"/><ellipse cx="32" cy="76" rx="8" ry="9"/></g><g transform="rotate(12 68 40)"><ellipse cx="68" cy="26" rx="12" ry="17"/><ellipse cx="68" cy="54" rx="8" ry="9"/></g></g></svg>',
+    decl: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="20" y="20" width="60" height="60" rx="8" fill="#1c4e9c"/><path d="M20 40 L80 40 M20 60 L80 60 M40 20 L40 80" stroke="white" stroke-width="6"/></svg>',
+    conj: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="18" y="40" width="20" height="20" rx="3" fill="#c0293b"/><rect x="40" y="40" width="20" height="20" rx="3" fill="#c0293b" opacity="0.55"/><rect x="62" y="40" width="20" height="20" rx="3" fill="#c0293b"/></svg>',
+    voc:  '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="22" y="16" width="56" height="68" rx="8" fill="#1e8f5f"/><path d="M32 32 L68 32 M32 48 L68 48 M32 64 L58 64" stroke="white" stroke-width="6" stroke-linecap="round"/></svg>',
+    mix:  '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="50" cy="22" r="11" fill="#1e8f5f"/><circle cx="76" cy="42" r="11" fill="#1c4e9c"/><circle cx="66" cy="74" r="11" fill="#e0791a"/><circle cx="34" cy="74" r="11" fill="#6a3fa0"/><circle cx="24" cy="42" r="11" fill="#c0293b"/></svg>',
+    exp:  '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M30 30 Q22 30 22 38 L22 45 Q22 50 17 50 Q22 50 22 55 L22 62 Q22 70 30 70" fill="none" stroke="#6a3fa0" stroke-width="6"/><path d="M70 30 Q78 30 78 38 L78 45 Q78 50 83 50 Q78 50 78 55 L78 62 Q78 70 70 70" fill="none" stroke="#6a3fa0" stroke-width="6"/></svg>',
+    vers: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="14" y="20" width="30" height="60" rx="6" fill="#a8792f"/><path d="M48 50 L58 50 M53 44 L58 50 L53 56" stroke="#2b1810" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="62" y="20" width="8" height="60" fill="#002395"/><rect x="70" y="20" width="8" height="60" fill="#ffffff"/><rect x="78" y="20" width="8" height="60" fill="#ED2939"/></svg>',
+    theme:'<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="14" y="20" width="8" height="60" fill="#002395"/><rect x="22" y="20" width="8" height="60" fill="#ffffff"/><rect x="30" y="20" width="8" height="60" fill="#ED2939"/><path d="M42 50 L52 50 M47 44 L52 50 L47 56" stroke="#2b1810" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="56" y="20" width="30" height="60" rx="6" fill="#a8792f"/></svg>'
   };
 
   function pictoRow(keys){
-    if(!keys || !keys.length) return '';
-    return '<span class="picto-row">' + keys.map(k => PICTOS[k] || '').join('') + '</span>';
+    const row = document.createElement('span');
+    row.className = 'picto-row';
+    // PICTOS est une constante interne : innerHTML est sûr ici
+    row.innerHTML = keys.map(k => PICTOS[k] || '').join('');
+    return row;
   }
 
-  function renderFolder(node, depth){
+  // Identifiants uniques. Le premier dossier portant un nom garde 'folder-<nom>'
+  // (les anciens liens #nom continuent donc de marcher) ; les doublons
+  // reçoivent le chemin complet : 'folder-<parent>--<nom>'.
+  const usedIds = new Set();
+  function makeId(name, parentPath){
+    const slug = slugify(name) || 'dossier';
+    let id = 'folder-' + slug;
+    if(usedIds.has(id) && parentPath) id = 'folder-' + parentPath + '--' + slug;
+    let n = 2, base = id;
+    while(usedIds.has(id)) id = base + '-' + (n++);
+    usedIds.add(id);
+    return id;
+  }
+
+  function setOpen(btn, body, open){
+    body.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', String(open));
+    body.inert = !open;                       // retire les liens cachés de l'ordre de tabulation
+    body.setAttribute('aria-hidden', String(!open));
+  }
+
+  function renderFolder(node, parentPath){
     const li = document.createElement('li');
     const folderDiv = document.createElement('div');
     folderDiv.className = 'folder';
 
+    const id = makeId(node.nom, parentPath);
+    const path = id.replace(/^folder-/, '');
+
     const btn = document.createElement('button');
+    btn.type = 'button';
     btn.className = 'folder-tab';
+    btn.id = id;
     btn.setAttribute('aria-expanded', 'false');
-    btn.id = 'folder-' + slugify(node.nom);
-    btn.innerHTML = `<span>📁 ${node.nom}</span><span class="chev">›</span>`;
+    btn.setAttribute('aria-controls', id + '-body');
+    if(node.couleur) btn.dataset.couleur = node.couleur;
+
+    const label = document.createElement('span');
+    label.textContent = '📁 ' + node.nom;
+    const chev = document.createElement('span');
+    chev.className = 'chev';
+    chev.setAttribute('aria-hidden', 'true');
+    chev.textContent = '›';
+    btn.append(label, chev);
 
     const body = document.createElement('div');
     body.className = 'folder-body';
+    body.id = id + '-body';
+    body.setAttribute('role', 'region');
+    body.setAttribute('aria-labelledby', id);
+    const clip = document.createElement('div');
+    clip.className = 'folder-clip';
     const inner = document.createElement('div');
     inner.className = 'folder-body-inner';
-    body.appendChild(inner);
+    clip.appendChild(inner);
+    body.appendChild(clip);
 
     const hasChildren = (node.dossiers && node.dossiers.length) || (node.fichiers && node.fichiers.length);
 
     if(node.dossiers && node.dossiers.length){
       const subUl = document.createElement('ul');
       subUl.className = 'tree';
-      node.dossiers.forEach(sub => subUl.appendChild(renderFolder(sub, depth+1)));
+      node.dossiers.forEach(sub => subUl.appendChild(renderFolder(sub, path)));
       inner.appendChild(subUl);
     }
 
@@ -270,10 +332,20 @@
         const fLi = document.createElement('li');
         const a = document.createElement('a');
         a.href = f.url;
-        a.innerHTML = (f.pictos && f.pictos.length) ? pictoRow(f.pictos) : '<span style="font-size:13px;">📄</span>';
-        a.innerHTML += '<span>' + f.nom + '</span>';
         a.target = '_blank';
         a.rel = 'noopener';
+        if(f.pictos && f.pictos.length){
+          a.appendChild(pictoRow(f.pictos));
+        } else {
+          const ic = document.createElement('span');
+          ic.className = 'file-icon';
+          ic.setAttribute('aria-hidden', 'true');
+          ic.textContent = '📄';
+          a.appendChild(ic);
+        }
+        const name = document.createElement('span');
+        name.textContent = f.nom;
+        a.appendChild(name);
         fLi.appendChild(a);
         filesUl.appendChild(fLi);
       });
@@ -287,10 +359,8 @@
       inner.appendChild(hint);
     }
 
-    btn.addEventListener('click', () => {
-      const isOpen = body.classList.toggle('open');
-      btn.setAttribute('aria-expanded', String(isOpen));
-    });
+    setOpen(btn, body, false);
+    btn.addEventListener('click', () => setOpen(btn, body, !body.classList.contains('open')));
 
     folderDiv.appendChild(btn);
     folderDiv.appendChild(body);
@@ -298,28 +368,51 @@
     return li;
   }
 
-  STRUCTURE.forEach(node => treeRoot.appendChild(renderFolder(node, 0)));
+  // Racine : « Période en cours » (remplie automatiquement) puis les dossiers de periode.js
+  const periode = (typeof PERIODE !== 'undefined' && Array.isArray(PERIODE)) ? PERIODE : [];
+  const courante = (typeof PERIODE_EN_COURS !== 'undefined') ? PERIODE_EN_COURS : null;
+
+  function collecter(dossiers, out){
+    (dossiers || []).forEach(d => {
+      (d.fichiers || []).forEach(f => { if(courante && f.periode === courante) out.push(f); });
+      collecter(d.dossiers, out);
+    });
+    return out;
+  }
+
+  const RACINE = [
+    { nom: 'Période en cours', couleur: 'or', fichiers: collecter(periode, []) },
+    ...periode
+  ];
+  RACINE.forEach(node => treeRoot.appendChild(renderFolder(node, '')));
 
   function expandToId(id){
     const btn = document.getElementById(id);
     if(!btn) return false;
-    let el = btn.closest('.folder');
     const chain = [];
+    let el = btn.closest('.folder');
     while(el){
       const tab = el.querySelector(':scope > .folder-tab');
       if(tab) chain.unshift(tab);
-      el = el.parentElement.closest('.folder');
+      el = el.parentElement ? el.parentElement.closest('.folder') : null;
     }
     chain.forEach(tab => { if(tab.getAttribute('aria-expanded') !== 'true') tab.click(); });
-    btn.scrollIntoView({behavior:'smooth', block:'start'});
+    btn.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start'});
     return true;
   }
 
-  const targetId = location.hash ? 'folder-' + location.hash.slice(1) : null;
-  if(!targetId || !expandToId(targetId)){
+  function openFromHash(){
+    if(!location.hash) return false;
+    let h = location.hash.slice(1);
+    try { h = decodeURIComponent(h); } catch(e) {}
+    return expandToId('folder-' + h);
+  }
+
+  if(!openFromHash()){
     const firstTab = treeRoot.querySelector('.folder-tab');
     if(firstTab) firstTab.click();
   }
+  window.addEventListener('hashchange', openFromHash);
 </script>
 </body>
 </html>
