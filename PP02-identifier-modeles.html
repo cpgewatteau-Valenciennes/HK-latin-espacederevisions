@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PP02 – Identifier les modèles de déclinaison et de conjugaison</title>
+<style>
+  :root{
+    --parchment:#F1E6CE;
+    --parchment-dark:#E6D6B0;
+    --burgundy:#6B1E23;
+    --burgundy-dark:#4A1418;
+    --ochre:#B9812A;
+    --ochre-light:#D9A94F;
+    --ink:#2C1810;
+    --green:#4A6B2A;
+    --green-bg:#E4EBD8;
+    --red:#A01D1D;
+    --red-bg:#F3D9D9;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(185,129,42,0.08), transparent 40%),
+      radial-gradient(circle at 80% 90%, rgba(107,30,35,0.08), transparent 40%),
+      var(--parchment);
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+    color: var(--ink);
+    padding: 56px 16px 60px;
+  }
+  .meander{
+    height: 14px;
+    background-image: repeating-linear-gradient(90deg, var(--burgundy) 0 4px, transparent 4px 8px);
+    background-size: 32px 14px;
+    opacity:0.55;
+    margin: 0 auto 20px;
+    max-width: 560px;
+  }
+  header{ text-align:center; max-width: 560px; margin: 0 auto 8px; }
+  .title-row{ display:flex; align-items:center; justify-content:center; gap: 8px; }
+  .title-row svg{ width: 36px; height: 36px; flex-shrink:0; }
+  h1{
+    font-size: clamp(1.25rem, 4.2vw, 1.7rem);
+    color: var(--burgundy-dark);
+    margin: 0;
+  }
+  .subtitle{ font-style: italic; color: var(--ochre); font-size: 0.88rem; margin: 6px 0 0; }
+
+  .panel{
+    max-width: 560px;
+    margin: 24px auto 0;
+    background: linear-gradient(180deg, #FBF4E3, var(--parchment-dark));
+    border: 1.5px solid var(--ochre-light);
+    border-radius: 8px;
+    padding: 22px 20px;
+    text-align: center;
+  }
+
+  .mode-choices{ display:flex; gap:10px; justify-content:center; margin: 16px 0 20px; flex-wrap:wrap; }
+  .mode-btn{
+    background: white;
+    border: 1.5px solid var(--ochre-light);
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-family: inherit;
+    font-size: 0.88rem;
+    cursor: pointer;
+    color: var(--ink);
+    max-width: 220px;
+  }
+  .mode-btn.selected{ background: #1c4e9c; color: white; border-color: #1c4e9c; }
+  .mode-btn[data-mode="conj"].selected{ background: var(--burgundy); border-color: var(--burgundy); }
+  .mode-btn[data-mode="both"].selected{ background: var(--ochre); border-color: var(--ochre); color: var(--ink); }
+
+  .memo-btn{
+    background: #FBF4E3;
+    border: 1.5px solid var(--burgundy);
+    color: var(--burgundy-dark);
+    border-radius: 20px;
+    padding: 9px 20px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin: 0 4px 10px;
+  }
+  .memo-btn:hover{ background: var(--parchment-dark); }
+  dialog.memo{
+    max-width: 520px; width: calc(100% - 32px);
+    background: linear-gradient(180deg, #FBF4E3, var(--parchment-dark));
+    border: 1.5px solid var(--ochre-light);
+    border-radius: 8px;
+    padding: 20px 20px 16px;
+    color: var(--ink);
+    font-family: inherit;
+  }
+  dialog.memo::backdrop{ background: rgba(44,24,16,0.55); }
+  dialog.memo h2{ font-size: 1.1rem; color: var(--burgundy-dark); margin: 0 0 4px; }
+  dialog.memo h3{ font-size: 0.95rem; color: var(--burgundy); margin: 16px 0 6px; }
+  dialog.memo table{ width:100%; border-collapse: collapse; font-size: 0.9rem; }
+  dialog.memo th, dialog.memo td{ border-bottom: 1px solid var(--ochre-light); padding: 6px 8px; text-align: left; }
+  dialog.memo th{ font-weight: 700; width: 28%; }
+  dialog.memo .memo-tip{ font-size: 0.8rem; color:#5a4735; margin: 8px 0 0; line-height: 1.45; }
+  dialog.memo .memo-close{
+    display:block; margin: 16px auto 0;
+    background: var(--burgundy); color: var(--parchment);
+    border: none; border-radius: 6px; padding: 9px 22px;
+    font-family: inherit; font-size: 0.9rem; cursor: pointer;
+  }
+
+  .menu-row{ max-width: 560px; margin: 0 auto; text-align:center; }
+  .menu-btn{
+    background: var(--burgundy);
+    border: 1.5px solid var(--burgundy);
+    color: var(--parchment);
+    border-radius: 20px;
+    padding: 9px 20px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-bottom: 10px;
+    box-shadow: 0 3px 10px rgba(74,20,24,0.3);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .menu-btn:hover{ transform: translateY(-2px); box-shadow: 0 5px 14px rgba(74,20,24,0.4); }
+
+  .home-fab{
+    position:fixed; top:14px; left:14px; z-index:999;
+    display:flex; align-items:center; gap:6px;
+    background: linear-gradient(135deg, var(--ochre), var(--burgundy));
+    color:#fff; font-family:'Iowan Old Style','Palatino Linotype',Georgia,serif;
+    font-size:0.82rem; font-weight:700; text-decoration:none;
+    padding:8px 14px; border-radius:20px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.25);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .home-fab:hover{ transform: translateY(-2px); box-shadow:0 5px 14px rgba(0,0,0,0.3); }
+  .next-fab{
+    position:fixed; top:14px; right:14px; z-index:999;
+    display:flex; align-items:center; gap:6px;
+    background: linear-gradient(135deg, var(--burgundy), var(--ochre));
+    color:#fff; font-family:'Iowan Old Style','Palatino Linotype',Georgia,serif;
+    font-size:0.82rem; font-weight:700; text-decoration:none;
+    padding:8px 14px; border-radius:20px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.25);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .next-fab:hover{ transform: translateY(-2px); box-shadow:0 5px 14px rgba(0,0,0,0.3); }
+  @media (max-width:480px){
+    .home-fab{ font-size:0.72rem; padding:6px 10px; top:8px; left:8px; }
+    .next-fab{ font-size:0.72rem; padding:6px 10px; top:8px; right:8px; }
+  }
+
+  .rules-box{
+    max-width: 560px;
+    margin: 14px auto 0;
+    background: #FBF4E3;
+    border: 1px solid var(--ochre-light);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    text-align: left;
+    color: #4a3a28;
+  }
+  .rules-box strong{ color: var(--burgundy-dark); }
+  .start-btn{
+    background: var(--burgundy);
+    color: var(--parchment);
+    border: none;
+    border-radius: 6px;
+    padding: 12px 28px;
+    font-family: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .start-btn:disabled{ opacity:0.4; cursor:default; }
+
+  .score-bar{
+    max-width: 560px;
+    margin: 16px auto 0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size: 0.85rem;
+    color: var(--burgundy-dark);
+    padding: 0 4px;
+  }
+
+  .quiz-container{ max-width: 560px; margin: 18px auto 0; display:none; }
+  .quiz-container.active{ display:block; }
+  .quiz-card{
+    background: linear-gradient(180deg, #FBF4E3, var(--parchment-dark));
+    border: 1.5px solid var(--ochre-light);
+    border-radius: 8px;
+    padding: 22px 20px;
+    text-align:center;
+  }
+  .quiz-type-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .quiz-type-tag svg{ width:16px; height:16px; }
+  .quiz-type-tag.conj{ background: var(--red-bg); color: var(--red); }
+  .quiz-type-tag.decl{ background: #DCE6F5; color: #1c4e9c; }
+
+  .quiz-consigne{ font-size: 0.82rem; color:#5a4735; margin-bottom: 12px; font-style: italic; }
+  .quiz-word{
+    font-style: italic;
+    font-weight: 700;
+    font-size: 1.35rem;
+    color: var(--burgundy-dark);
+    margin-bottom: 4px;
+  }
+  .quiz-sens{ font-size: 0.85rem; color:#5a4735; margin-bottom: 16px; }
+
+  .neutre-wrap{ display:none; margin: 0 0 14px; }
+  .neutre-wrap.show{ display:block; }
+  .neutre-wrap label{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:0.88rem; cursor:pointer;
+    background:white; border:1.5px solid var(--ochre-light);
+    border-radius:6px; padding:7px 14px;
+  }
+  .neutre-wrap input{ width:18px; height:18px; accent-color: var(--burgundy); }
+
+  .quiz-options{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .quiz-btn{
+    background: white;
+    border: 1.5px solid var(--ochre-light);
+    border-radius: 6px;
+    padding: 11px 8px;
+    font-family: inherit;
+    font-size: 0.92rem;
+    cursor: pointer;
+    color: var(--ink);
+  }
+  .quiz-btn:hover:not(:disabled){ border-color: var(--burgundy); }
+  .quiz-btn.correct{ background: var(--green-bg); border-color: var(--green); color: var(--green); }
+  .quiz-btn.incorrect{ background: var(--red-bg); border-color: var(--red); color: var(--red); }
+  .quiz-btn:disabled{ cursor:default; }
+
+  .quiz-explication{
+    margin-top: 14px;
+    font-size: 0.8rem;
+    color: var(--burgundy-dark);
+    background: var(--parchment-dark);
+    border-left: 3px solid var(--ochre);
+    padding: 8px 12px;
+    border-radius: 3px;
+    text-align:left;
+    display:none;
+  }
+  .quiz-explication.show{ display:block; }
+  .quiz-note{
+    margin-top: 8px;
+    font-size: 0.78rem;
+    color: var(--burgundy-dark);
+    background: #FBF4E3;
+    border-left: 3px solid var(--burgundy);
+    padding: 8px 12px;
+    border-radius: 3px;
+    text-align:left;
+    display:none;
+  }
+  .quiz-note.show{ display:block; }
+
+  .next-btn-wrap{ margin-top: 14px; display:none; }
+  .next-btn-wrap.show{ display:block; }
+  .next-btn{
+    background: var(--burgundy);
+    color: var(--parchment);
+    border: none;
+    border-radius: 6px;
+    padding: 9px 22px;
+    font-family: inherit;
+    font-size: 0.88rem;
+    cursor: pointer;
+  }
+
+  .final-message{
+    max-width: 560px;
+    margin: 16px auto 0;
+    text-align:center;
+    background: var(--burgundy);
+    color: var(--parchment);
+    padding: 20px;
+    border-radius: 6px;
+    font-size: 1rem;
+    display:none;
+  }
+  .final-message.show{ display:block; }
+  .final-buttons{ display:flex; gap:10px; justify-content:center; margin-top: 14px; flex-wrap:wrap; }
+  .final-btn{
+    background: var(--parchment);
+    color: var(--burgundy-dark);
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<a class="home-fab" href="index.html#premiers-pas">🏠 Accueil du site</a>
+<!-- Quand PP03 existera : <a class="next-fab" href="NOM-DU-FICHIER-PP03.html">Exercice suivant →</a> -->
+<svg style="display:none" aria-hidden="true">
+  <symbol id="pic-declinaison" viewBox="0 0 100 100">
+    <rect x="20" y="20" width="60" height="60" rx="4" fill="#1c4e9c"/>
+    <path d="M20 40 L80 40 M20 60 L80 60 M40 20 L40 80" stroke="white" stroke-width="3"/>
+    <text x="30" y="34" font-size="11" fill="white" font-family="Georgia, serif">N</text>
+    <text x="30" y="54" font-size="11" fill="white" font-family="Georgia, serif">A</text>
+    <text x="30" y="74" font-size="11" fill="white" font-family="Georgia, serif">G</text>
+  </symbol>
+  <symbol id="pic-verbe" viewBox="0 0 100 100">
+    <rect x="15" y="30" width="20" height="40" fill="#c0293b"/>
+    <rect x="40" y="30" width="20" height="40" fill="#c0293b" opacity="0.55"/>
+    <rect x="65" y="30" width="20" height="40" fill="#c0293b"/>
+    <text x="25" y="54" font-size="10" text-anchor="middle" fill="white" font-family="Georgia, serif">a</text>
+    <text x="50" y="54" font-size="10" text-anchor="middle" fill="white" font-family="Georgia, serif">ba</text>
+    <text x="75" y="54" font-size="10" text-anchor="middle" fill="white" font-family="Georgia, serif">t</text>
+  </symbol>
+</svg>
+
+<div class="meander"></div>
+
+<header>
+  <div class="title-row">
+    <svg><use href="#pic-declinaison"></use></svg>
+    <svg><use href="#pic-verbe"></use></svg>
+    <h1>PP02 – Identifier les modèles de déclinaison et de conjugaison</h1>
+  </div>
+  <p class="subtitle">Reconnaître le modèle à partir des formes données</p>
+  <div class="rules-box">
+    Il y a deux parties : <strong>A) Identification des modèles de déclinaison</strong> et <strong>B) Identification des modèles de conjugaison</strong>.<br><br>
+    Clique sur la réponse de ton choix : elle devient <strong style="color:var(--green)">verte</strong> si elle est correcte, <strong style="color:var(--red)">rouge</strong> si elle est incorrecte (tu verras en même temps la bonne réponse apparaître en vert). Dans tous les cas, une petite remarque s'affiche en dessous pour t'expliquer le modèle.<br><br>
+    Pour les noms, coche aussi la case <strong>« Nom neutre »</strong> si tu penses que c'est un neutre, <strong>avant</strong> de cliquer sur le numéro de la déclinaison. La réponse n'est comptée juste que si le numéro <strong>et</strong> la case sont corrects.<br><br>
+    Prends le temps de lire la remarque, puis clique sur <strong>« Suivant »</strong> pour passer à la question suivante.<br><br>
+    Tu peux à tout moment changer d'exercice en cliquant sur <strong>« Retour au menu »</strong>.
+  </div>
+</header>
+
+<div class="panel" id="start-panel">
+  <p><strong>Choisis ta partie :</strong></p>
+  <div class="mode-choices" id="mode-choices">
+    <button class="mode-btn" data-mode="decl">A) Déclinaisons</button>
+    <button class="mode-btn" data-mode="conj">B) Conjugaisons</button>
+    <button class="mode-btn" data-mode="both">A + B (mélangé)</button>
+  </div>
+  <p><button class="memo-btn" data-open-memo>📋 Fiche mémo</button></p>
+  <button class="start-btn" id="start-btn" disabled>Commencer</button>
+</div>
+
+<div class="menu-row" id="menu-row" style="display:none;">
+  <button class="menu-btn" id="menu-btn">↩ Retour au menu</button>
+  <button class="memo-btn" data-open-memo>📋 Fiche mémo</button>
+</div>
+
+<div class="score-bar" id="score-bar" style="display:none;">
+  <span>Question <span id="q-index">1</span> / <span id="q-total">–</span></span>
+  <span>Score : <strong><span id="score">0</span></strong></span>
+</div>
+
+<div class="quiz-container" id="quiz-container">
+  <div class="quiz-card">
+    <div class="quiz-type-tag" id="quiz-type-tag"></div>
+    <div class="quiz-consigne" id="quiz-consigne"></div>
+    <div class="quiz-word" id="quiz-word"></div>
+    <div class="quiz-sens" id="quiz-sens"></div>
+    <div class="neutre-wrap" id="neutre-wrap">
+      <label><input type="checkbox" id="neutre-check"> Nom neutre</label>
+    </div>
+    <div class="quiz-options" id="quiz-options"></div>
+    <div class="quiz-explication" id="quiz-explication"></div>
+    <div class="quiz-note" id="quiz-note"></div>
+    <div class="next-btn-wrap" id="next-btn-wrap">
+      <button class="next-btn" id="next-btn">Suivant →</button>
+    </div>
+  </div>
+</div>
+
+<dialog class="memo" id="memo">
+  <h2>Fiche mémo</h2>
+  <h3>Les 5 modèles de déclinaison : regarder le génitif sg.</h3>
+  <table>
+    <tr><th>1re</th><td>génitif sg. en <em>-AE</em></td></tr>
+    <tr><th>2e</th><td>génitif sg. en <em>-I</em></td></tr>
+    <tr><th>3e</th><td>génitif sg. en <em>-IS</em></td></tr>
+    <tr><th>4e</th><td>génitif sg. en <em>-US</em></td></tr>
+    <tr><th>5e</th><td>génitif sg. en <em>-EI</em></td></tr>
+  </table>
+  <p class="memo-tip">Après le numéro, pense à signaler si c'est un neutre (par ex. « 2 N » ou « 3 neutre »).</p>
+
+  <h3>Les 5 modèles de conjugaison : regarder la 1re pers. sg. + l'infinitif</h3>
+  <table>
+    <tr><th>1re</th><td><em>-o</em>, <em>-are</em></td></tr>
+    <tr><th>2e</th><td><em>-eo</em>, <em>-ere</em></td></tr>
+    <tr><th>3e</th><td><em>-o</em>, <em>-ere</em></td></tr>
+    <tr><th>3e mixte</th><td><em>-io</em>, <em>-ere</em></td></tr>
+    <tr><th>4e</th><td><em>-io</em>, <em>-ire</em></td></tr>
+  </table>
+  <p class="memo-tip">La 3e mixte a la 1re pers. sg. de la 4e (<em>-io</em>) et l'infinitif de la 3e (<em>-ere</em>).</p>
+  <button class="memo-close" id="memo-close">Fermer</button>
+</dialog>
+
+<div class="final-message" id="final-message"></div>
+
+<div class="meander"></div>
+
+<script>
+  // =========================================================
+  // DONNÉES (modifier ici les noms et les verbes)
+  // =========================================================
+  const conjExplications = {
+    "1":  "1re pers. sg. en <em>-o</em>, infinitif en <em>-are</em>.",
+    "2":  "1re pers. sg. en <em>-eo</em>, infinitif en <em>-ere</em>.",
+    "3":  "1re pers. sg. en <em>-o</em>, infinitif en <em>-ere</em>.",
+    "3M": "1re pers. sg. en <em>-io</em>, infinitif en <em>-ere</em>.",
+    "4":  "1re pers. sg. en <em>-io</em>, infinitif en <em>-ire</em>."
+  };
+  const conjLabels = { "1": "1re", "2": "2e", "3": "3e", "3M": "3e mixte", "4": "4e" };
+
+  const declExplications = { "1": "<em>-AE</em>", "2": "<em>-I</em>", "3": "<em>-IS</em>", "4": "<em>-US</em>", "5": "<em>-EI</em>" };
+  const declLabels = { "1": "1re", "2": "2e", "3": "3e", "4": "4e", "5": "5e" };
+
+  // Remarques affichées après la réponse (HTML autorisé, mots latins en <em>)
+  const notes1reMasc = "À retenir : la 1re décl. (= gén. sg. en <em>-AE</em>) ne contient quasiment que des noms féminins avec un nom. sg. en <em>-A</em>. Cependant, elle contient aussi quelques noms masculins (ex. <em>nauta, ae</em>, le marin ; <em>poeta, ae</em>, le poète ; <em>incola, ae</em>, l'habitant). Cela ne change rien à leurs terminaisons, mais évidemment les éventuels accords, par ex. d'un adjectif, se feront au masculin.";
+  const notes3e = "À retenir : tu peux déjà retenir que le nom. sg. des noms de la 3e déclinaison a des terminaisons très variées (que le dictionnaire te donne).";
+  const notesNeutre = "Prends l'habitude d'ajouter, après le numéro de la déclinaison, si c'est un neutre (par ex. « 2 N » ou « 3 neutre »). Cela t'évitera, j'espère, certaines erreurs ensuite.";
+
+  const conjPool = [
+    { forme: "do, das, dare, dedi, datum", sens: "donner", conj: "1" },
+    { forme: "puto, as, are, avi, atum", sens: "penser, estimer", conj: "1" },
+    { forme: "habeo, es, ere, habui, habitum", sens: "avoir", conj: "2" },
+    { forme: "maneo, es, ere, mansi, mansum", sens: "rester", conj: "2" },
+    { forme: "sedeo, es, ere, sedi, sessum", sens: "être assis", conj: "2" },
+    { forme: "duco, is, ere, duxi, ductum", sens: "conduire", conj: "3" },
+    { forme: "mitto, is, ere, misi, missum", sens: "envoyer", conj: "3" },
+    { forme: "vinco, is, ere, vici, victum", sens: "vaincre", conj: "3" },
+    { forme: "rapio, is, ere, rapui, raptum", sens: "arracher, enlever", conj: "3M" },
+    { forme: "eripio, is, ere, eripui, ereptum", sens: "arracher, enlever à", conj: "3M" },
+    { forme: "facio, is, ere, feci, factum", sens: "faire", conj: "3M" },
+    { forme: "venio, is, ire, veni, ventum", sens: "venir", conj: "4" },
+    { forme: "vincio, is, ire, vinxi, vinctum", sens: "lier, enchaîner", conj: "4" }
+  ];
+
+  const declPool = [
+    { forme: "acies, ei", genre: "f.", decl: "5" },
+    { forme: "anima, ae", genre: "f.", decl: "1" },
+    { forme: "arcus, us", genre: "m.", decl: "4" },
+    { forme: "caedes, is", genre: "f.", decl: "3" },
+    { forme: "corpus, oris", genre: "n.", decl: "3" },
+    { forme: "dominus, i", genre: "m.", decl: "2" },
+    { forme: "forum, i", genre: "n.", decl: "2" },
+    { forme: "incola, ae", genre: "m.", decl: "1", note: "MASC_1E" },
+    { forme: "magister, tri", genre: "m.", decl: "2" },
+    { forme: "metus, us", genre: "m.", decl: "4" },
+    { forme: "quies, etis", genre: "f.", decl: "3" },
+    { forme: "regio, onis", genre: "f.", decl: "3" },
+    { forme: "sacrificium, ii", genre: "n.", decl: "2" },
+    { forme: "sententia, ae", genre: "f.", decl: "1" },
+    { forme: "species, ei", genre: "f.", decl: "5" },
+    { forme: "venter, tris", genre: "m.", decl: "3" }
+  ];
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  let questions = [];
+  let currentIndex = 0;
+  let score = 0;
+  let selectedMode = null; // 'decl' | 'conj' | 'both'
+  let answered = false;
+
+  document.getElementById('next-btn').addEventListener('click', nextQuestion);
+
+  // Fiche mémo
+  const memo = document.getElementById('memo');
+  document.querySelectorAll('[data-open-memo]').forEach(b => b.addEventListener('click', () => memo.showModal()));
+  document.getElementById('memo-close').addEventListener('click', () => memo.close());
+  memo.addEventListener('click', e => { if(e.target === memo) memo.close(); });
+
+  // =========================================================
+  // ÉCRAN DE DÉPART
+  // =========================================================
+  const modeButtons = document.querySelectorAll('.mode-btn');
+  const startBtn = document.getElementById('start-btn');
+
+  modeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      modeButtons.forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedMode = btn.dataset.mode;
+      startBtn.disabled = false;
+    });
+  });
+
+  function buildQuestions(){
+    const declItems = shuffle(declPool).map(item => ({ ...item, type: 'decl' }));
+    const conjItems = shuffle(conjPool).map(item => ({ ...item, type: 'conj' }));
+    if(selectedMode === 'decl') return declItems;
+    if(selectedMode === 'conj') return conjItems;
+    return shuffle(declItems.concat(conjItems));
+  }
+
+  function startExercise(){
+    questions = buildQuestions();
+
+    document.getElementById('start-panel').style.display = 'none';
+    document.getElementById('final-message').classList.remove('show');
+    document.getElementById('menu-row').style.display = 'block';
+    document.getElementById('score-bar').style.display = 'flex';
+    document.getElementById('quiz-container').classList.add('active');
+    document.getElementById('q-total').textContent = questions.length;
+
+    currentIndex = 0;
+    score = 0;
+    document.getElementById('score').textContent = score;
+    showQuestion();
+  }
+
+  startBtn.addEventListener('click', startExercise);
+
+  function returnToMenu(){
+    document.getElementById('menu-row').style.display = 'none';
+    document.getElementById('quiz-container').classList.remove('active');
+    document.getElementById('score-bar').style.display = 'none';
+    document.getElementById('final-message').classList.remove('show');
+    document.getElementById('final-message').innerHTML = '';
+    document.getElementById('start-panel').style.display = 'block';
+  }
+
+  document.getElementById('menu-btn').addEventListener('click', returnToMenu);
+
+  // =========================================================
+  // AFFICHAGE D'UNE QUESTION
+  // =========================================================
+  function showQuestion(){
+    answered = false;
+    document.getElementById('next-btn-wrap').classList.remove('show');
+    const q = questions[currentIndex];
+    document.getElementById('q-index').textContent = currentIndex + 1;
+
+    const tag = document.getElementById('quiz-type-tag');
+    const consigneEl = document.getElementById('quiz-consigne');
+    const wordEl = document.getElementById('quiz-word');
+    const sensEl = document.getElementById('quiz-sens');
+    const optionsEl = document.getElementById('quiz-options');
+    const explEl = document.getElementById('quiz-explication');
+    const noteEl = document.getElementById('quiz-note');
+
+    explEl.classList.remove('show'); explEl.textContent = '';
+    noteEl.classList.remove('show'); noteEl.textContent = '';
+    optionsEl.innerHTML = '';
+
+    wordEl.textContent = q.forme;
+    sensEl.textContent = q.genre ? '(' + q.genre + ')' : ''; // genre affiché pour les noms ; le sens des verbes n'est pas affiché
+
+    const isConj = q.type === 'conj';
+    const neutreWrap = document.getElementById('neutre-wrap');
+    const neutreBox = document.getElementById('neutre-check');
+    neutreBox.checked = false;
+    neutreBox.disabled = false;
+    neutreWrap.classList.toggle('show', !isConj);
+    tag.className = 'quiz-type-tag ' + (isConj ? 'conj' : 'decl');
+    tag.innerHTML = isConj
+      ? '<svg><use href="#pic-verbe"></use></svg> Conjugaison'
+      : '<svg><use href="#pic-declinaison"></use></svg> Déclinaison';
+    consigneEl.textContent = isConj
+      ? "À quelle conjugaison le verbe appartient-il ?"
+      : "À quelle déclinaison le nom appartient-il ?";
+
+    const labels = isConj ? conjLabels : declLabels;
+    const order = isConj ? ["1","2","3","3M","4"] : ["1","2","3","4","5"];
+    const correctKey = isConj ? q.conj : q.decl;
+
+    order.forEach(key => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-btn';
+      btn.textContent = labels[key];
+      btn.addEventListener('click', () => handleAnswer(key, correctKey, isConj, q));
+      optionsEl.appendChild(btn);
+    });
+  }
+
+  function handleAnswer(chosenKey, correctKey, isConj, q){
+    if(answered) return;
+    answered = true;
+
+    const buttons = document.querySelectorAll('#quiz-options .quiz-btn');
+    const labels = isConj ? conjLabels : declLabels;
+    const order = isConj ? ["1","2","3","3M","4"] : ["1","2","3","4","5"];
+
+    buttons.forEach((btn, i) => {
+      btn.disabled = true;
+      const key = order[i];
+      if(key === correctKey) btn.classList.add('correct');
+      if(key === chosenKey && key !== correctKey) btn.classList.add('incorrect');
+    });
+
+    const neutreBox = document.getElementById('neutre-check');
+    neutreBox.disabled = true;
+    const isNeutre = !isConj && q.genre === 'n.';
+    const saidNeutre = !isConj && neutreBox.checked;
+    const neutreOK = isConj || (saidNeutre === isNeutre);
+    const fullyCorrect = (chosenKey === correctKey) && neutreOK;
+
+    const explEl = document.getElementById('quiz-explication');
+    const noteEl = document.getElementById('quiz-note');
+
+    let html;
+    if(isConj){
+      html = 'Conjugaison ' + labels[correctKey] + ' — ' + conjExplications[correctKey];
+    } else {
+      html = 'Déclinaison ' + labels[correctKey] + ' — génitif sg. ' + declExplications[correctKey];
+      if(isNeutre && saidNeutre) html += '<br>Nom neutre : bien repéré.';
+      else if(isNeutre) html += '<br>C\'est un nom neutre (la case n\'était pas cochée).';
+      else if(saidNeutre) html += '<br>Ce n\'est pas un nom neutre (la case était cochée à tort).';
+    }
+    explEl.innerHTML = html;
+    explEl.classList.add('show');
+
+    if(fullyCorrect){
+      score++;
+      document.getElementById('score').textContent = score;
+    }
+
+    const notes = [];
+    if(!isConj){
+      if(q.note === 'MASC_1E') notes.push(notes1reMasc);
+      if(q.decl === '3') notes.push(notes3e);
+      if(isNeutre) notes.push(notesNeutre);
+    }
+    if(notes.length){
+      noteEl.innerHTML = notes.join('<br><br>');
+      noteEl.classList.add('show');
+    }
+
+    document.getElementById('next-btn-wrap').classList.add('show');
+  }
+
+  function nextQuestion(){
+    currentIndex++;
+    if(currentIndex >= questions.length){
+      document.getElementById('quiz-container').classList.remove('active');
+      document.getElementById('menu-row').style.display = 'none';
+      document.getElementById('score-bar').style.display = 'none';
+      const finalMsg = document.getElementById('final-message');
+      finalMsg.innerHTML = 'Exercice terminé — score : ' + score + ' / ' + questions.length + '.';
+      const buttonsWrap = document.createElement('div');
+      buttonsWrap.className = 'final-buttons';
+
+      const restartBtn = document.createElement('button');
+      restartBtn.className = 'final-btn';
+      restartBtn.textContent = 'Recommencer';
+      restartBtn.addEventListener('click', startExercise);
+
+      const menuBtn = document.createElement('button');
+      menuBtn.className = 'final-btn';
+      menuBtn.textContent = 'Changer de partie';
+      menuBtn.addEventListener('click', returnToMenu);
+
+      buttonsWrap.appendChild(restartBtn);
+      buttonsWrap.appendChild(menuBtn);
+      finalMsg.appendChild(buttonsWrap);
+      finalMsg.classList.add('show');
+      return;
+    }
+    showQuestion();
+  }
+</script>
+
+</body>
+</html>

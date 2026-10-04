@@ -4,7 +4,8 @@ const PERIODE_EN_COURS = "P1";
 // Contenu des dossiers de premier niveau (Grammaire, Vocabulaire, Version, Thème…).
 // Le dossier doré « Période en cours » est rempli AUTOMATIQUEMENT avec les exercices
 // dont l'étiquette periode est égale à PERIODE_EN_COURS : chaque exercice n'est donc écrit
-// qu'UNE SEULE fois, dans son bon dossier, et apparaît tout seul aussi dans « Période en cours ».
+// qu'UNE SEULE fois, dans son bon dossier, et apparaît tout seul aussi dans « Période en cours »
+// (rangé dans le même sous-dossier, par exemple « Premiers pas »).
 // Un dossier peut contenir des "dossiers" (sous-dossiers) et/ou des "fichiers".
 // Un fichier : { nom: "Titre affiché", url: "chemin/vers/exercice.html", pictos: ["conj"], periode: "P1" }
 // pictos possibles : pas, decl, conj, voc, exp, vers, theme, mix
@@ -17,7 +18,9 @@ const PERIODE = [
       {
         nom: "Premiers pas",
         fichiers: [
-          { nom: "PP 01 — Cas, fonctions, modèles", url: "revision-latin.html", pictos: ["pas"], periode: "P1" }
+          { nom: "PP 01 — Cas, fonctions, modèles", url: "revision-latin.html", pictos: ["pas"], periode: "P1" },
+          { nom: "PP 02 — Identifier les modèles de déclinaison et de conjugaison", url: "PP02-identifier-modeles.html", pictos: ["pas"], periode: "P1" },
+          { nom: "PP 03 — Présent de l'indicatif", url: "latin-revisions-v2.html", pictos: ["pas"], periode: "P1" }
         ]
       },
       {

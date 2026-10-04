@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PP03 – Présent de l'indicatif</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#faf7f2;--card:#fff;--tx:#2a2622;--mut:#7a7168;--ac:#8b3a2f;--ok:#2e7d4f;--ko:#c0392b;--bd:#e4ddd2;--b:#2a5db0;--g:#1f9d55;--r:#c0392b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1a18;--card:#262320;--tx:#eee8df;--mut:#a39a8e;--ac:#e08a78;--ok:#4fae73;--ko:#d9594b;--bd:#3a3631;--b:#7aa7f0;--g:#5fd08a;--r:#ef7b6e}}
+:root[data-theme="dark"]{--bg:#1c1a18;--card:#262320;--tx:#eee8df;--mut:#a39a8e;--ac:#e08a78;--ok:#4fae73;--ko:#d9594b;--bd:#3a3631;--b:#7aa7f0;--g:#5fd08a;--r:#ef7b6e}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 Georgia,'Times New Roman',serif}
+main{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;margin:.5rem 0}
+h2{font-size:1.1rem;color:var(--ac);margin:0 0 .4rem}
+.tabs{display:flex;gap:8px;margin:12px 0}
+.tabs button{flex:1;padding:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;font:inherit;cursor:pointer}
+.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin:12px 0}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;margin:6px 0}
+td,th{border:1px solid var(--bd);padding:5px 8px;text-align:center;white-space:nowrap}
+th{color:var(--mut);font-weight:normal;font-size:.9rem}
+.b{color:var(--b);font-weight:bold}.g{color:var(--g);font-weight:bold}.r{color:var(--r);font-weight:bold}.m{color:var(--mut)}
+.note{color:var(--mut);font-size:.92rem;margin:.2rem 0 .6rem}
+.item{padding:8px 0;border-top:1px dashed var(--bd)}
+.grp{margin:4px 0;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.grp small{color:var(--mut)}
+.opt{font:inherit;font-size:.95rem;padding:5px 10px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--tx);cursor:pointer}
+.opt:disabled{cursor:default;opacity:.85}
+.opt.good{background:var(--ok);color:#fff;border-color:var(--ok);opacity:1}
+.opt.bad{background:var(--ko);color:#fff;border-color:var(--ko);opacity:1}
+.fb{font-size:.92rem;margin-top:4px}
+.fb:empty{display:none}
+.ok{color:var(--ok)}.ko{color:var(--ko)}
+.score{color:var(--mut);font-size:.9rem;margin-top:8px}
+.reset{font:inherit;padding:6px 12px;border:1px solid var(--bd);border-radius:6px;background:transparent;color:var(--tx);cursor:pointer;margin-top:8px}
+td.drop{min-width:80px;height:38px;border:2px dashed var(--bd);color:var(--r);font-weight:bold}
+td.drop.done{border-style:solid}td.drop.fail{background:var(--ko);color:#fff}td.drop.wrong{background:var(--ko)}
+.bank{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{font:inherit;padding:6px 12px;border:1px solid var(--r);border-radius:6px;background:var(--bg);color:var(--r);font-weight:bold;cursor:grab}
+.chip.sel{outline:3px solid var(--ac)}
+summary{cursor:pointer;color:var(--ac);font-weight:bold}
+</style>
+</head>
+<body>
+<main>
+<h1>PP03 – Présent de l'indicatif</h1>
+<p class="note">Révisions de latin : <i>sum</i>, voix active et passive</p>
+<div class="tabs"><button id="t0" class="on">Sum</button><button id="t1">Actif / passif</button></div>
+<div id="app"></div>
+</main>
+<script>
+const $=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!==undefined)e.innerHTML=h;return e};
+const sh=a=>[...a].sort(()=>Math.random()-.5);
+const PN=["1re pers. du singulier","2e pers. du singulier","3e pers. du singulier","1re pers. du pluriel","2e pers. du pluriel","3e pers. du pluriel"];
+const VO={act:"actif",pas:"passif"};
+const J=s=>s.replace(/-/g,'');
+const col=s=>{const p=s.split('-'),n=p.length;return p.map((x,i)=>`<span class="${i==0?'b':i==n-1?'r':'g'}">${x}</span>`).join('<span class="m">-</span>')};
+const NOTE="Dans une analyse, on précise toujours le temps et le mode. Ici c'est toujours l'<b>indicatif présent</b> (le seul vu pour l'instant) : il est indiqué dans la correction, prends dès maintenant l'habitude de l'écrire !";
+
+const V=[
+{p:"amo, amare, amavi, amatum",fr:"aimer",c:"1re conj.",rem:"1re conj. : voyelle caractéristique A (elle disparaît devant -o / -or).",
+ act:["am-o","ama-s","ama-t","ama-mus","ama-tis","ama-nt"],pas:["am-or","ama-ris","ama-tur","ama-mur","ama-mini","ama-ntur"],
+ fa:["j'aime","tu aimes","il aime","nous aimons","vous aimez","ils aiment"],fp:["je suis aimé","tu es aimé","il est aimé","nous sommes aimés","vous êtes aimés","ils sont aimés"]},
+{p:"moneo, monere, monui, monitum",fr:"avertir",c:"2e conj.",rem:"2e conj. : voyelle caractéristique E (fait partie du radical).",
+ act:["mone-o","mone-s","mone-t","mone-mus","mone-tis","mone-nt"],pas:["mone-or","mone-ris","mone-tur","mone-mur","mone-mini","mone-ntur"],
+ fa:["j'avertis","tu avertis","il avertit","nous avertissons","vous avertissez","ils avertissent"],fp:["je suis averti","tu es averti","il est averti","nous sommes avertis","vous êtes avertis","ils sont avertis"]},
+{p:"lego, legere, legi, lectum",fr:"lire",c:"3e conj.",rem:"3e conj. : voyelle de liaison I, sauf U à la 3e pl. (et E à la 2e sg. du passif).",
+ act:["leg-o","leg-i-s","leg-i-t","leg-i-mus","leg-i-tis","leg-u-nt"],pas:["leg-or","leg-e-ris","leg-i-tur","leg-i-mur","leg-i-mini","leg-u-ntur"],
+ fa:["je lis","tu lis","il lit","nous lisons","vous lisez","ils lisent"],fp:["je suis lu","tu es lu","il est lu","nous sommes lus","vous êtes lus","ils sont lus"]},
+{p:"capio, capere, cepi, captum",fr:"prendre",c:"3e mixte",rem:"3e mixte : voyelle caractéristique I (dans le radical), U à la 3e pl. (et E à la 2e sg. du passif).",
+ act:["capi-o","capi-s","capi-t","capi-mus","capi-tis","capi-u-nt"],pas:["capi-or","cap-e-ris","cap-i-tur","cap-i-mur","cap-i-mini","capi-u-ntur"],
+ fa:["je prends","tu prends","il prend","nous prenons","vous prenez","ils prennent"],fp:["je suis pris","tu es pris","il est pris","nous sommes pris","vous êtes pris","ils sont pris"]},
+{p:"audio, audire, audivi, auditum",fr:"entendre",c:"4e conj.",rem:"4e conj. : voyelle caractéristique I (dans le radical), U à la 3e pl.",
+ act:["audi-o","audi-s","audi-t","audi-mus","audi-tis","audi-u-nt"],pas:["audi-or","audi-ris","audi-tur","audi-mur","audi-mini","audi-u-ntur"],
+ fa:["j'entends","tu entends","il entend","nous entendons","vous entendez","ils entendent"],fp:["je suis entendu","tu es entendu","il est entendu","nous sommes entendus","vous êtes entendus","ils sont entendus"]}
+];
+const F=[];V.forEach(v=>["act","pas"].forEach(vo=>v[vo].forEach((s,i)=>F.push({v,vo,i,s}))));
+const pick=n=>{let vs=[];while(vs.length<n)vs=vs.concat(sh(V));const used=new Set();
+ return sh(vs.slice(0,n).map(v=>{let f;do{const vo=Math.random()<.5?'act':'pas',i=Math.floor(Math.random()*6);f={v,vo,i,s:v[vo][i]}}while(used.has(f.s));used.add(f.s);return f}))};
+const ex=f=>{const p=f.s.split('-'),n=p.length;
+ return `<b>${J(f.s)}</b> : indicatif présent ${VO[f.vo]}, ${PN[f.i]}.<br>${col(f.s)} = radical <span class="b">${p[0]}</span>${n==3?` + voyelle de liaison <span class="g">${p[1]}</span>`:''} + désinence ${VO[f.vo]} <span class="r">-${p[n-1]}</span>.<br><span class="m">${f.v.rem}</span>`};
+
+const S=["sum","es","est","sumus","estis","sunt"],SF=["je suis","tu es","il / elle est","nous sommes","vous êtes","ils / elles sont"];
+const EA=["-o","-s","-t","-mus","-tis","-nt"],EP=["-or","-ris","-tur","-mur","-mini","-ntur"];
+const sx=i=>i<6?`<b>${S[i]}</b> : indicatif présent de <i>sum</i>, ${PN[i]} (${SF[i]}).`:`<b>esse</b> : infinitif présent de <i>sum</i> (être).`;
+
+const verbsCard=`<h2>Verbes modèles (temps primitifs)</h2><div class="tw"><table><tr><th>Temps primitifs</th><th>Sens</th><th>Conjugaison</th></tr>${V.map(v=>`<tr><td>${v.p}</td><td>${v.fr}</td><td>${v.c}</td></tr>`).join('')}</table></div>`;
+const synth=vo=>`<div class="tw"><table><tr><th></th>${V.map(v=>`<th>${v.c}<br>${v.p.split(',')[0]}, ${v.p.split(',')[1].trim()}</th>`).join('')}</tr>${PN.map((n,i)=>`<tr><th>${n.replace(' pers. du','').replace('singulier','sg').replace('pluriel','pl')}</th>${V.map(v=>`<td>${col(v[vo][i])}</td>`).join('')}</tr>`).join('')}</table></div>`;
+
+const TABS=[
+{memo:`<details open><summary>Mémo : SUM</summary><p class="note">Temps primitifs : sum, esse, fui (être)</p><div class="tw"><table><tr><th>Personne</th><th>Latin</th><th>Français</th></tr>${S.map((s,i)=>`<tr><td>${PN[i]}</td><td><b>${s}</b></td><td>${SF[i]}</td></tr>`).join('')}</table></div><p>Infinitif présent : <b>esse</b> (être)</p></details>`,
+ ex:[
+ ()=>({t:"Latin ↔ français",i:"Les questions sont mélangées : tantôt du latin vers le français, tantôt l'inverse.",items:sh([0,1,2,3,4,5,6]).map(i=>{
+   const fr=Math.random()<.5;
+   if(!fr)return {q:`<b>${i<6?S[i]:'esse'}</b>`,g:[{o:i<6?sh(SF.filter((_,j)=>j!=i)).slice(0,3).concat(SF[i]):["être","avoir","il est","ils sont"],a:i<6?SF[i]:"être"}],e:sx(i)};
+   return {q:i<6?SF[i]:"être",g:[{o:i<6?sh(S.filter((_,j)=>j!=i)).slice(0,2).concat(S[i],"esse"):["esse","sunt","es","est"],a:i<6?S[i]:"esse"}],e:sx(i)};})})
+ ]},
+{memo:`<div>${verbsCard}</div><details open><summary>Mémo : indicatif présent</summary><p class="note">Structure : <span class="b">radical</span> (+ remarque sur la voyelle) + <span class="g">voyelle de liaison</span> éventuelle + <span class="r">désinence personnelle</span>. Radical : on enlève <i>-re</i> de l'infinitif (1re et 2e conj.) ou le <i>-o</i> de la 1re sg (autres conj.).</p><b>Actif</b>${synth('act')}<b>Passif</b>${synth('pas')}<p class="note">Désinences actives : -o, -s, -t, -mus, -tis, -nt. Désinences passives : -or, -ris, -tur, -mur, -mini, -ntur. Voyelle caractéristique : A (1re), E (2e), I (3e, 3e mixte, 4e) ; U à la 3e pl. pour ces trois dernières.</p></details>`,
+ ex:[
+ 'dnd',
+ ()=>({t:"2. Analyse : voix, personne et nombre",i:"Chaque forme appartient à l'un des 5 verbes modèles, dont les temps primitifs sont rappelés. "+NOTE,items:pick(8).map(f=>({q:`<b>${J(f.s)}</b> <span class="m">(${f.v.p} : ${f.v.fr})</span>`,g:[{l:"Voix",o:["actif","passif"],a:VO[f.vo],k:1},{l:"Personne",o:PN,a:PN[f.i],k:1}],e:ex(f)}))}),
+ ()=>({t:"3. Actif → passif et passif → actif",i:"Même personne, même verbe, autre voix.",items:pick(6).map(f=>{const w=f.vo=="act"?"pas":"act",a=J(f.v[w][f.i]);
+   const pool=[...f.v.act,...f.v.pas].map(J).filter(x=>x!=a&&x!=J(f.s));
+   return {q:`Mets à la voix ${w=="pas"?"passive":"active"} : <b>${J(f.s)}</b> <span class="m">(${f.v.p} : ${f.v.fr})</span>`,g:[{o:[a,...sh(pool).slice(0,3)],a}],e:ex(f)+"<br>→ "+ex({v:f.v,vo:w,i:f.i,s:f.v[w][f.i]})+`<br>On remplace la désinence ${VO[f.vo]} par la désinence ${VO[w]}.`}})}),
+ ()=>({t:"4. Latin → français",i:"Les temps primitifs et le sens du verbe sont donnés. "+NOTE,items:pick(8).map(f=>{const A=f.vo=="act"?f.v.fa:f.v.fp,B=f.vo=="act"?f.v.fp:f.v.fa,a=A[f.i];
+   const pool=[...A,...B].filter(x=>x!=a&&x!=B[f.i]);
+   return {q:`<b>${J(f.s)}</b> <span class="m">(${f.v.p} : ${f.v.fr})</span>`,g:[{o:[a,B[f.i],...sh(pool).slice(0,2)],a}],e:ex(f)+`<br>Traduction : « ${a} ».`}})})
+ ]}
+];
+
+function exo(def){
+ const d=def(),c=$('div','card',`<h2>${d.t}</h2>`+(d.i?`<p class="note">${d.i}</p>`:'')),sc=$('div','score');
+ let good=0;const upd=()=>sc.textContent=`Score : ${good} / ${d.items.length}`;
+ d.items.forEach(it=>{
+  const row=$('div','item',`<div>${it.q}</div>`),fb=$('div','fb'),a=[];let k=0;
+  it.g.forEach((g,gi)=>{
+   const w=$('div','grp',g.l?`<small>${g.l} :</small>`:'');
+   (g.k?g.o:sh(g.o)).forEach(o=>{
+    const b=$('button','opt');b.textContent=o;
+    b.onclick=()=>{
+     w.querySelectorAll('button').forEach(x=>{x.disabled=true;if(x.textContent===g.a)x.classList.add('good');});
+     if(o!==g.a)b.classList.add('bad');
+     a[gi]=o;k++;
+     if(k==it.g.length){const nb=it.g.filter((h,j)=>a[j]===h.a).length,ok=nb==it.g.length;if(ok)good++;upd();
+      fb.innerHTML=(ok?'<b class="ok">✓ Bravo !</b> ':nb>0?'<b class="ko">✗ Pas tout à fait.</b> ':'<b class="ko">✗ Erreur.</b> ')+it.e;}
+    };
+    w.append(b);
+   });
+   row.append(w);
+  });
+  row.append(fb);c.append(row);
+ });
+ upd();c.append(sc);
+ const r=$('button','reset','↻ Nouvelles questions');r.onclick=()=>c.replaceWith(exo(def));c.append(r);
+ return c;
+}
+function dnd(){
+ const c=$('div','card',`<h2>1. Connais-tu le tableau ?</h2><p class="note">Glisse chaque désinence dans la bonne case, selon la voix et la personne (sur téléphone : touche la désinence, puis la case). <b>Attention : une seule erreur est permise par désinence</b> ; à la deuxième erreur, elle est placée en rouge à sa vraie place.</p>`);
+ const L=["1re sg","2e sg","3e sg","1re pl","2e pl","3e pl"];
+ let good=0,placed=0,sel=null;
+ const sc=$('div','score'),msg=$('div','fb'),bank=$('div','bank'),tw=$('div','tw'),t=$('table');
+ const upd=()=>sc.textContent=`Placées : ${placed} / 12 · Sans aucune erreur : ${good}`;
+ t.innerHTML='<tr><th></th><th>Actif</th><th>Passif</th></tr>';
+ const chips={};
+ const err={};
+ const put=(td,chip,fail)=>{td.textContent=chip.textContent;td.classList.add('done');if(fail)td.classList.add('fail');chip.remove();placed++;};
+ const drop=(chip,td)=>{
+  if(!chip||!chip.isConnected||td.classList.contains('done'))return;
+  const k=chip.dataset.k;
+  if(k===td.dataset.k){if(!err[k])good++;put(td,chip,false);msg.innerHTML='';}
+  else{err[k]=(err[k]||0)+1;
+   if(err[k]==1){td.classList.add('wrong');setTimeout(()=>td.classList.remove('wrong'),500);msg.innerHTML='<b class="ko">✗ Erreur.</b> Une seule erreur est permise par désinence : au prochain essai raté, elle sera placée en rouge à sa vraie place.';}
+   else{put(t.querySelector('td[data-k="'+k+'"]'),chip,true);msg.innerHTML='<b class="ko">✗ Deuxième erreur :</b> la désinence est placée en rouge à sa bonne place.';}}
+  if(sel){sel.classList.remove('sel');sel=null;}
+  if(placed==12)msg.innerHTML+=' <b class="ok">Tableau complet.</b>';
+  upd();
+ };
+ L.forEach((n,i)=>{const tr=$('tr');tr.append($('th',null,n));
+  ['act','pas'].forEach(vo=>{const td=$('td','drop');td.dataset.k=vo+i;
+   td.ondragover=e=>e.preventDefault();
+   td.ondrop=e=>{e.preventDefault();drop(chips[e.dataTransfer.getData('text')],td);};
+   td.onclick=()=>drop(sel,td);tr.append(td);});t.append(tr);});
+ sh([].concat(EA.map((e,i)=>['act'+i,e]),EP.map((e,i)=>['pas'+i,e]))).forEach(([k,e])=>{
+  const b=$('button','chip');b.textContent=e;b.dataset.k=k;b.draggable=true;chips[k]=b;
+  b.ondragstart=ev=>ev.dataTransfer.setData('text',k);
+  b.onclick=()=>{if(sel)sel.classList.remove('sel');sel=(sel===b)?null:b;if(sel)b.classList.add('sel');};
+  bank.append(b);});
+ tw.append(t);c.append(tw,bank,msg);upd();c.append(sc);
+ const r=$('button','reset','↻ Recommencer');r.onclick=()=>c.replaceWith(dnd());c.append(r);
+ return c;
+}
+let cur=0;
+function render(){
+ const app=document.getElementById('app');app.innerHTML='';
+ app.append($('div','card',TABS[cur].memo));
+ TABS[cur].ex.forEach(d=>app.append(d==='dnd'?dnd():exo(d)));
+}
+[0,1].forEach(i=>document.getElementById('t'+i).onclick=()=>{cur=i;
+ document.getElementById('t0').className=i==0?'on':'';document.getElementById('t1').className=i==1?'on':'';render();});
+render();
+</script>
+</body>
+</html>

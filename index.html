@@ -372,16 +372,32 @@
   const periode = (typeof PERIODE !== 'undefined' && Array.isArray(PERIODE)) ? PERIODE : [];
   const courante = (typeof PERIODE_EN_COURS !== 'undefined') ? PERIODE_EN_COURS : null;
 
-  function collecter(dossiers, out){
-    (dossiers || []).forEach(d => {
-      (d.fichiers || []).forEach(f => { if(courante && f.periode === courante) out.push(f); });
-      collecter(d.dossiers, out);
+  // Construit le contenu de « Période en cours » en gardant les sous-dossiers
+  // (ex. Grammaire > Premiers pas  =>  Période en cours > Premiers pas).
+  // Le nom du dossier de premier niveau (Grammaire, Vocabulaire…) n'est pas répété :
+  // ses fichiers directs vont à la racine de « Période en cours ».
+  function collecterDans(d){
+    const res = { nom: d.nom, fichiers: [], dossiers: [] };
+    (d.fichiers || []).forEach(f => { if(courante && f.periode === courante) res.fichiers.push(f); });
+    (d.dossiers || []).forEach(sd => {
+      const sub = collecterDans(sd);
+      if(sub.fichiers.length || sub.dossiers.length) res.dossiers.push(sub);
     });
-    return out;
+    return res;
+  }
+
+  function collecterRacine(dossiers){
+    const racine = { nom: 'Période en cours', couleur: 'or', fichiers: [], dossiers: [] };
+    (dossiers || []).forEach(top => {
+      const r = collecterDans(top);
+      racine.fichiers.push(...r.fichiers);
+      racine.dossiers.push(...r.dossiers);
+    });
+    return racine;
   }
 
   const RACINE = [
-    { nom: 'Période en cours', couleur: 'or', fichiers: collecter(periode, []) },
+    collecterRacine(periode),
     ...periode
   ];
   RACINE.forEach(node => treeRoot.appendChild(renderFolder(node, '')));
