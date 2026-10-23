@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PP04 noms modèles radicaux</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#FFFCF4; --surface:#FFFFFF; --ink:#2A2832; --muted:#6B6877; --rule:#D9D2BF;
+  --amber:#FFC000; --amber-soft:#FFF3CC; --on-amber:#2A2832;
+  --ok:#2E7D4F; --ok-bg:#E4F3E9; --ko:#B3261E; --ko-bg:#FBE7E5;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1B1A1F; --surface:#25232A; --ink:#EFEAE0; --muted:#A39FAE; --rule:#45414E;
+    --amber-soft:#4A3C12; --ok:#7FD3A0; --ok-bg:#1F3A2A; --ko:#FF9B93; --ko-bg:#47211E; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1B1A1F; --surface:#25232A; --ink:#EFEAE0; --muted:#A39FAE; --rule:#45414E;
+  --amber-soft:#4A3C12; --ok:#7FD3A0; --ok-bg:#1F3A2A; --ko:#FF9B93; --ko-bg:#47211E; color-scheme:dark;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:19px/1.55 "EB Garamond",Garamond,Georgia,serif}
+main{max-width:780px;margin:0 auto;padding:28px 18px 64px}
+h1{font-size:1.7rem;line-height:1.2;margin:0 0 6px;font-weight:700}
+.sub{color:var(--muted);margin:0 0 18px}
+.consigne{border-left:5px solid var(--amber);background:var(--amber-soft);padding:10px 14px;margin:0 0 26px}
+.consigne p{margin:2px 0}
+ol{list-style:none;margin:0;padding:0;border-top:2px solid var(--ink)}
+.item{display:grid;grid-template-columns:2.2rem 1fr;gap:4px 8px;padding:16px 4px;border-bottom:1px solid var(--rule)}
+.item .n{color:var(--muted);font-size:1.05rem;padding-top:5px}
+.entry{font-size:1.55rem;font-weight:500;line-height:1.3}
+.ctrl{grid-column:2;display:flex;flex-wrap:wrap;gap:10px 22px;align-items:flex-end;margin-top:6px}
+fieldset{border:0;margin:0;padding:0}
+legend,label.l{display:block;font-size:.88rem;color:var(--muted);padding:0;margin-bottom:3px}
+.seg{display:inline-flex;border:1.5px solid var(--ink);border-radius:6px;overflow:hidden}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{min-width:2.4rem;text-align:center;padding:5px 0;cursor:pointer;border-left:1px solid var(--rule);font-weight:700}
+.seg label:first-of-type{border-left:0}
+.seg input:checked+label{background:var(--amber);color:var(--on-amber)}
+.seg input:focus-visible+label,.neu input:focus-visible+span{outline:3px solid var(--ink);outline-offset:2px}
+.neu{display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:1.5px solid var(--ink);border-radius:6px;padding:5px 11px;font-weight:700}
+.neu input{width:1.05rem;height:1.05rem;accent-color:#B07A00}
+.hint{font-size:.88rem;color:var(--muted);margin:0 0 3px}
+.ctrl>div{min-width:0}.ctrl .w{flex:1 1 100%}
+.res{grid-column:2;display:none;margin-top:8px;padding:8px 12px;border-radius:6px;font-size:1.02rem}
+.item.ok .res{display:block;background:var(--ok-bg);color:var(--ok)}
+.item.ko .res{display:block;background:var(--ko-bg);color:var(--ink)}
+.item.ko .res b.t{color:var(--ko)}
+.bad .seg,.bad .neu{border-color:var(--ko);box-shadow:0 0 0 2px var(--ko)}
+.good .seg,.good .neu{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok)}
+u{text-decoration-thickness:2px;text-underline-offset:3px}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:26px;position:sticky;bottom:0;background:var(--bg);padding:12px 0 calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--rule)}
+button{font:inherit;font-weight:700;border-radius:6px;padding:9px 20px;cursor:pointer;border:1.5px solid var(--ink)}
+button.go{background:var(--amber);color:var(--on-amber)}
+button.re{background:transparent;color:var(--ink)}
+button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+#score{font-size:1.15rem;font-weight:700}
+@media (max-width:560px){.item{grid-template-columns:1.8rem 1fr}}
+.modes{margin:0 0 18px}
+.modes legend{font-size:.95rem}
+.modes .seg label{padding:7px 14px}
+.m-type .hint{display:block}
+.f input{font:inherit;font-size:1.2rem;width:100%;max-width:11rem;padding:7px 10px;border:1.5px solid var(--ink);border-radius:6px;background:var(--surface);color:var(--ink)}
+.f input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.bad .f input,.f.bad input{border-color:var(--ko);box-shadow:0 0 0 2px var(--ko)}
+.good .f input,.f.good input{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok)}
+.self{display:inline-flex;flex-wrap:wrap;gap:8px;align-items:center;margin-left:8px}
+.self[hidden]{display:none}
+.item.shown .res{display:block;background:var(--amber-soft)}
+.item.ok .res{background:var(--ok-bg)}
+body[data-mode="type"] .m-paper,body[data-mode="paper"] .m-type,body[data-mode="paper"] .m-tt{display:none}
+details.fiche{margin:0 0 22px;border:1.5px solid var(--ink);border-radius:8px;background:var(--surface)}
+details.fiche>summary{cursor:pointer;padding:12px 16px;font-weight:700;font-size:1.15rem;background:var(--amber);color:var(--on-amber);border-radius:6px;list-style-position:inside}
+details.fiche[open]>summary{border-radius:6px 6px 0 0}
+details.fiche>summary:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.fb{padding:6px 16px 16px}
+.fb h2{font-size:1.2rem;margin:18px 0 6px}
+.fb p{margin:6px 0}
+.tw{overflow-x:auto;margin:6px 0 10px}
+.fb table{border-collapse:collapse;width:100%;min-width:460px;font-size:1rem}
+.fb th{background:var(--amber);color:var(--on-amber);text-align:left;padding:5px 9px;border:1px solid var(--rule)}
+.fb td{padding:5px 9px;border:1px solid var(--rule);vertical-align:top}
+.fb td:first-child{font-weight:700;background:var(--amber-soft)}
+.key{border-left:5px solid #E97132;background:var(--amber-soft);padding:8px 12px;margin:10px 0;font-weight:700}
+.item.ok .res,.item.ko .res,.item.shown .res{color:var(--ink);padding:6px 12px 8px}
+.blk{margin:8px 0 12px}
+.bt{margin:0;font-size:1.12rem}
+.rp{margin:3px 0 0;padding-left:10px;border-left:3px solid var(--rule);font-size:.98rem}
+.v{font-weight:700}.v.ok{color:var(--ok)}.v.ko{color:var(--ko)}
+.mine{font-size:.95rem;color:var(--muted)}
+</style>
+</head>
+<body data-mode="type">
+<main>
+  <h1>Identifier les modèles et lire les informations du dictionnaire</h1>
+  <p class="sub">PP04 noms modèles radicaux</p>
+  <details class="fiche"><summary>📖 Ma fiche de révision : lire les infos du dictionnaire</summary>
+  <div class="fb">
+    <h2>1. Les informations données</h2>
+    <div class="tw"><table><tr><th>Élément</th><th>Ce qu’il faut savoir</th></tr>
+      <tr><td>Exemple</td><td><b>ludus, i (M)</b></td></tr>
+      <tr><td>Ordre (toujours le même)</td><td>1) nominatif sg <b>en entier</b> → 2) information sur le génitif sg → 3) genre (M / F / N)</td></tr>
+      <tr><td>À quoi ça sert ?</td><td>Le génitif sg permet d’<b>identifier le modèle de déclinaison</b>.</td></tr></table></div>
+
+    <h2>2. Comment l’information sur le génitif sg peut être donnée</h2>
+    <div class="tw"><table><tr><th>Présentation dans le dico</th><th>Exemples</th><th>Génitif sg complet</th></tr>
+      <tr><td>La ou les 2 lettres de la terminaison du génitif sg</td><td>rosa, ae<br>dominus, i<br>civis, is<br>manus, us<br>fides, ei</td><td>rosae<br>domini<br>civis<br>manus<br>fidei</td></tr>
+      <tr><td>Génitif sg en entier</td><td>rex, regis<br>bos, bovis<br>nox, noctis<br>caro, carnis</td><td>regis<br>bovis<br>noctis<br>carnis</td></tr>
+      <tr><td>1 morceau du génitif sg</td><td>consul, ulis<br>leo, onis<br>mulier, eris</td><td>consulis<br>leonis<br>mulieris</td></tr></table></div>
+    <p class="key">Dans tous les cas, je dois être capable de reconstituer le génitif sg complet pour pouvoir trouver le radical (très important pour la 3<sup>e</sup>).</p>
+
+    <h2>3. Méthode du « glisser / superposer »</h2>
+    <p>Écrire le nominatif sg en entier, puis faire glisser/superposer l’info donnée après la virgule sous/sur le nominatif, <b>en remontant depuis la fin</b>.</p>
+    <div class="tw"><table><tr><th>L’info commence par…</th><th>Où la placer ?</th><th>Exemple</th><th>Résultat</th></tr>
+      <tr><td>1 voyelle</td><td>Sous la <b>1<sup>re</sup> voyelle rencontrée</b> en remontant depuis la fin</td><td>sanguis, inis (M)<br>sanguis → sangu + inis</td><td>gén. sg : <b>sanguinis</b><br>radical : sanguin-</td></tr>
+      <tr><td>1 consonne</td><td>Sous la <b>même consonne</b></td><td>magister, tri (M)<br>magister → magis + tri</td><td>gén. sg : <b>magistri</b><br>radical : magistr-</td></tr></table></div>
+    <div class="tw"><table><tr><th>À retenir</th><th>Rappel</th></tr>
+      <tr><td>Génitif sg complet</td><td>ce qui est écrit sur le nominatif (avant l’info) <b>+</b> l’info du dico = gén. sg complet</td></tr>
+      <tr><td>Le radical</td><td>on <b>enlève la terminaison</b> du gén. sg (sanguinis → sanguin- ; magistri → magistr-)</td></tr></table></div>
+
+    <h2>4. Cas à retenir (la méthode ne fonctionne pas !)</h2>
+    <p><b>2<sup>e</sup> déclinaison : noms en -ius et -ium (des neutres)</b></p>
+    <div class="tw"><table><tr><th>Nom (dico)</th><th>Génitif sg</th><th>Remarque</th></tr>
+      <tr><td>gladius, ii (M)</td><td><b>gladii</b> (avec la méthode vous auriez 3 i)</td><td>1<sup>er</sup> -i après la virgule = fait partie du radical ?<br>2<sup>e</sup> -i = -i du gén. sg.</td></tr>
+      <tr><td>otium, ii (N)</td><td><b>otii</b></td><td>1<sup>er</sup> -i après la virgule = fait partie du radical ?<br>2<sup>e</sup> -i = -i du gén. sg.</td></tr></table></div>
+
+    <h2>5. Trouver le radical</h2>
+    <p><b>Radical = génitif sg complet – sa terminaison.</b> Le radical sert de base à toute la déclinaison (on lui ajoute les terminaisons des autres cas).</p>
+    <p><b>Étapes :</b> 1) reconstituer le génitif sg complet → 2) enlever sa terminaison (-is, -i, -ae, -us, -ei, -ii…) → 3) ce qui reste = le radical.</p>
+    <div class="tw"><table><tr><th>Dictionnaire</th><th>Génitif sg complet</th><th>Terminaison</th><th>Radical</th></tr>
+      <tr><td>rex, regis</td><td>regis</td><td>-is</td><td><b>reg-</b></td></tr>
+      <tr><td>sanguis, inis</td><td>sanguinis</td><td>-is</td><td><b>sanguin-</b></td></tr>
+      <tr><td>magister, tri</td><td>magistri</td><td>-i</td><td><b>magistr-</b></td></tr>
+      <tr><td>rosa, ae</td><td>rosae</td><td>-ae</td><td><b>ros-</b></td></tr>
+      <tr><td>gladius, ii</td><td>gladii</td><td>-ii</td><td><b>glad-</b></td></tr></table></div>
+
+    <h2>6. Attention : le nominatif sg ne suffit pas pour identifier le modèle de déclinaison !</h2>
+    <p class="key">La seule terminaison du nominatif sg ne suffit pas à identifier le modèle de déclinaison : il faut toujours regarder le génitif sg, pour identifier le modèle de déclinaison.</p>
+    <ul>
+      <li>En effet, il existe des noms avec un nominatif sg en <i>-US</i> dans la 3<sup>e</sup> et la 4<sup>e</sup> déclinaison, par exemple : <i>corpus, oris</i> (N), <i>virtus, utis</i> (F), <i>fructus, us</i> (M).</li>
+      <li>La plupart des noms de la 2<sup>e</sup> sont en <i>-us</i> (masculins) et en <i>-um</i> (neutres). Mais il existe quelques masculins en <i>-ER</i> (par ex. <i>puer</i>, <i>magister</i>, <i>ager</i>) ainsi que <i>vir</i> : ils se déclinent comme <i>dominus</i>, sauf au nominatif et au vocatif sg.</li>
+      <li>Par ailleurs, il existe aussi dans la 3<sup>e</sup> des noms dont le nominatif sg se termine par <i>-ER</i>, par exemple : <i>iter, itineris</i> (N), <i>imber, bris</i> (M).</li>
+    </ul>
+  </div></details>
+  <fieldset class="modes"><legend>Comment veux-tu répondre ?</legend>
+    <span class="seg">
+      <input type="radio" name="mode" id="m_type" value="type" checked><label for="m_type">Écrire au clavier</label>
+      <input type="radio" name="mode" id="m_paper" value="paper"><label for="m_paper">Écrire sur feuille</label>
+    </span>
+  </fieldset>
+  <div class="consigne">
+    <p><b>a)</b> Indique à quelle déclinaison (1, 2, 3, 4, 5) appartient chaque nom. Si le nom est neutre, coche aussi « N ».</p>
+    <p id="cb"><b>b)</b> Écris en entier le génitif sg, puis le radical (sans le tiret).</p>
+    <p>📖 <b>Besoin d’aide ?</b> La méthode est dans la <b>fiche de révision</b> (clique sur la bande jaune au-dessus pour l’ouvrir) ; elle est aussi disponible sur le <b><a href="https://padlet.com/cpgewatteau/latin-hk-2026-2027-gj5hrehj1ju81g8i" target="_blank" rel="noopener noreferrer">Padlet</a></b>. Les vérifications s’appuient sur cette fiche.</p>
+  </div>
+  <ol id="list"></ol>
+  <div class="bar">
+    <button class="go" id="check" type="button">Vérifier mes réponses</button>
+    <button class="re" id="reset" type="button">Recommencer</button>
+    <span id="score" role="status" aria-live="polite"></span>
+  </div>
+</main>
+<script>
+const items=[
+ {e:"puella, ae (F)",d:"1",n:0,r:"puell",t:"ae",h:"<b>Méthode :</b> 1) l’info donnée (<i>ae</i>) est la terminaison du gén. sg ; 2) le gén. sg est donc <i>puellae</i> ; 3) on enlève la terminaison -ae : radical <i>puell-</i>."},
+ {e:"servus, i (M)",d:"2",n:0,r:"serv",t:"i",h:"<b>Méthode :</b> 1) l’info donnée (<i>i</i>) est la terminaison du gén. sg ; 2) le gén. sg est donc <i>servi</i> ; 3) on enlève la terminaison -i : radical <i>serv-</i>."},
+ {e:"lex, legis (F)",d:"3",n:0,r:"leg",t:"is",h:"<b>Méthode :</b> 1) l’info donnée est le gén. sg <b>en entier</b> : <i>legis</i> ; 2) rien à reconstituer ; 3) on enlève la terminaison -is : radical <i>leg-</i>."},
+ {e:"miles, itis (M)",d:"3",n:0,r:"milit",t:"is",h:"<b>Méthode :</b> 1) l’info <i>itis</i> commence par une <b>voyelle</b> (i) ; 2) on la fait « glisser » sous <i>miles</i>, en remontant depuis la fin : la 1<sup>re</sup> voyelle rencontrée est le <i>e</i>, donc <i>itis</i> se place sous le <i>e</i>. On garde ce qui est avant (<i>mil</i>) + <i>itis</i> = <i>militis</i> ; 3) on enlève -is : radical <i>milit-</i>."},
+ {e:"nomen, inis (N)",d:"3",n:1,r:"nomin",t:"is",h:"<b>Méthode :</b> 1) l’info <i>inis</i> commence par une <b>voyelle</b> (i) ; 2) on la fait « glisser » sous <i>nomen</i>, en remontant depuis la fin : la 1<sup>re</sup> voyelle rencontrée est le <i>e</i>, donc <i>inis</i> se place sous le <i>e</i>. On garde ce qui est avant (<i>nom</i>) + <i>inis</i> = <i>nominis</i> ; 3) on enlève -is : radical <i>nomin-</i>. Le nom est neutre : 3 N."},
+ {e:"puer, eri (M)",d:"2",n:0,r:"puer",t:"i",h:"<b>Méthode :</b> 1) l’info <i>eri</i> commence par une <b>voyelle</b> (e) ; 2) on la fait « glisser » sous <i>puer</i>, en remontant depuis la fin : la 1<sup>re</sup> voyelle rencontrée est le <i>e</i>, donc <i>eri</i> se place sous le <i>e</i>. On garde ce qui est avant (<i>pu</i>) + <i>eri</i> = <i>pueri</i> ; 3) on enlève -i : radical <i>puer-</i>."},
+ {e:"fructus, us (M)",d:"4",n:0,r:"fruct",t:"us",h:"<b>Méthode :</b> 1) l’info donnée (<i>us</i>) est la terminaison du gén. sg ; 2) le gén. sg est donc <i>fructus</i> (identique au nominatif, mais c’est bien le génitif : 4<sup>e</sup> déclinaison) ; 3) on enlève la terminaison -us : radical <i>fruct-</i>."},
+ {e:"filius, ii (M)",d:"2",n:0,r:"fil",t:"ii",h:"<b>Cas particulier (noms en -ius et -ium) : la méthode ne fonctionne pas !</b> Avec le « glisser » on obtiendrait <i>filiii</i> (3 i), ce qui est faux. Pour ces noms, le gén. sg est en -ii : <i>filii</i>. On enlève la terminaison -ii : radical <i>fil-</i>."},
+ {e:"dies, ei (M)",d:"5",n:0,r:"di",t:"ei",h:"<b>Méthode :</b> 1) l’info donnée (<i>ei</i>) est la terminaison du gén. sg ; 2) le gén. sg est donc <i>diei</i> ; 3) on enlève la terminaison -ei : radical <i>di-</i>."},
+ {e:"corpus, oris (N)",d:"3",n:1,r:"corpor",t:"is",h:"<b>Méthode :</b> 1) l’info <i>oris</i> commence par une <b>voyelle</b> (o) ; 2) on la fait « glisser » sous <i>corpus</i>, en remontant depuis la fin : la 1<sup>re</sup> voyelle rencontrée est le <i>u</i>, donc <i>oris</i> se place sous le <i>u</i>. On garde ce qui est avant (<i>corp</i>) + <i>oris</i> = <i>corporis</i> ; 3) on enlève -is : radical <i>corpor-</i>. Le nom est neutre : 3 N."},
+ {e:"studium, ii (N)",d:"2",n:1,r:"stud",t:"ii",h:"<b>Cas particulier (noms en -ius et -ium) : la méthode ne fonctionne pas !</b> Avec le « glisser » on obtiendrait <i>studiii</i> (3 i), ce qui est faux. Pour ces noms, le gén. sg est en -ii : <i>studii</i>. On enlève la terminaison -ii : radical <i>stud-</i>. Le nom est neutre : 2 N."}
+];
+const X={puella:["V","puell","a"],servus:["V","serv","u"],lex:["F"],miles:["V","mil","e"],nomen:["V","nom","e"],puer:["V","pu","e"],fructus:["V","fruct","u"],filius:["S"],dies:["V","di","e"],corpus:["V","corp","u"],studium:["S"]};
+items.forEach(it=>{
+  const [nom,info]=it.e.replace(/\s*\([MFN]\)\s*$/,"").split(",").map(x=>x.trim());
+  const [k,x,v]=X[nom], I=z=>`<i>${z}</i>`, gen=it.r+it.t;
+  it.nom=nom; it.info=info; it.gen=gen;
+  const fin=`3) on enlève la terminaison -${it.t} : radical ${I(it.r+"-")}.`;
+  if(k==="V") it.m=`1) l’info ${I(info)} commence par une <b>voyelle</b> (${info[0]}) ; 2) on la fait « glisser » sous ${I(nom)} : elle se place sous la 1ʳᵉ voyelle rencontrée en remontant depuis la fin, le ${I(v)}. On garde ce qui est avant (${I(x)}) + ${I(info)} = ${I(gen)} ; ${fin}`;
+  else if(k==="C") it.m=`1) l’info ${I(info)} commence par une <b>consonne</b> (${v}) ; 2) on la fait « glisser » sous ${I(nom)} : elle se place sous la <b>même consonne</b>, le ${I(v)}. On garde ce qui est avant (${I(x)}) + ${I(info)} = ${I(gen)} ; ${fin}`;
+  else if(k==="F") it.m=`1) l’info donnée est le gén. sg <b>en entier</b> : ${I(gen)} ; 2) rien à glisser ; ${fin}`;
+  else it.m=`1) cas particulier des noms en <b>-ius / -ium</b> : la méthode ne fonctionne pas ! Avec le « glisser » on obtiendrait ${I(nom.slice(0,-2)+info)} (3 i), ce qui est faux ; 2) le gén. sg est en <b>-ii</b> : ${I(gen)} ; ${fin}`;
+});
+const list=document.getElementById("list");
+function shuffleItems(){
+  for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[items[i],items[j]]=[items[j],items[i]]}
+}
+function build(){
+shuffleItems();
+list.innerHTML=items.map((it,i)=>`
+<li class="item" id="it${i}">
+  <span class="n">${i+1}.</span>
+  <div class="entry">${it.e}</div>
+  <div class="ctrl">
+    <fieldset class="m-tt" id="dc${i}"><legend>Déclinaison</legend>
+      <span class="seg">${[1,2,3,4,5].map(k=>`<input type="radio" name="d${i}" id="d${i}_${k}" value="${k}"><label for="d${i}_${k}">${k}</label>`).join("")}</span>
+    </fieldset>
+    <div class="m-tt"><p class="hint">Neutre ?</p><label class="neu" id="nc${i}"><input type="checkbox" id="n${i}"><span>N</span></label></div>
+    <div class="f m-type" id="tg${i}"><label class="hint" for="gi${i}">Génitif sg en entier</label><input id="gi${i}" autocomplete="off" autocapitalize="none" spellcheck="false"></div>
+    <div class="f m-type" id="tr${i}"><label class="hint" for="ri${i}">Radical</label><input id="ri${i}" autocomplete="off" autocapitalize="none" spellcheck="false"></div>
+    <div class="w m-paper"><p class="hint">Écris sur ta feuille : déclinaison (avec N si neutre), génitif sg en entier, radical souligné.</p>
+      <button type="button" class="re rev" data-i="${i}">Voir la correction</button>
+      <span class="self" id="sf${i}" hidden>Ma réponse était :
+        <button type="button" class="go sj" data-i="${i}">juste</button><button type="button" class="re sx" data-i="${i}">à revoir</button></span></div>
+  </div>
+  <div class="res" id="res${i}" aria-live="polite"></div>
+</li>`).join("");
+document.querySelectorAll(".rev").forEach(b=>b.onclick=()=>{reveal(+b.dataset.i);b.hidden=true});
+document.querySelectorAll(".sj").forEach(b=>b.onclick=()=>{const li=$("it"+b.dataset.i);li.classList.remove("ko");li.classList.add("ok");tally()});
+document.querySelectorAll(".sx").forEach(b=>b.onclick=()=>{const li=$("it"+b.dataset.i);li.classList.remove("ok");li.classList.add("ko");tally()});
+}
+
+const mark=(id,ok)=>{const el=document.getElementById(id);el.classList.remove("good","bad");el.classList.add(ok?"good":"bad")};
+const norm=x=>x.trim().toLowerCase().replace(/\s+/g,"").replace(/[-‑–]+$/,"");
+const $=id=>document.getElementById(id);
+const mode=()=>document.body.dataset.mode;
+const esc=x=>x.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const mk=(ok,mine)=>ok===null?"":ok?' <span class="v ok">✓</span>':' <span class="v ko">✗</span>'+(mine?` <span class="mine">(ta réponse : ${esc(mine)})</span>`:"");
+function resHTML(it,s){
+  const ok=s?s.ok:{m:null,g:null,r:null}, my=s?s.my:{};
+  const key=it.t==="ii"?"i":it.t;
+  const tab=[["ae","1ʳᵉ"],["i","2ᵉ"],["is","3ᵉ"],["us","4ᵉ"],["ei","5ᵉ"]].map(([e,n])=>e===key?`<b><i>-${e}</i> → ${n}</b>`:`<i>-${e}</i> → ${n}`).join(" · ");
+  const rap=`je regarde <b>comment finit le gén. sg</b> (l’info donnée après la virgule me le donne, ou me permet de le reconstituer : voir la méthode) : ${tab}.`+(it.t==="ii"?` Ici <i>-ii</i> finit par <i>-i</i> : 2ᵉ.`:"")+(it.n?` Le nom est <b>neutre</b> : j’ajoute <b>N</b> à côté du numéro.`:"");
+  const gm=(it.e.match(/\([MFN]\)\s*$/)||[""])[0];
+  const entry=`<i>${it.nom}, ${it.info.slice(0,-it.t.length)}<b>${it.t.toUpperCase()}</b>${gm?" "+gm:""}</i>`;
+  const ne=it.nom.endsWith("us")?"us":it.nom.endsWith("er")?"er":"";
+  const DN={"1":"1ʳᵉ","2":"2ᵉ","3":"3ᵉ","4":"4ᵉ","5":"5ᵉ"};
+  const warn=(ne&&it.d!=="2")?`
+<div class="blk"><p class="bt"><b>⚠ Un nom en <i>-${ne}</i> n’est pas forcément de la 2ᵉ (type <i>dominus</i>) !</b></p><p class="rp">Ici <i>${it.nom}</i> (nominatif en <i>-${ne}</i>) est de la <b>${DN[it.d]}</b>${it.n?" (neutre)":""} car son gén. sg est en <i>-${it.t}</i> (et non en <i>-i</i>). Il ne faut pas se fier au seul nominatif sg : <b>c’est le gén. sg, et lui seul, qui permet de savoir quel est le modèle d’un nom</b>. Ne pas associer systématiquement <i>-${ne}</i> à la 2ᵉ.</p></div>`:"";
+  const ex=["magister","puer","vir"].filter(x=>x!==it.nom).map(x=>`<i>${x}</i>`).join(", ");
+  const warn2=(it.nom==="puer")?`
+<div class="blk"><p class="bt"><b>⚠ Un nom de la 2ᵉ n’est pas toujours en <i>-us</i> !</b></p><p class="rp">Nous avons déjà vu qu’il y avait quelques noms masculins, assez courants d’ailleurs, qui n’ont pas le nominatif sg en <i>-us</i> (ici <i>${it.nom}</i> ; par ex. ${ex}) : voir la fiche, partie 6 (<i>-er</i> / <i>-ir</i>). Ici, c’est donc nécessairement un <b>nominatif ou un vocatif sg</b>.</p></div>`:"";
+  return `<div class="blk"><p class="bt"><b>Modèle de déclinaison : ${it.d}${it.n?" N":""}</b>${mk(ok.m,my.m)} car gén. sg en <b><i>-${it.t}</i></b></p><p class="bt">Dans l’entrée du dico : ${entry}</p><p class="rp"><b>Rappel leçon :</b> ${rap}</p></div>${warn}${warn2}
+<div class="blk"><p class="bt"><b>Gén. sg en entier : <i>${it.gen}</i></b>${mk(ok.g,my.g)}</p><p class="bt"><b>Radical : <i>${it.r}-</i></b>${mk(ok.r,my.r)}</p></div>
+<div class="blk"><p class="rp"><b>Méthode :</b> ${it.m}</p></div>`;
+}
+const score=t=>{$("score").textContent=t};
+function check(){
+  if(mode()==="paper"){items.forEach((_,i)=>reveal(i));return}
+  let full=0,answered=0;
+  items.forEach((it,i)=>{
+    const dv=(document.querySelector(`input[name="d${i}"]:checked`)||{}).value;
+    const nv=$("n"+i).checked, g=norm($("gi"+i).value), rv=norm($("ri"+i).value);
+    if(dv||g||rv) answered++;
+    const dOk=dv===it.d,nOk=nv===!!it.n,gOk=g===it.r+it.t,rOk=rv===it.r;
+    mark("dc"+i,dOk);mark("nc"+i,nOk);mark("tg"+i,gOk);mark("tr"+i,rOk);
+    const all=dOk&&nOk&&gOk&&rOk, li=$("it"+i);
+    li.classList.toggle("ok",all);li.classList.toggle("ko",!all);
+    $("res"+i).innerHTML=resHTML(it,{ok:{m:dOk&&nOk,g:gOk,r:rOk},my:{m:(dv||nv)?((dv||"?")+(nv?" N":"")):"",g:$("gi"+i).value.trim(),r:$("ri"+i).value.trim()}});
+    if(all) full++;
+  });
+  score(`${full} / ${items.length} noms entièrement justes`);
+  const first=document.querySelector(".item.ko");
+  if(first&&answered) first.scrollIntoView({behavior:"smooth",block:"center"});
+}
+function reveal(i){
+  $("it"+i).classList.add("shown");
+  $("res"+i).innerHTML=resHTML(items[i],null);
+  $("sf"+i).hidden=false;
+}
+function tally(){score(`${document.querySelectorAll(".item.ok").length} / ${items.length} notés justes`)}
+function reset(scroll=true){
+  build(); score("");
+  if(scroll) window.scrollTo({top:0,behavior:"smooth"});
+}
+const B={type:"Écris en entier le génitif sg, puis le radical (sans le tiret).",
+ paper:"Écris sur ta feuille la déclinaison, le génitif sg en entier et le radical souligné. Affiche ensuite la correction et compare."};
+function setMode(m){
+  document.body.dataset.mode=m;
+  $("cb").innerHTML="<b>b)</b> "+B[m];
+  $("check").textContent=m==="paper"?"Afficher toute la correction":"Vérifier mes réponses";
+  reset(false);
+}
+document.querySelectorAll('input[name="mode"]').forEach(r=>r.addEventListener("change",()=>setMode(r.value)));
+$("check").addEventListener("click",check);
+$("reset").addEventListener("click",()=>reset());
+build();
+</script>
+</body>
+</html>

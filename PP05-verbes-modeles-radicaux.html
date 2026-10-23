@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PP05 verbes modèles radicaux</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#FFFCF4; --surface:#FFFFFF; --ink:#2A2832; --muted:#6B6877; --rule:#D9D2BF;
+  --amber:#FFC000; --amber-soft:#FFF3CC; --on-amber:#2A2832;
+  --ok:#2E7D4F; --ok-bg:#E4F3E9; --ko:#B3261E; --ko-bg:#FBE7E5;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1B1A1F; --surface:#25232A; --ink:#EFEAE0; --muted:#A39FAE; --rule:#45414E;
+    --amber-soft:#4A3C12; --ok:#7FD3A0; --ok-bg:#1F3A2A; --ko:#FF9B93; --ko-bg:#47211E; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1B1A1F; --surface:#25232A; --ink:#EFEAE0; --muted:#A39FAE; --rule:#45414E;
+  --amber-soft:#4A3C12; --ok:#7FD3A0; --ok-bg:#1F3A2A; --ko:#FF9B93; --ko-bg:#47211E; color-scheme:dark;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:19px/1.55 "EB Garamond",Garamond,Georgia,serif}
+main{max-width:780px;margin:0 auto;padding:28px 18px 64px}
+h1{font-size:1.7rem;line-height:1.2;margin:0 0 6px;font-weight:700}
+.sub{color:var(--muted);margin:0 0 18px}
+.consigne{border-left:5px solid var(--amber);background:var(--amber-soft);padding:10px 14px;margin:0 0 26px}
+.consigne p{margin:2px 0}
+ol{list-style:none;margin:0;padding:0;border-top:2px solid var(--ink)}
+.item{display:grid;grid-template-columns:2.2rem 1fr;gap:4px 8px;padding:16px 4px;border-bottom:1px solid var(--rule)}
+.item .n{color:var(--muted);font-size:1.05rem;padding-top:5px}
+.entry{font-size:1.55rem;font-weight:500;line-height:1.3}
+.ctrl{grid-column:2;display:flex;flex-wrap:wrap;gap:10px 22px;align-items:flex-end;margin-top:6px}
+fieldset{border:0;margin:0;padding:0}
+legend,label.l{display:block;font-size:.88rem;color:var(--muted);padding:0;margin-bottom:3px}
+.seg{display:inline-flex;border:1.5px solid var(--ink);border-radius:6px;overflow:hidden}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{min-width:2.4rem;text-align:center;padding:5px 12px;cursor:pointer;border-left:1px solid var(--rule);font-weight:700}
+.seg label:first-of-type{border-left:0}
+.seg input:checked+label{background:var(--amber);color:var(--on-amber)}
+.seg input:focus-visible+label,.neu input:focus-visible+span{outline:3px solid var(--ink);outline-offset:2px}
+.neu{display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:1.5px solid var(--ink);border-radius:6px;padding:5px 11px;font-weight:700}
+.neu input{width:1.05rem;height:1.05rem;accent-color:#B07A00}
+.hint{font-size:.88rem;color:var(--muted);margin:0 0 3px}
+.ctrl>div{min-width:0}.ctrl .w{flex:1 1 100%}
+.res{grid-column:2;display:none;margin-top:8px;padding:8px 12px;border-radius:6px;font-size:1.02rem}
+.item.ok .res{display:block;background:var(--ok-bg);color:var(--ok)}
+.item.ko .res{display:block;background:var(--ko-bg);color:var(--ink)}
+.item.ko .res b.t{color:var(--ko)}
+.bad .seg,.bad .neu{border-color:var(--ko);box-shadow:0 0 0 2px var(--ko)}
+.good .seg,.good .neu{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok)}
+u{text-decoration-thickness:2px;text-underline-offset:3px}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:26px;position:sticky;bottom:0;background:var(--bg);padding:12px 0 calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--rule)}
+button{font:inherit;font-weight:700;border-radius:6px;padding:9px 20px;cursor:pointer;border:1.5px solid var(--ink)}
+button.go{background:var(--amber);color:var(--on-amber)}
+button.re{background:transparent;color:var(--ink)}
+button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+#score{font-size:1.15rem;font-weight:700}
+@media (max-width:560px){.item{grid-template-columns:1.8rem 1fr}}
+.modes{margin:0 0 18px}
+.modes legend{font-size:.95rem}
+.modes .seg label{padding:7px 14px}
+.m-type .hint{display:block}
+.f input{font:inherit;font-size:1.2rem;width:100%;max-width:11rem;padding:7px 10px;border:1.5px solid var(--ink);border-radius:6px;background:var(--surface);color:var(--ink)}
+.f input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.bad .f input,.f.bad input{border-color:var(--ko);box-shadow:0 0 0 2px var(--ko)}
+.good .f input,.f.good input{border-color:var(--ok);box-shadow:0 0 0 2px var(--ok)}
+.self{display:inline-flex;flex-wrap:wrap;gap:8px;align-items:center;margin-left:8px}
+.self[hidden]{display:none}
+.item.shown .res{display:block;background:var(--amber-soft)}
+.item.ok .res{background:var(--ok-bg)}
+body[data-mode="type"] .m-paper,body[data-mode="paper"] .m-type,body[data-mode="paper"] .m-tt{display:none}
+details.fiche{margin:0 0 22px;border:1.5px solid var(--ink);border-radius:8px;background:var(--surface)}
+details.fiche>summary{cursor:pointer;padding:12px 16px;font-weight:700;font-size:1.15rem;background:var(--amber);color:var(--on-amber);border-radius:6px;list-style-position:inside}
+details.fiche[open]>summary{border-radius:6px 6px 0 0}
+details.fiche>summary:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.fb{padding:6px 16px 16px}
+.fb h2{font-size:1.2rem;margin:18px 0 6px}
+.fb p{margin:6px 0}
+.tw{overflow-x:auto;margin:6px 0 10px}
+.fb table{border-collapse:collapse;width:100%;min-width:460px;font-size:1rem}
+.fb th{background:var(--amber);color:var(--on-amber);text-align:left;padding:5px 9px;border:1px solid var(--rule)}
+.fb td{padding:5px 9px;border:1px solid var(--rule);vertical-align:top}
+.fb td:first-child{font-weight:700;background:var(--amber-soft)}
+.key{border-left:5px solid #E97132;background:var(--amber-soft);padding:8px 12px;margin:10px 0;font-weight:700}
+.item.ok .res,.item.ko .res,.item.shown .res{color:var(--ink);padding:6px 12px 8px}
+.blk{margin:8px 0 12px}
+.bt{margin:0;font-size:1.12rem}
+.rp{margin:3px 0 0;padding-left:10px;border-left:3px solid var(--rule);font-size:.98rem}
+.r{color:var(--ko)}
+.lab.r{font-weight:700}
+.v{font-weight:700}.v.ok{color:var(--ok)}.v.ko{color:var(--ko)}
+.mine{font-size:.95rem;color:var(--muted)}
+</style>
+</head>
+<body data-mode="type">
+<main>
+  <h1>Identifier les modèles et lire correctement les informations données</h1>
+  <p class="sub">PP05 verbes modèles radicaux</p>
+
+  <details class="fiche"><summary>📖 Ma fiche de révision : lire les temps primitifs</summary>
+  <div class="fb">
+    <p><b>Lire correctement les 1<sup>res</sup> infos des temps primitifs pour bien identifier la conjugaison et trouver le radical du présent</b></p>
+    <h2>1. Rappels</h2>
+    <p>Les <b>temps primitifs</b> sont les formes qui donnent les <b>3 radicaux</b> nécessaires à la conjugaison entière d’un verbe. Ordre le plus fréquent :</p>
+    <div class="tw"><table><tr><th>Forme</th><th>1<sup>re</sup> sg présent</th><th>Terminaison 2<sup>e</sup> sg</th><th>Terminaison infinitif présent</th><th>(partie de la) 1<sup>re</sup> sg parfait</th><th>Supin</th></tr>
+      <tr><td>Exemple : voir</td><td><i>video</i></td><td><i>es</i></td><td><i>ere</i></td><td><i>vidi</i></td><td><i>visum</i></td></tr></table></div>
+
+    <h2>2. Méthode pour bien lire selon la 1<sup>re</sup> sg</h2>
+    <div class="tw"><table><tr><th>Verbes dont la 1<sup>re</sup> sg…</th><th>Conjugaisons concernées</th><th>Méthode</th><th>Exemples</th></tr>
+      <tr><td>se termine par le <b>seul -O</b></td>
+        <td>1<sup>re</sup> conj. (<i>o, as, are</i>)<br>3<sup>e</sup> conj. (<i>o, is, ere</i>)</td>
+        <td>1) Écrire la 1<sup>re</sup> sg<br>2) Remonter jusqu’à la <b>voyelle</b> qui précède le O (terminaison de la 1<sup>re</sup> sg)<br>3) <b>Aligner la 1<sup>re</sup> voyelle</b> de la forme abrégée sous cette voyelle<br>4) Lire en reprenant ce qu’il y a avant la voyelle</td>
+        <td><i>amo, as, are</i> → AM<b>O</b> / <b>AS</b> / <b>ARE</b> → <b><i>amas, amare</i></b><br><i>lego, is, ere</i> → LEG<b>O</b> / <b>IS</b> / <b>ERE</b> → <b><i>legis, legere</i></b></td></tr>
+      <tr><td>se termine par <b>-EO ou -IO</b></td>
+        <td>2<sup>e</sup> conj. (<i>eo, es, ere</i>)<br>3<sup>e</sup> conj. mixte (<i>io, is, ere</i>)<br>4<sup>e</sup> conj. (<i>io, is, ire</i>)</td>
+        <td>Même méthode, mais on remonte jusqu’à la <b>dernière voyelle</b> de la 1<sup>re</sup> sg (<b>E</b> ou <b>I</b>) et on aligne la forme abrégée sous cette voyelle.</td>
+        <td><i>moneo, es, ere</i> → <b><i>monere</i></b><br><i>capio, is, ere</i> → <b><i>capere</i></b><br><i>audio, is, ire</i> → <b><i>audire</i></b></td></tr></table></div>
+
+    <h2>3. Attention aux verbes avec un -U devant le O</h2>
+    <div class="tw"><table><tr><th>Exemple</th><th>Résolution</th></tr>
+      <tr><td><i>metuo, is, ere, ui, utum</i></td><td>Le U devant le O joue le rôle de la voyelle : on aligne sous le <b>U</b>.<br>METU<b>O</b> / <b>IS</b> / <b>ERE</b> → <b><i>metuis, metuere</i></b><br>→ verbe de la <b>3<sup>e</sup> conjugaison</b>.</td></tr></table></div>
+    <p class="key">Résumé : terminaison de la 1<sup>re</sup> sg → 1<sup>re</sup> voyelle de la forme abrégée alignée sous la dernière voyelle de la 1<sup>re</sup> sg → on reprend ce qui précède pour lire 2<sup>e</sup> sg et infinitif.</p>
+
+    <h2>4. Identifier le numéro de la conjugaison</h2>
+    <p><b>Les 5 modèles de conjugaison : regarder la 1<sup>re</sup> pers. sg. + l’infinitif</b></p>
+    <div class="tw"><table><tr><th>Conjugaison</th><th>1<sup>re</sup> sg, infinitif</th></tr>
+      <tr><td>1<sup>re</sup></td><td><i>-o, -are</i></td></tr>
+      <tr><td>2<sup>e</sup></td><td><i>-eo, -ere</i></td></tr>
+      <tr><td>3<sup>e</sup></td><td><i>-o, -ere</i></td></tr>
+      <tr><td>3<sup>e</sup> mixte</td><td><i>-io, -ere</i></td></tr>
+      <tr><td>4<sup>e</sup></td><td><i>-io, -ire</i></td></tr></table></div>
+    <p>La 3<sup>e</sup> mixte a la 1<sup>re</sup> pers. sg. de la 4<sup>e</sup> (<i>-io</i>) et l’infinitif de la 3<sup>e</sup> (<i>-ere</i>).</p>
+
+    <h2>5. Trouver le radical du présent</h2>
+    <p>La méthode dépend de la conjugaison :</p>
+    <div class="tw"><table><tr><th>Conjugaison</th><th>Je pars de…</th><th>Méthode</th></tr>
+      <tr><td>1<sup>re</sup> et 2<sup>e</sup></td><td>l’infinitif présent</td><td>j’enlève le <b><i>-re</i></b></td></tr>
+      <tr><td>3<sup>e</sup>, 3<sup>e</sup> mixte et 4<sup>e</sup></td><td>la 1<sup>re</sup> sg</td><td>j’enlève le <b><i>-o</i></b></td></tr></table></div>
+    <p><b>Étapes :</b> 1) lire les infos et identifier la conjugaison → 2) appliquer la règle de sa famille → 3) ce qui reste = le radical du présent.</p>
+    <div class="tw"><table><tr><th>Temps primitifs</th><th>Conj.</th><th>Je pars de…</th><th>Radical du présent</th></tr>
+      <tr><td><i>amo, as, are</i></td><td>1<sup>re</sup></td><td><i>amare</i> → j’enlève <i>-re</i></td><td><b><i>ama-</i></b></td></tr>
+      <tr><td><i>moneo, es, ere</i></td><td>2<sup>e</sup></td><td><i>monere</i> → j’enlève <i>-re</i></td><td><b><i>mone-</i></b></td></tr>
+      <tr><td><i>lego, is, ere</i></td><td>3<sup>e</sup></td><td><i>lego</i> → j’enlève <i>-o</i></td><td><b><i>leg-</i></b></td></tr>
+      <tr><td><i>capio, is, ere</i></td><td>3<sup>e</sup> mixte</td><td><i>capio</i> → j’enlève <i>-o</i></td><td><b><i>capi-</i></b></td></tr>
+      <tr><td><i>audio, is, ire</i></td><td>4<sup>e</sup></td><td><i>audio</i> → j’enlève <i>-o</i></td><td><b><i>audi-</i></b></td></tr></table></div>
+  </div></details>
+
+  <fieldset class="modes"><legend>Comment veux-tu répondre ?</legend>
+    <span class="seg">
+      <input type="radio" name="mode" id="m_type" value="type" checked><label for="m_type">Écrire au clavier</label>
+      <input type="radio" name="mode" id="m_paper" value="paper"><label for="m_paper">Écrire sur feuille</label>
+    </span>
+  </fieldset>
+  <div class="consigne">
+    <p><b>a)</b> Indique à quelle conjugaison (1, 2, 3, 3 mixte, 4) appartient chaque verbe.</p>
+    <p id="cb"><b>b)</b> Sans recopier les éventuels signes sur les voyelles (¯ ou ˘), écris en entier l’infinitif présent, puis le radical du présent (sans le tiret).</p>
+    <p>📖 <b>Besoin d’aide ?</b> La méthode est dans la <b>fiche de révision</b> (clique sur la bande jaune au-dessus pour l’ouvrir) ; elle est aussi disponible sur le <b><a href="https://padlet.com/cpgewatteau/latin-hk-2026-2027-gj5hrehj1ju81g8i" target="_blank" rel="noopener noreferrer">Padlet</a></b>. Les vérifications s’appuient sur cette fiche.</p>
+  </div>
+  <ol id="list"></ol>
+  <div class="bar">
+    <button class="go" id="check" type="button">Vérifier mes réponses</button>
+    <button class="re" id="reset" type="button">Recommencer</button>
+    <span id="score" role="status" aria-live="polite"></span>
+  </div>
+</main>
+<script>
+// t = forme de la 1re sg avant le -o ; st = ce qu’on reprend ; a/b = 2e sg et infinitif abrégés ; k = type de fin de 1re sg
+const items=[
+ {e:"laudo, as, are, avi, atum",d:"1",k:"o",x:"laud",a:"as",b:"are"},
+ {e:"habeo, es, ere, ui, itum",d:"2",k:"eo",x:"hab",a:"es",b:"ere"},
+ {e:"scribo, is, ere, scripsi, scriptum",d:"3",k:"o",x:"scrib",a:"is",b:"ere"},
+ {e:"facio, is, ere, feci, factum",d:"3m",k:"io",x:"fac",a:"is",b:"ere"},
+ {e:"dormio, is, ire, ivi, itum",d:"4",k:"io",x:"dorm",a:"is",b:"ire"},
+ {e:"statuo, is, ere, ui, utum",d:"3",k:"uo",x:"statu",a:"is",b:"ere"},
+ {e:"specto, as, are, avi, atum",d:"1",k:"o",x:"spect",a:"as",b:"are"},
+ {e:"rideo, es, ere, risi, risum",d:"2",k:"eo",x:"rid",a:"es",b:"ere"},
+ {e:"fugio, is, ere, fugi, fugitum",d:"3m",k:"io",x:"fug",a:"is",b:"ere"},
+ {e:"venio, is, ire, veni, ventum",d:"4",k:"io",x:"ven",a:"is",b:"ire"},
+ {e:"mitto, is, ere, misi, missum",d:"3",k:"o",x:"mitt",a:"is",b:"ere"},
+ {e:"jubeo, es, ere, jussi, jussum",d:"2",k:"eo",x:"jub",a:"es",b:"ere"}
+];
+const CN={"1":"1ʳᵉ","2":"2ᵉ","3":"3ᵉ","3m":"3ᵉ mixte","4":"4ᵉ"};
+const CJ=d=>d==="3m"?"3ᵉ conjugaison mixte":CN[d]+" conjugaison";
+items.forEach(it=>{
+  it.inf=it.x+it.b; it.p1=it.e.split(",")[0]; it.r=(it.d==="1"||it.d==="2")?it.inf.slice(0,-2):it.p1.slice(0,-1);
+  const I=s=>`<i>${s}</i>`;
+  let m;
+  if(it.k==="o") m=`1) la 1ʳᵉ sg ${I(it.p1)} se termine par le <b>seul -o</b> ; 2) on aligne la 1ʳᵉ voyelle de la forme abrégée (${I(it.a)}, ${I(it.b)}) sous ce <i>o</i> et on reprend ce qu’il y a avant : ${I(it.x)} + ${I(it.a)} = ${I(it.x+it.a)}, ${I(it.x)} + ${I(it.b)} = ${I(it.inf)}`;
+  else if(it.k==="uo") m=`1) la 1ʳᵉ sg ${I(it.p1)} se termine par <b>-uo</b> : le <i>u</i> devant le <i>o</i> est à part (fiche, partie 3) et on le garde ; 2) on reprend ce qu’il y a avant : ${I(it.x)} + ${I(it.a)} = ${I(it.x+it.a)}, ${I(it.x)} + ${I(it.b)} = ${I(it.inf)}`;
+  else m=`1) la 1ʳᵉ sg ${I(it.p1)} se termine par <b>-${it.k}</b> ; 2) on remonte jusqu’à la voyelle qui précède le <i>o</i> (le <i>${it.k[0]}</i>) et on aligne la forme abrégée (${I(it.a)}, ${I(it.b)}) sous cette voyelle : ${I(it.x)} + ${I(it.a)} = ${I(it.x+it.a)}, ${I(it.x)} + ${I(it.b)} = ${I(it.inf)}`;
+  it.hi=m+".";
+  const E={o:"-o",eo:"-eo",io:"-io",uo:"-o"};
+  const M={"1":"-o, -are","2":"-eo, -ere","3":"-o, -ere","3m":"-io, -ere","4":"-io, -ire"};
+  const note=it.d==="3m"?" Attention : la 3ᵉ mixte a la 1ʳᵉ sg de la 4ᵉ (<i>-io</i>) et l’infinitif de la 3ᵉ (<i>-ere</i>).":"";
+  it.hc=`je regarde la 1ʳᵉ sg + l’infinitif : ${I(it.p1)} (<i>${E[it.k]}</i>) et ${I(it.inf)} (<i>-${it.b}</i>) → le modèle <i>${M[it.d]}</i> est celui de la <b>${CJ(it.d)}</b>.${note}`;
+  it.hr=(it.d==="1"||it.d==="2")?`conjugaisons 1 et 2 : j’enlève le <b>-re</b> de l’infinitif présent : ${I(it.inf)} → ${I(it.r+"-")}.`:`conjugaisons 3, 3 mixte et 4 : j’enlève le <b>-o</b> de la 1ʳᵉ sg : ${I(it.p1)} → ${I(it.r+"-")}.`;
+});
+
+const list=document.getElementById("list");
+const rnd=n=>Math.floor(Math.random()*n);
+function shuffleItems(){
+  const uo=items.filter(it=>it.k==="uo"), rest=items.filter(it=>it.k!=="uo");
+  for(let i=rest.length-1;i>0;i--){const j=rnd(i+1);[rest[i],rest[j]]=[rest[j],rest[i]]}
+  const out=rest.slice();
+  uo.forEach(u=>{const pos=Math.max(0,out.length-rnd(3));out.splice(pos,0,u)}); // l’un des 3 derniers rangs
+  items.splice(0,items.length,...out);
+}
+function build(){
+shuffleItems();
+list.innerHTML=items.map((it,i)=>`
+<li class="item" id="it${i}">
+  <span class="n">${i+1}.</span>
+  <div class="entry">${it.e}</div>
+  <div class="ctrl">
+    <fieldset class="m-tt" id="dc${i}"><legend>Conjugaison</legend>
+      <span class="seg">${[["1","1"],["2","2"],["3","3"],["3m","3 mixte"],["4","4"]].map(([v,t])=>`<input type="radio" name="d${i}" id="d${i}_${v}" value="${v}"><label for="d${i}_${v}">${t}</label>`).join("")}</span>
+    </fieldset>
+    <div class="f m-type" id="tg${i}"><label class="hint" for="gi${i}">Infinitif présent en entier</label><input id="gi${i}" autocomplete="off" autocapitalize="none" spellcheck="false"></div>
+    <div class="f m-type" id="tr${i}"><label class="hint" for="ri${i}">Radical du présent</label><input id="ri${i}" autocomplete="off" autocapitalize="none" spellcheck="false"></div>
+    <div class="w m-paper"><p class="hint">Écris sur ta feuille : conjugaison, infinitif présent en entier, radical du présent.</p>
+      <button type="button" class="re rev" data-i="${i}">Voir la correction</button>
+      <span class="self" id="sf${i}" hidden>Ma réponse était :
+        <button type="button" class="go sj" data-i="${i}">juste</button><button type="button" class="re sx" data-i="${i}">à revoir</button></span></div>
+  </div>
+  <div class="res" id="res${i}" aria-live="polite"></div>
+</li>`).join("");
+document.querySelectorAll(".rev").forEach(b=>b.onclick=()=>{reveal(+b.dataset.i);b.hidden=true});
+document.querySelectorAll(".sj").forEach(b=>b.onclick=()=>{const li=$("it"+b.dataset.i);li.classList.remove("ko");li.classList.add("ok");tally()});
+document.querySelectorAll(".sx").forEach(b=>b.onclick=()=>{const li=$("it"+b.dataset.i);li.classList.remove("ok");li.classList.add("ko");tally()});
+}
+
+const $=id=>document.getElementById(id);
+const mark=(id,ok)=>{const el=$(id);el.classList.remove("good","bad");el.classList.add(ok?"good":"bad")};
+const norm=x=>x.normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim().toLowerCase().replace(/\s+/g,"").replace(/[-‑–]+$/,"");
+const mode=()=>document.body.dataset.mode;
+const esc=x=>x.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const mk=(ok,mine)=>ok===null?"":ok?' <span class="v ok">✓</span>':' <span class="v ko">✗</span>'+(mine?` <span class="mine">(ta réponse : ${esc(mine)})</span>`:"");
+function resHTML(it,s){
+  const ok=s?s.ok:{d:null,g:null,r:null}, my=s?s.my:{};
+  return `<div class="blk"><p class="bt"><span class="lab r">Modèle de conjugaison :</span> <b class="r">${CJ(it.d)}</b>${mk(ok.d,my.d)}</p><p class="rp"><b>Rappel leçon :</b> ${it.hc}</p></div>
+<div class="blk"><p class="bt">Infinitif présent en entier : <b><i>${it.inf}</i></b>${mk(ok.g,my.g)}</p><p class="rp"><b>Rappel méthode :</b> ${it.hi}</p></div>
+<div class="blk"><p class="bt"><b>Radical du présent : <i>${it.r}-</i></b>${mk(ok.r,my.r)}</p><p class="rp"><b>Rappel leçon :</b> ${it.hr}</p></div>${it.k==="uo"?`
+<div class="blk"><p class="bt r"><b>⚠ Méfie-toi des verbes en <i>-uo</i> !</b></p><p class="rp">Le <i>u</i> devant le <i>o</i> reste dans la base : <i>${it.x}</i> + <i>${it.a}</i> = <i>${it.x+it.a}</i> ; <i>${it.x}</i> + <i>${it.b}</i> = <i>${it.inf}</i>. Ne pas le confondre avec les verbes en <i>-eo</i> ou <i>-io</i> : ici, 1ʳᵉ sg en <i>-o</i> et infinitif en <i>-ere</i> = <b>3ᵉ conjugaison</b> (voir la fiche, partie 3).</p></div>`:""}`;
+}
+const score=t=>{$("score").textContent=t};
+function check(){
+  if(mode()==="paper"){items.forEach((_,i)=>reveal(i));return}
+  let full=0,answered=0;
+  items.forEach((it,i)=>{
+    const dv=(document.querySelector(`input[name="d${i}"]:checked`)||{}).value;
+    const g=norm($("gi"+i).value), rv=norm($("ri"+i).value);
+    if(dv||g||rv) answered++;
+    const dOk=dv===it.d,gOk=g===it.inf,rOk=rv===it.r;
+    mark("dc"+i,dOk);mark("tg"+i,gOk);mark("tr"+i,rOk);
+    const all=dOk&&gOk&&rOk, li=$("it"+i);
+    li.classList.toggle("ok",all);li.classList.toggle("ko",!all);
+    $("res"+i).innerHTML=resHTML(it,{ok:{d:dOk,g:gOk,r:rOk},my:{d:dv?CJ(dv):"",g:$("gi"+i).value.trim(),r:$("ri"+i).value.trim()}});
+    if(all) full++;
+  });
+  score(`${full} / ${items.length} verbes entièrement justes`);
+  const first=document.querySelector(".item.ko");
+  if(first&&answered) first.scrollIntoView({behavior:"smooth",block:"center"});
+}
+function reveal(i){
+  $("it"+i).classList.add("shown");
+  $("res"+i).innerHTML=resHTML(items[i],null);
+  $("sf"+i).hidden=false;
+}
+function tally(){score(`${document.querySelectorAll(".item.ok").length} / ${items.length} notés justes`)}
+function reset(scroll=true){
+  build(); score("");
+  if(scroll) window.scrollTo({top:0,behavior:"smooth"});
+}
+const B={type:"Sans recopier les éventuels signes sur les voyelles (¯ ou ˘), écris en entier l’infinitif présent, puis le radical du présent (sans le tiret).",
+ paper:"Écris sur ta feuille la conjugaison, l’infinitif présent en entier et le radical du présent. Affiche ensuite la correction et compare."};
+function setMode(m){
+  document.body.dataset.mode=m;
+  $("cb").innerHTML="<b>b)</b> "+B[m];
+  $("check").textContent=m==="paper"?"Afficher toute la correction":"Vérifier mes réponses";
+  reset(false);
+}
+document.querySelectorAll('input[name="mode"]').forEach(r=>r.addEventListener("change",()=>setMode(r.value)));
+$("check").addEventListener("click",check);
+$("reset").addEventListener("click",()=>reset());
+build();
+</script>
+</body>
+</html>

@@ -20,7 +20,9 @@ const PERIODE = [
         fichiers: [
           { nom: "PP 01 — Cas, fonctions, modèles", url: "revision-latin.html", pictos: ["pas"], periode: "P1" },
           { nom: "PP 02 — Identifier les modèles de déclinaison et de conjugaison", url: "PP02-identifier-modeles.html", pictos: ["pas"], periode: "P1" },
-          { nom: "PP 03 — Présent de l'indicatif", url: "latin-revisions-v2.html", pictos: ["pas"], periode: "P1" }
+          { nom: "PP 03 — Présent de l'indicatif", url: "latin-revisions-v2.html", pictos: ["pas"], periode: "P1" },
+          { nom: "PP04 noms modèles radicaux", url: "PP04-noms-modeles-radicaux.html", pictos: ["pas", "decl"], periode: "P1" },
+          { nom: "PP05 verbes modèles radicaux", url: "PP05-verbes-modeles-radicaux.html", pictos: ["pas", "conj"], periode: "P1" }
         ]
       },
       {
