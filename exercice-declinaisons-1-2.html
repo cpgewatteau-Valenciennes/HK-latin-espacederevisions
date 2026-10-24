@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Declinationes — Les deux premières déclinaisons</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --papyrus: #EDE3CE;
+    --papyrus-deep: #E2D5B7;
+    --stone: #DCD0B4;
+    --ink: #2B241C;
+    --ink-soft: #55493a;
+    --pompeii: #9C3B30;
+    --pompeii-dark: #7c2e26;
+    --verdigris: #4C7A6E;
+    --verdigris-dark: #3a5f56;
+    --gold: #A9812E;
+    --line: #b9a97e;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    background: var(--papyrus);
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.25), transparent 55%),
+      radial-gradient(ellipse at 90% 80%, rgba(0,0,0,0.05), transparent 60%);
+    color: var(--ink);
+    font-family: 'EB Garamond', serif;
+    font-size: 18px;
+    line-height: 1.5;
+  }
+
+  .page{
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .eyebrow{
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.28em;
+    font-size: 12.5px;
+    color: var(--pompeii);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  h1{
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: clamp(30px, 5vw, 46px);
+    letter-spacing: 0.02em;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+  h1 em{
+    font-style: normal;
+    color: var(--pompeii);
+  }
+  .subtitle{
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 18px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .laurel{
+    width: 220px;
+    height: 14px;
+    margin: 18px auto 0;
+    opacity: 0.75;
+  }
+
+  /* ---------- Instructions ---------- */
+  .instructions{
+    text-align: center;
+    color: var(--ink-soft);
+    font-size: 16px;
+    max-width: 700px;
+    margin: 0 auto 26px;
+  }
+  .instructions .hint{
+    display:block;
+    margin-top:6px;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  /* ---------- Table ---------- */
+  .table-wrap{
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    box-shadow: 0 6px 20px rgba(60,45,20,0.15);
+    background: var(--papyrus-deep);
+  }
+  table{
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 1000px;
+  }
+  thead th{
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 10px 4px;
+    text-align: center;
+    border: 1px solid var(--line);
+  }
+  .grp-row th{
+    font-size: 14px;
+    letter-spacing: 0.22em;
+    padding: 8px 4px;
+  }
+  .grp-sg{ background: #d8cba9; color: var(--ink); }
+  .grp-pl{ background: #c4c9bd; color: var(--ink); }
+  .grp-meta{ background: #cbb99a; color: var(--ink); }
+  .case-sg{ background: #efe6cf; color: var(--verdigris-dark); font-style: italic; }
+  .case-pl{ background: #dcdfd3; color: var(--verdigris-dark); font-style: italic; }
+  th.meta-label{ background: #e4d7ba; color: var(--ink); font-size: 11px; }
+
+  tbody th.word-cell{
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+    text-align: left;
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    background: var(--stone);
+    white-space: nowrap;
+    position: sticky;
+    left: 0;
+    transition: background 0.15s ease;
+  }
+  tbody th.word-cell.active-ref{ background: var(--gold); color: #2b2015; }
+  tbody th.word-cell .lat{ font-style: italic; }
+  tbody th.word-cell .entry{
+    display: block;
+    font-family: 'EB Garamond', serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 12.5px;
+    letter-spacing: 0.01em;
+    color: var(--ink-soft);
+    margin-top: 3px;
+    white-space: normal;
+  }
+  .row-verify-btn{
+    display: block;
+    margin-top: 8px;
+    font-family: 'Cinzel', serif;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border: 1px solid var(--verdigris-dark);
+    background: var(--verdigris);
+    color: #fbf3e4;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .row-verify-btn:hover{ background: var(--verdigris-dark); }
+  .row-verify-btn:active{ transform: translateY(1px); }
+  th.word-cell.row-checked-ok .row-verify-btn{ background: #4f8f6b; border-color: #3a6b50; }
+  th.word-cell.row-checked-err .row-verify-btn{ background: var(--pompeii); border-color: var(--pompeii-dark); }
+  .row-status{
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 12px;
+  }
+
+  td.cell{
+    border: 1px solid var(--line);
+    width: 52px;
+    height: 46px;
+    text-align: center;
+    cursor: pointer;
+    background: #faf5e6;
+    transition: background 0.15s ease;
+    user-select: none;
+    position: relative;
+  }
+  td.cell.pl{ background: #eef0e7; }
+  td.cell:hover{ background: #f3e6c8; }
+  td.cell.pl:hover{ background: #e2e6d5; }
+
+  .mark{
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--pompeii-dark);
+  }
+
+  td.cell.correct{ background: #dce9df !important; }
+  td.cell.correct .mark{ color: var(--verdigris-dark); }
+  td.cell.wrong{ background: #f1dcd8 !important; }
+  td.cell.wrong .mark{ color: var(--pompeii-dark); }
+  td.cell.missed{ box-shadow: inset 0 0 0 2px var(--gold); }
+  td.cell.missed::after{
+    content: "•";
+    color: var(--gold);
+    font-size: 22px;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -60%);
+  }
+
+  /* ---------- Meta columns: déclinaison + neutre ---------- */
+  td.meta{
+    border: 1px solid var(--line);
+    background: #f1e9d3;
+    padding: 8px 6px;
+    text-align: center;
+    transition: background 0.15s ease;
+  }
+  .decl-picker{
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+  }
+  .decl-btn{
+    width: 26px;
+    height: 26px;
+    border: 1px solid var(--line);
+    background: #fff8e8;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    border-radius: 2px;
+    padding: 0;
+  }
+  .decl-btn:hover{ background: #f3e6c8; }
+  .decl-btn.selected{
+    background: var(--verdigris);
+    color: #fbf3e4;
+    border-color: var(--verdigris-dark);
+  }
+  td.meta.correct{ background: #dce9df; }
+  td.meta.wrong{ background: #f3c9c2; }
+  .meta-icon{
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 900;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+  .meta-icon.ok{ color: #2e6b4e; }
+  .meta-icon.ko{ color: #a13c3c; }
+  .meta-hint{
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--pompeii-dark);
+    margin-top: 3px;
+    white-space: nowrap;
+  }
+  .row-note{
+    display: block;
+    font-size: 10.5px;
+    font-style: italic;
+    color: var(--pompeii-dark);
+    margin-top: 3px;
+    white-space: normal;
+    line-height: 1.3;
+    max-width: 220px;
+  }
+
+  .neuter-check{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--verdigris-dark);
+  }
+
+  /* ---------- Controls ---------- */
+  .controls{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+  }
+  button.action{
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 12px 26px;
+    border-radius: 2px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: transform 0.1s ease, box-shadow 0.15s ease;
+  }
+  button:focus-visible{
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+  button:active{ transform: translateY(1px); }
+
+  .btn-primary{
+    background: var(--pompeii);
+    color: #fbf3e4;
+    box-shadow: 0 4px 10px rgba(124,46,38,0.3);
+  }
+  .btn-primary:hover{ background: var(--pompeii-dark); }
+
+  .btn-secondary{
+    background: transparent;
+    color: var(--ink-soft);
+    border-color: var(--line);
+  }
+  .btn-secondary:hover{ background: rgba(0,0,0,0.05); }
+
+  .score{
+    font-family: 'Cinzel', serif;
+    font-size: 15px;
+    color: var(--verdigris-dark);
+    min-height: 22px;
+    text-align: center;
+    margin-top: 16px;
+  }
+
+  .legend{
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .swatch{
+    width: 13px; height: 13px; display:inline-block; border: 1px solid var(--line);
+  }
+  .sw-correct{ background:#dce9df; }
+  .sw-wrong{ background:#f1dcd8; }
+  .sw-missed{ background: #faf5e6; box-shadow: inset 0 0 0 2px var(--gold); }
+
+  footer{
+    text-align:center;
+    margin-top: 46px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition: none !important; }
+  }
+
+  /* ---------- Aide-mémoire (tableau de synthèse) ---------- */
+  details.synthesis{
+    margin: 0 auto 30px;
+    max-width: 900px;
+    border: 1px solid var(--line);
+    background: var(--papyrus-deep);
+    box-shadow: 0 4px 14px rgba(60,45,20,0.12);
+  }
+  details.synthesis summary{
+    cursor: pointer;
+    list-style: none;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--verdigris-dark);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  details.synthesis summary::-webkit-details-marker{ display:none; }
+  details.synthesis summary::before{
+    content: "▸";
+    font-size: 12px;
+    color: var(--pompeii);
+    transition: transform 0.15s ease;
+  }
+  details.synthesis[open] summary::before{ transform: rotate(90deg); }
+  details.synthesis summary:hover{ background: rgba(0,0,0,0.03); }
+
+  details.synthesis.locked summary{
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  details.synthesis.locked summary::before{ content: "🔒"; font-size: 12px; }
+  details.synthesis.locked summary:hover{ background: none; }
+  .lock-note{
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 12px;
+    letter-spacing: normal;
+    text-transform: none;
+    color: var(--ink-soft);
+  }
+
+  .synth-body{
+    padding: 6px 20px 24px;
+  }
+  .synth-block + .synth-block{ margin-top: 26px; }
+  .synth-title{
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-align: center;
+    color: var(--ink);
+    margin: 0 0 10px;
+  }
+  .synth-scroll{ overflow-x: auto; }
+  table.synth{
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 560px;
+    background: #fff;
+  }
+  table.synth th, table.synth td{
+    border: 1px solid #444;
+    text-align: center;
+    padding: 7px 6px;
+    font-size: 14px;
+  }
+  table.synth thead th{
+    font-family: 'Cinzel', serif;
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+    background: #fff;
+  }
+  table.synth thead tr.sub th{ font-size: 11px; font-style: italic; font-weight: 400; }
+  table.synth tbody th{
+    font-style: italic;
+    font-weight: 600;
+    text-align: left;
+    padding-left: 10px;
+    background: #fff;
+    white-space: nowrap;
+  }
+  table.synth td{ font-weight: 600; color: #1c1c1c; }
+
+  table.synth tr.thick-below th,
+  table.synth tr.thick-below td{ border-bottom: 3px solid #111; }
+  table.synth tr.thick-row th,
+  table.synth tr.thick-row td{ border-top: 3px solid #111; border-bottom: 3px solid #111; }
+  table.synth td.thick-cell{ border: 3px solid #111; }
+
+  /* colour families reused from the paper reference sheet */
+  .k-pink{ background:#E8CBEA; }
+  .k-red{ background:#EA1B1B; color:#fff; }
+  .k-lightblue{ background:#BEE6F4; }
+  .k-mint{ background:#C7EABF; }
+  .k-orange{ background:#F5A22B; }
+  .k-purple{ background:#7A3FA0; color:#fff; }
+  .k-blue{ background:#3E8FCB; color:#fff; }
+  .k-yellow{ background:#FFF04D; }
+  .k-magenta{ background:#FF63CB; }
+  .k-green{ background:#4FAE49; color:#fff; }
+  .k-gray{ background:#9C9C9C; color:#fff; }
+  .k-tan{ background:#F6DDC0; }
+  .k-lavender{ background:#D9C3EC; }
+  .k-pinkbright{ background:#F58FC0; }
+  .k-brown{ background:#B05A2A; color:#fff; }
+  .k-white{ background:#fff; }
+
+  /* compact mode shown automatically after verification */
+  .synth-body.compact{
+    padding: 6px 14px 16px;
+  }
+  .synth-body.compact .synth-title{ font-size: 11px; margin-bottom: 6px; }
+  .synth-body.compact .synth-block + .synth-block{ margin-top: 16px; }
+  .synth-body.compact table.synth{ min-width: 420px; }
+  .synth-body.compact table.synth th,
+  .synth-body.compact table.synth td{ padding: 3px 4px; font-size: 10.5px; }
+  .synth-body.compact table.synth thead th{ font-size: 9.5px; }
+  .synth-body.compact table.synth thead tr.sub th{ font-size: 8.5px; }
+
+  td[data-ref].ref-highlight{
+    border: 4px solid #d7263d !important;
+    position: relative;
+    z-index: 2;
+    animation: ref-pulse 1.1s ease-in-out 2;
+  }
+  td[data-ref].ref-highlight::after{
+    content: "✓";
+    position: absolute;
+    top: -9px;
+    right: -9px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    background: #d7263d;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 900;
+    text-align: center;
+    box-shadow: 0 0 0 2px #fff;
+    z-index: 3;
+  }
+  @keyframes ref-pulse{
+    0%, 100%{ border-color: #d7263d; }
+    50%{ border-color: #111; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    td[data-ref].ref-highlight{ animation: none; }
+  }
+
+  /* ---------- Floating "Vérifier" button ---------- */
+  .page{ padding-bottom: 110px; }
+  .mobile-fab{
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(to top, var(--papyrus) 65%, rgba(237,227,206,0));
+    z-index: 50;
+  }
+  .mobile-fab button{
+    width: 100%;
+    max-width: 420px;
+    padding: 15px 26px;
+    box-shadow: 0 6px 18px rgba(124,46,38,0.35);
+  }
+
+.home-fab{
+  position:fixed; top:14px; left:14px; z-index:999;
+  display:flex; align-items:center; gap:6px;
+  background: linear-gradient(135deg, #B9812A, #6B1E23);
+  color:#fff; font-family:'Iowan Old Style','Palatino Linotype',Georgia,serif;
+  font-size:0.82rem; font-weight:700; text-decoration:none;
+  padding:8px 14px; border-radius:20px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.25);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.home-fab:hover{ transform: translateY(-2px); box-shadow:0 5px 14px rgba(0,0,0,0.3); }
+@media (max-width:480px){ .home-fab{ font-size:0.72rem; padding:6px 10px; top:8px; left:8px; } }
+.next-fab{
+  position:fixed; top:14px; right:14px; z-index:999;
+  display:flex; align-items:center; gap:6px;
+  background: linear-gradient(135deg, #6B1E23, #B9812A);
+  color:#fff; font-family:'Iowan Old Style','Palatino Linotype',Georgia,serif;
+  font-size:0.82rem; font-weight:700; text-decoration:none;
+  padding:8px 14px; border-radius:20px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.25);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.next-fab:hover{ transform: translateY(-2px); box-shadow:0 5px 14px rgba(0,0,0,0.3); }
+@media (max-width:480px){ .next-fab{ font-size:0.72rem; padding:6px 10px; top:8px; right:8px; } }
+
+  /* ---------- Couleurs du tableau de synthèse (d'après le PDF) ---------- */
+  .c-pink{background:#F0CFEA} .c-red{background:#FF5757} .c-yellow{background:#FFFF00}
+  .c-lblue{background:#DDF1FF} .c-magenta{background:#FF00FF} .c-green{background:#39EE0A}
+  .c-lgreen{background:#ADDB78} .c-cyan{background:#2EC7FF} .c-lav{background:#CBCBFF}
+  .c-blue{background:#0B82E0;color:#fff} .c-lgrey{background:#E6E6E6} .c-grey{background:#ABABAB}
+  .c-orange{background:#FF8033}
+  table.synth td.blank{background:#fff}
+  table.synth small, table.synth .fm{font-weight:400;font-size:11px}
+  .synth-foot{font-size:13px;font-style:italic;color:var(--ink-soft);margin:10px 0 0}
+  /* ---------- Rappels « Pense que… » sous chaque mot vérifié ---------- */
+  tr.note-row{display:none}
+  tr.note-row.show{display:table-row}
+  tr.note-row td{padding:0;border:0;background:transparent}
+  .note-box{margin:4px 0 10px;padding:8px 14px 8px 12px;border-left:4px solid var(--gold);background:#F6EBCB;color:var(--ink);font-size:15px;line-height:1.45;text-align:left;font-weight:400}
+  .note-box .note-title{font-weight:700;color:var(--pompeii-dark);font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+  .note-box ul{margin:4px 0 0;padding-left:18px}
+  .note-box li{margin:3px 0}
+</style>
+</head>
+<body>
+<a class="home-fab" href="index.html">🏠 Accueil du site</a>
+
+<div class="page">
+
+  <header>
+    <h1>Revoir les deux premières déclinaisons</h1>
+    <svg class="laurel" viewBox="0 0 220 14" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="7" x2="90" y2="7" stroke="#A9812E" stroke-width="1"/>
+      <circle cx="110" cy="7" r="3" fill="#9C3B30"/>
+      <line x1="130" y1="7" x2="220" y2="7" stroke="#A9812E" stroke-width="1"/>
+    </svg>
+  </header>
+
+  <p class="instructions">
+    <b>Consignes.</b> Pour commencer, coche la déclinaison (1 ou 2), puis la case N si le nom est neutre.
+    Ensuite, en veillant à ne pas mélanger les terminaisons des différentes déclinaisons et en faisant attention aux neutres, clique sur la/les case(s) du tableau correspondant au cas et au nombre.
+    Clique ensuite sur le bouton « Vérifier » sous chaque mot pour contrôler cette ligne : des rappels « Pense que… » apparaîtront sous le mot. Par ailleurs vous verrez apparaître au-dessus le tableau de synthèse des terminaisons des 2 premières décl. avec la/les case(s) de la réponse encadrées.
+  </p>
+
+  <details class="synthesis locked" id="synth-details">
+    <summary>Tableau de synthèse (aide-mémoire) <span class="lock-note">— disponible après avoir cliqué sur Vérifier</span></summary>
+    <div class="synth-body" id="synth-body">
+      <div class="synth-block">
+        <p class="synth-title">SINGULIER</p>
+        <div class="synth-scroll"><table class="synth"><thead>
+              <tr><th></th><th>1°<br><span class="fm">F (m)</span></th><th colspan="2">2°</th><th colspan="3">3*</th><th colspan="2">4°</th><th>5°<br><span class="fm">F (m)</span></th></tr>
+              <tr class="sub"><th></th><th></th><th>M (f)</th><th>neutres</th><th>MF</th><th>N</th><th>N pari</th><th>M (f)</th><th>neutres</th><th></th></tr>
+            </thead><tbody><tr><th>nominatif</th><td class="c-pink" data-ref="sg-nom-1">A</td><td class="c-lblue" data-ref="sg-nom-2">US<br><small>(ER/IR)</small></td><td class="c-green" data-ref="sg-nom-2n">UM</td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><th>vocatif</th><td class="c-pink" data-ref="sg-voc-1">A</td><td class="c-magenta" data-ref="sg-voc-2">E<br><small>(ER/IR)</small></td><td class="c-green" data-ref="sg-voc-2n">UM</td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><th>accusatif</th><td class="c-red" data-ref="sg-acc-1">AM</td><td class="c-green" colspan="2" data-ref="sg-acc-2 sg-acc-2n">UM</td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><th>génitif</th><td class="c-yellow" data-ref="sg-gen-1">AE</td><td class="c-lgreen" colspan="2" data-ref="sg-gen-2 sg-gen-2n">I</td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><th>datif</th><td class="c-yellow" data-ref="sg-dat-1">AE</td><td class="c-cyan" colspan="2" data-ref="sg-dat-2 sg-dat-2n">O</td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><th>ablatif</th><td class="c-pink" data-ref="sg-abl-1">A</td><td class="c-cyan" colspan="2" data-ref="sg-abl-2 sg-abl-2n">O</td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr></tbody></table></div>
+      </div>
+      <div class="synth-block">
+        <p class="synth-title">PLURIEL</p>
+        <div class="synth-scroll"><table class="synth"><thead>
+              <tr><th></th><th>1°<br><span class="fm">F (m)</span></th><th colspan="2">2°</th><th colspan="2">3*</th><th colspan="2">4°</th><th>5°<br><span class="fm">F (m)</span></th></tr>
+              <tr class="sub"><th></th><th></th><th>M (f)</th><th>neutres</th><th>MF</th><th>neutres</th><th>M (f)</th><th>neutres</th><th></th></tr>
+            </thead><tbody><tr><th>nominatif</th><td class="c-yellow" data-ref="pl-nom-1">AE</td><td class="c-lgreen" data-ref="pl-nom-2">I</td><td class="c-pink" data-ref="pl-nom-2n">A</td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><th>vocatif</th><td class="c-yellow" data-ref="pl-voc-1">AE</td><td class="c-lgreen" data-ref="pl-voc-2">I</td><td class="c-pink" data-ref="pl-voc-2n">A</td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><th>accusatif</th><td class="c-lav" data-ref="pl-acc-1">AS</td><td class="c-blue" data-ref="pl-acc-2">OS</td><td class="c-pink" data-ref="pl-acc-2n">A</td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><th>génitif</th><td class="c-lgrey" data-ref="pl-gen-1">ARUM</td><td class="c-grey" colspan="2" data-ref="pl-gen-2 pl-gen-2n">ORUM</td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><th>datif</th><td class="c-orange" data-ref="pl-dat-1">IS</td><td class="c-orange" colspan="2" data-ref="pl-dat-2 pl-dat-2n">IS</td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><th>ablatif</th><td class="c-orange" data-ref="pl-abl-1">IS</td><td class="c-orange" colspan="2" data-ref="pl-abl-2 pl-abl-2n">IS</td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr></tbody></table></div>
+      </div>
+      <p class="synth-foot">* le tableau est simplifié et ne tient explicitement pas compte des faux imparisyllabiques par ex.</p>
+    </div>
+  </details>
+
+  <div class="table-wrap">
+    <table id="decl-table">
+      <thead>
+        <tr class="grp-row">
+          <th rowspan="2"></th>
+          <th rowspan="2" class="grp-meta">Décl.</th>
+          <th rowspan="2" class="grp-meta">N.</th>
+          <th class="grp-sg" colspan="6">Singulier</th>
+          <th class="grp-pl" colspan="6">Pluriel</th>
+        </tr>
+        <tr>
+          <th class="case-sg">Nom</th><th class="case-sg">Voc</th><th class="case-sg">Acc</th><th class="case-sg">Gén</th><th class="case-sg">Dat</th><th class="case-sg">Abl</th>
+          <th class="case-pl">Nom</th><th class="case-pl">Voc</th><th class="case-pl">Acc</th><th class="case-pl">Gén</th><th class="case-pl">Dat</th><th class="case-pl">Abl</th>
+        </tr>
+      </thead>
+      <tbody id="decl-body"></tbody>
+    </table>
+  </div>
+
+  <div class="controls">
+    <button class="action btn-primary" id="verify-btn" style="display:none;">Tout vérifier</button>
+    <button class="action btn-secondary" id="reset-btn">Réinitialiser</button>
+  </div>
+  <p class="score" id="score"></p>
+
+  <div class="legend" id="legend" style="display:none;">
+    <span><span class="swatch sw-correct"></span> réponse correcte</span>
+    <span><span class="swatch sw-wrong"></span> réponse marquée à tort</span>
+    <span><span class="swatch sw-missed"></span> case correcte non marquée</span>
+  </div>
+
+  <footer>Declinationes discere, disciplina est — apprendre les déclinaisons est une discipline.</footer>
+</div>
+
+<div class="mobile-fab" id="mobile-fab" style="display:none;">
+  <button class="action btn-primary" id="verify-btn-fab">Tout vérifier</button>
+</div>
+
+<script>
+  const CASES = ["nom","voc","acc","gen","dat","abl"];
+
+  // Rappels affichés sous le mot après vérification
+  const NOTE_UM1 = "Attention à ne pas confondre la terminaison <b>-ORUM</b> du génitif pluriel avec la terminaison <b>-UM</b> (accusatif singulier de la 2ᵉ déclinaison masculine – quelques féminins –, type <i>dominus</i>).";
+  const NOTE_UM2 = "Pense que pour la 2ᵉ déclinaison, si c’est un masculin (ou un éventuel féminin, type <i>dominus</i>), la terminaison <b>-UM</b> est celle de l’accusatif singulier uniquement ; mais si c’est un neutre (type <i>templum</i>), elle sera celle du nominatif, du vocatif et de l’accusatif singulier.";
+  const NOTE_IS = "Pense que dans les deux premières déclinaisons, <b>-IS</b> est forcément la terminaison du datif ou de l’ablatif pluriel (2 possibilités à avoir en tête : datif pluriel et ablatif pluriel).";
+
+  // Formes de l'exercice (l'ordre est mélangé à chaque fois ; « grp » = restent côte à côte)
+  const BASE = [
+    { word: "galeas", entry: "galea, ae (F)",
+      correct: ["p-acc"], combos: [{decl:1, neuter:false}], refs: ["pl-acc-1"],
+      notes: ["Pense que dans la 1ʳᵉ déclinaison, <b>-AS</b> est forcément la terminaison de l’accusatif pluriel."] },
+
+    { word: "stilum", entry: "stilus, i (M)",
+      correct: ["s-acc"], combos: [{decl:2, neuter:false}], refs: ["sg-acc-2"],
+      notes: [NOTE_UM1, NOTE_UM2] },
+
+    { word: "clipea", entry: "clipeum, i (N)", grp: "a",
+      correct: ["p-nom","p-voc","p-acc"], combos: [{decl:2, neuter:true}], refs: ["pl-nom-2n","pl-voc-2n","pl-acc-2n"],
+      notes: ["C’est un neutre de la 2ᵉ déclinaison ; la terminaison <b>-A</b> correspond donc au nominatif, au vocatif et à l’accusatif pluriels (à ne pas confondre avec la terminaison <b>-A</b> des noms de la 1ʳᵉ déclinaison)."] },
+
+    { word: "cera", entry: "cera, ae (F)", grp: "a",
+      correct: ["s-nom","s-voc","s-abl"], combos: [{decl:1, neuter:false}], refs: ["sg-nom-1","sg-voc-1","sg-abl-1"],
+      notes: ["Pense que dans la 1ʳᵉ déclinaison il y a 3 possibilités (nominatif singulier, vocatif singulier et ablatif singulier) à avoir en tête pour la terminaison <b>-A</b> (à ne pas confondre avec la terminaison <b>-A</b> des neutres de la 2ᵉ déclinaison, qui est celle du nominatif, du vocatif et de l’accusatif pluriels)."] },
+
+    { word: "picturae", entry: "pictura, ae (F)",
+      correct: ["s-gen","s-dat","p-nom","p-voc"], combos: [{decl:1, neuter:false}], refs: ["sg-gen-1","sg-dat-1","pl-nom-1","pl-voc-1"],
+      notes: ["Pense que dans la 1ʳᵉ déclinaison il y a 4 possibilités (génitif singulier, datif singulier, nominatif pluriel et vocatif pluriel) à avoir en tête pour la terminaison <b>-AE</b>."] },
+
+    { word: "magister", entry: "magister, tri (M)",
+      correct: ["s-nom","s-voc"], combos: [{decl:2, neuter:false}], refs: ["sg-nom-2","sg-voc-2"],
+      notes: ["La plupart des noms de la 2ᵉ sont en <b>-us</b> (masculins) et en <b>-um</b> (neutres), mais il existe quelques masculins en <b>-ER</b> comme ici <i>magister</i> ainsi que <i>vir</i> : ils se déclinent comme <i>dominus</i>, sauf au nominatif et au vocatif sg.",
+              "Pense que dans la 2ᵉ déclinaison (type <i>dominus</i>) il y a 2 possibilités (nominatif singulier et vocatif singulier) à avoir en tête pour ces noms en <b>-ER</b>."] },
+
+    { word: "ludis", entry: "ludus, i (M)",
+      correct: ["p-dat","p-abl"], combos: [{decl:2, neuter:false}], refs: ["pl-dat-2","pl-abl-2"],
+      notes: [NOTE_IS] },
+
+    { word: "sententiam", entry: "sententia, ae (F)",
+      correct: ["s-acc"], combos: [{decl:1, neuter:false}], refs: ["sg-acc-1"],
+      notes: ["Pense que dans la 1ʳᵉ déclinaison, <b>-AM</b> est forcément la terminaison de l’accusatif singulier."] },
+
+    { word: "noctuis", entry: "noctua, ae (F)",
+      correct: ["p-dat","p-abl"], combos: [{decl:1, neuter:false}], refs: ["pl-dat-1","pl-abl-1"],
+      notes: [NOTE_IS] },
+
+    { word: "deo", entry: "deus, i (M)",
+      correct: ["s-dat","s-abl"], combos: [{decl:2, neuter:false}], refs: ["sg-dat-2","sg-abl-2"],
+      notes: ["Pense à ne pas oublier qu’il y a 2 possibilités pour la terminaison <b>-O</b> : datif singulier et ablatif singulier (2ᵉ déclinaison, type <i>dominus</i> ou <i>templum</i>)."] },
+
+    { word: "Marce", entry: "Marcus, i (M)",
+      correct: ["s-voc"], combos: [{decl:2, neuter:false}], refs: ["sg-voc-2"],
+      notes: ["Pense que dans la 2ᵉ déclinaison (type <i>dominus</i>), <b>-E</b> est forcément la terminaison du vocatif singulier."] },
+
+    { word: "numeros", entry: "numerus, i (M)",
+      correct: ["p-acc"], combos: [{decl:2, neuter:false}], refs: ["pl-acc-2"],
+      notes: ["Pense que dans la 2ᵉ déclinaison (type <i>dominus</i>), <b>-OS</b> est forcément la terminaison de l’accusatif pluriel."] },
+
+    { word: "discipuli", entry: "discipulus, i (M)",
+      correct: ["s-gen","p-nom","p-voc"], combos: [{decl:2, neuter:false}], refs: ["sg-gen-2","pl-nom-2","pl-voc-2"],
+      notes: ["Pense que dans la 2ᵉ déclinaison (type <i>dominus</i>) il y a 3 possibilités (génitif singulier, nominatif pluriel et vocatif pluriel) à avoir en tête pour la terminaison <b>-I</b>."] },
+
+    { word: "spatium", entry: "spatium, ii (N)",
+      correct: ["s-nom","s-voc","s-acc"], combos: [{decl:2, neuter:true}], refs: ["sg-nom-2n","sg-voc-2n","sg-acc-2n"],
+      notes: [NOTE_UM1, NOTE_UM2] }
+  ];
+
+  function shuffled(arr){
+    const a = arr.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  const ROWS = [];
+  function newOrder(){
+    const blocks = BASE.filter(r => r.grp !== "a").map(r => [r]);
+    blocks.push(shuffled(BASE.filter(r => r.grp === "a")));   // les deux formes liées restent groupées
+    ROWS.length = 0;
+    shuffled(blocks).forEach(b => b.forEach(r => ROWS.push(r)));
+  }
+
+  const tbody = document.getElementById("decl-body");
+  let userMarks, userDecl, userNeuter, rowVerified;
+  function initState(){
+    userMarks = ROWS.map(() => new Set());
+    userDecl = ROWS.map(() => null);
+    userNeuter = ROWS.map(() => false);
+    rowVerified = ROWS.map(() => false);
+  }
+  let lastActiveRow = null;
+  let highlightedRow = null;
+  let hasVerified = false;
+
+  function clearHighlight(){
+    document.querySelectorAll("td[data-ref]").forEach(td => td.classList.remove("ref-highlight"));
+    tbody.querySelectorAll("th.word-cell").forEach(th => th.classList.remove("active-ref"));
+    highlightedRow = null;
+    const details = document.getElementById("synth-details");
+    if(hasVerified) details.open = false;
+  }
+
+  function clearRowGrading(ri){
+    tbody.querySelectorAll(`td.cell[data-row="${ri}"]`).forEach(td => td.classList.remove("correct","wrong","missed"));
+    const metaCells = tbody.querySelectorAll(`td.meta[data-row="${ri}"]`);
+    metaCells.forEach(td => {
+      td.classList.remove("correct","wrong");
+      const oldHint = td.querySelector(".meta-hint");
+      if(oldHint) oldHint.remove();
+      const oldIcon = td.querySelector(".meta-icon");
+      if(oldIcon) oldIcon.remove();
+    });
+    rowVerified[ri] = false;
+    const th = tbody.querySelector(`th.word-cell[data-row="${ri}"]`);
+    if(th){
+      th.classList.remove("row-checked-ok","row-checked-err");
+      const status = th.querySelector(".row-status");
+      if(status) status.remove();
+    }
+    const noteRow = tbody.querySelector(`tr.note-row[data-row="${ri}"]`);
+    if(noteRow) noteRow.classList.remove("show");
+    if(highlightedRow !== null && highlightedRow !== ri){
+      clearHighlight();
+    }
+    updateScore();
+    updateGlobalVerifyVisibility();
+  }
+
+  function updateScore(){
+    const verifiedCount = rowVerified.filter(Boolean).length;
+    if(verifiedCount === 0){
+      document.getElementById("score").textContent = "";
+      document.getElementById("legend").style.display = "none";
+      return;
+    }
+    const okCount = ROWS.reduce((sum, row, ri) => sum + (rowVerified[ri] && isRowFullyCorrect(ri) ? 1 : 0), 0);
+    document.getElementById("score").textContent =
+      `${okCount} / ${verifiedCount} formes vérifiées correctes (sur ${ROWS.length} au total)`;
+    document.getElementById("legend").style.display = "flex";
+  }
+
+  function isRowFullyCorrect(ri){
+    const row = ROWS[ri];
+    const correctSet = new Set(row.correct);
+    const marked = userMarks[ri];
+    const casesOk = marked.size === correctSet.size && [...marked].every(k => correctSet.has(k));
+    const grammarOk = row.combos.some(c => c.decl === userDecl[ri] && c.neuter === userNeuter[ri]);
+    return casesOk && grammarOk;
+  }
+
+  function buildTable(){
+    tbody.innerHTML = "";
+    ROWS.forEach((row, ri) => {
+      const tr = document.createElement("tr");
+
+      // Forme latine + entrée du dico (avec le genre), sans traduction
+      const th = document.createElement("th");
+      th.className = "word-cell";
+      th.dataset.row = ri;
+      th.innerHTML = `<span class="lat">${row.word}</span><span class="entry">${row.entry}</span>`;
+
+      const rowBtn = document.createElement("button");
+      rowBtn.type = "button";
+      rowBtn.className = "row-verify-btn";
+      rowBtn.textContent = "Vérifier";
+      rowBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        verifyRow(ri, th);
+      });
+      th.appendChild(rowBtn);
+      tr.appendChild(th);
+
+      // Choix de la déclinaison (1 ou 2)
+      const tdDecl = document.createElement("td");
+      tdDecl.className = "meta";
+      tdDecl.dataset.row = ri;
+      const picker = document.createElement("div");
+      picker.className = "decl-picker";
+      [1,2].forEach(n => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "decl-btn";
+        btn.textContent = n;
+        btn.addEventListener("click", () => {
+          userDecl[ri] = (userDecl[ri] === n) ? null : n;
+          picker.querySelectorAll(".decl-btn").forEach(b => b.classList.remove("selected"));
+          if(userDecl[ri] === n) btn.classList.add("selected");
+          lastActiveRow = ri;
+          clearRowGrading(ri);
+        });
+        picker.appendChild(btn);
+      });
+      tdDecl.appendChild(picker);
+      tr.appendChild(tdDecl);
+
+      // Case « N »
+      const tdNeuter = document.createElement("td");
+      tdNeuter.className = "meta";
+      tdNeuter.dataset.row = ri;
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.className = "neuter-check";
+      cb.setAttribute("aria-label", `${row.word} est neutre`);
+      cb.addEventListener("change", () => {
+        userNeuter[ri] = cb.checked;
+        lastActiveRow = ri;
+        clearRowGrading(ri);
+      });
+      tdNeuter.appendChild(cb);
+      tr.appendChild(tdNeuter);
+
+      // Grille cas / nombre
+      ["s","p"].forEach(num => {
+        CASES.forEach(c => {
+          const key = `${num}-${c}`;
+          const td = document.createElement("td");
+          td.className = "cell" + (num === "p" ? " pl" : "");
+          td.dataset.row = ri;
+          td.dataset.key = key;
+          td.addEventListener("click", () => {
+            const set = userMarks[ri];
+            if(set.has(key)){
+              set.delete(key);
+              td.innerHTML = "";
+            } else {
+              set.add(key);
+              td.innerHTML = '<span class="mark">X</span>';
+            }
+            lastActiveRow = ri;
+            clearRowGrading(ri);
+          });
+          tr.appendChild(td);
+        });
+      });
+
+      tbody.appendChild(tr);
+
+      // Ligne de rappels, cachée jusqu'à la vérification
+      const ntr = document.createElement("tr");
+      ntr.className = "note-row";
+      ntr.dataset.row = ri;
+      const ntd = document.createElement("td");
+      ntd.colSpan = 15;
+      ntd.innerHTML = `<div class="note-box"><span class="note-title">À retenir</span><ul>${row.notes.map(n => `<li>${n}</li>`).join("")}</ul></div>`;
+      ntr.appendChild(ntd);
+      tbody.appendChild(ntr);
+    });
+  }
+
+  function gradeRow(ri){
+    const row = ROWS[ri];
+    const correctSet = new Set(row.correct);
+    const marked = userMarks[ri];
+    let casesOk = marked.size === correctSet.size;
+
+    CASES.forEach(c => {
+      ["s","p"].forEach(num => {
+        const key = `${num}-${c}`;
+        const td = tbody.querySelector(`td.cell[data-row="${ri}"][data-key="${key}"]`);
+        const isCorrect = correctSet.has(key);
+        const isMarked = marked.has(key);
+        td.classList.remove("correct","wrong","missed");
+        if(isMarked && isCorrect) td.classList.add("correct");
+        else if(isMarked && !isCorrect){ td.classList.add("wrong"); casesOk = false; }
+        else if(!isMarked && isCorrect){ td.classList.add("missed"); casesOk = false; }
+      });
+    });
+
+    const grammarOk = row.combos.some(c => c.decl === userDecl[ri] && c.neuter === userNeuter[ri]);
+    const metaCells = tbody.querySelectorAll(`td.meta[data-row="${ri}"]`);
+    metaCells.forEach(td => {
+      td.classList.remove("correct","wrong");
+      td.classList.add(grammarOk ? "correct" : "wrong");
+      const oldHint = td.querySelector(".meta-hint");
+      if(oldHint) oldHint.remove();
+      const oldIcon = td.querySelector(".meta-icon");
+      if(oldIcon) oldIcon.remove();
+      const icon = document.createElement("span");
+      icon.className = "meta-icon " + (grammarOk ? "ok" : "ko");
+      icon.textContent = grammarOk ? "✓" : "✗";
+      td.appendChild(icon);
+    });
+    if(!grammarOk && metaCells[0]){
+      const hint = document.createElement("div");
+      hint.className = "meta-hint";
+      hint.textContent = "→ " + row.combos
+        .map(c => `${c.decl}${c.neuter ? " (N)" : ""}`)
+        .join(" ou ");
+      metaCells[0].appendChild(hint);
+    }
+
+    const noteRow = tbody.querySelector(`tr.note-row[data-row="${ri}"]`);
+    if(noteRow) noteRow.classList.add("show");
+
+    rowVerified[ri] = true;
+    return casesOk && grammarOk;
+  }
+
+  function verifyRow(ri, thEl){
+    const fullyOk = gradeRow(ri);
+    lastActiveRow = ri;
+
+    thEl.classList.remove("row-checked-ok","row-checked-err");
+    const oldStatus = thEl.querySelector(".row-status");
+    if(oldStatus) oldStatus.remove();
+    const status = document.createElement("span");
+    status.className = "row-status";
+    status.textContent = fullyOk ? "✓" : "✗";
+    thEl.classList.add(fullyOk ? "row-checked-ok" : "row-checked-err");
+    thEl.querySelector(".lat").appendChild(status);
+
+    updateScore();
+
+    // dévoile le tableau de synthèse en n'encadrant QUE la/les case(s) du mot vérifié
+    hasVerified = true;
+    const details = document.getElementById("synth-details");
+    const body = document.getElementById("synth-body");
+    details.classList.remove("locked");
+    details.open = true;
+    body.classList.remove("compact");
+    highlightRow(ri, thEl);
+    updateGlobalVerifyVisibility();
+
+    requestAnimationFrame(() => {
+      const firstHighlighted = document.querySelector("td[data-ref].ref-highlight");
+      if(firstHighlighted){
+        const scrollBox = firstHighlighted.closest(".synth-scroll");
+        if(scrollBox){
+          const boxRect = scrollBox.getBoundingClientRect();
+          const cellRect = firstHighlighted.getBoundingClientRect();
+          const offset = (cellRect.left + cellRect.width / 2) - (boxRect.left + boxRect.width / 2);
+          scrollBox.scrollBy({ left: offset, behavior: "smooth" });
+        }
+        firstHighlighted.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+      } else {
+        details.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+  }
+
+  function verifyAll(){
+    ROWS.forEach((row, ri) => gradeRow(ri));
+    updateScore();
+
+    hasVerified = true;
+    const details = document.getElementById("synth-details");
+    const body = document.getElementById("synth-body");
+    details.classList.remove("locked");
+    details.open = true;
+    body.classList.remove("compact");
+    if(lastActiveRow !== null){
+      const th = tbody.querySelector(`th.word-cell[data-row="${lastActiveRow}"]`);
+      highlightRow(lastActiveRow, th);
+    }
+  }
+
+  function updateGlobalVerifyVisibility(){
+    const allDone = rowVerified.every(Boolean);
+    document.getElementById("verify-btn").style.display = allDone ? "" : "none";
+    document.getElementById("mobile-fab").style.display = allDone ? "" : "none";
+  }
+
+  function highlightRow(ri, thEl){
+    tbody.querySelectorAll("th.word-cell").forEach(th => th.classList.remove("active-ref"));
+    document.querySelectorAll("td[data-ref]").forEach(td => td.classList.remove("ref-highlight"));
+    if(thEl) thEl.classList.add("active-ref");
+    ROWS[ri].refs.forEach(ref => {
+      document.querySelectorAll(`td[data-ref~="${ref}"]`).forEach(td => td.classList.add("ref-highlight"));
+    });
+    highlightedRow = ri;
+  }
+
+  // Réinitialiser = tout effacer ET mélanger de nouveau l'ordre des formes
+  function reset(){
+    newOrder();
+    initState();
+    buildTable();
+    lastActiveRow = null;
+    highlightedRow = null;
+    hasVerified = false;
+    document.getElementById("score").textContent = "";
+    document.getElementById("legend").style.display = "none";
+    document.getElementById("synth-body").classList.remove("compact");
+    document.querySelectorAll("td[data-ref]").forEach(td => td.classList.remove("ref-highlight"));
+    document.getElementById("synth-details").open = false;
+    document.getElementById("synth-details").classList.add("locked");
+    updateGlobalVerifyVisibility();
+  }
+
+  document.getElementById("verify-btn").addEventListener("click", verifyAll);
+  document.getElementById("verify-btn-fab").addEventListener("click", verifyAll);
+  document.getElementById("reset-btn").addEventListener("click", reset);
+
+  document.querySelector("#synth-details summary").addEventListener("click", (e) => {
+    if(!hasVerified) e.preventDefault();
+  });
+
+  newOrder();
+  initState();
+  buildTable();
+</script>
+</body>
+</html>
