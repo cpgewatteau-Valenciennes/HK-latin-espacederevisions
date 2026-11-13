@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conj 04 — Revoir le parfait de l’indicatif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --papyrus:#EDE3CE; --papyrus-deep:#E2D5B7; --stone:#DCD0B4;
+    --ink:#2B241C; --ink-soft:#55493a;
+    --pompeii:#9C3B30; --pompeii-dark:#7c2e26;
+    --verdigris:#4C7A6E; --verdigris-dark:#3a5f56;
+    --gold:#A9812E; --line:#b9a97e;
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; background:var(--papyrus);
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.25), transparent 55%),
+      radial-gradient(ellipse at 90% 80%, rgba(0,0,0,0.05), transparent 60%);
+    color:var(--ink); font-family:'EB Garamond',Georgia,serif; font-size:18px; line-height:1.5;
+  }
+  .page{ max-width:760px; margin:0 auto; padding:56px 24px 80px; }
+
+  .home-fab{
+    position:fixed; top:14px; left:14px; z-index:999;
+    display:flex; align-items:center; gap:6px;
+    background:linear-gradient(135deg,#B9812A,#6B1E23);
+    color:#fff; font-family:'Iowan Old Style','Palatino Linotype',Georgia,serif;
+    font-size:0.82rem; font-weight:700; text-decoration:none;
+    padding:8px 14px; border-radius:20px; box-shadow:0 3px 10px rgba(0,0,0,0.25);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .home-fab:hover{ transform:translateY(-2px); box-shadow:0 5px 14px rgba(0,0,0,0.3); }
+  @media (max-width:480px){ .home-fab{ font-size:0.72rem; padding:6px 10px; top:8px; left:8px; } }
+
+  header{ text-align:center; margin-bottom:28px; }
+  h1{
+    font-family:'Cinzel',serif; font-weight:700; font-size:clamp(26px,5vw,40px);
+    letter-spacing:0.02em; margin:0 0 8px; color:var(--ink);
+  }
+  h1 em{ font-style:normal; color:var(--pompeii); }
+  .laurel{ width:220px; height:14px; margin:14px auto 0; opacity:0.75; }
+
+  .instructions{
+    text-align:center; color:var(--ink-soft); font-size:16px;
+    max-width:700px; margin:0 auto 18px;
+  }
+  .rappel{
+    max-width:700px; margin:0 auto 26px; padding:10px 16px;
+    background:var(--papyrus-deep); border:1px solid var(--line);
+    border-left:4px solid var(--pompeii); font-size:16px; color:var(--ink-soft);
+  }
+  .rappel b{ color:var(--pompeii-dark); }
+
+  .card{
+    background:var(--papyrus-deep); border:1px solid var(--line);
+    box-shadow:0 6px 20px rgba(60,45,20,0.15); padding:26px 28px;
+  }
+  .meta{
+    display:flex; justify-content:space-between;
+    font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--verdigris-dark);
+  }
+  .bar{ height:5px; background:#cbb99a; margin:8px 0 20px; }
+  .bar i{ display:block; height:100%; width:0; background:var(--gold); transition:width .3s; }
+  .type{
+    font-family:'Cinzel',serif; font-size:12.5px; letter-spacing:0.22em;
+    text-transform:uppercase; color:var(--pompeii);
+  }
+  .form{ font-style:italic; font-size:48px; line-height:1.2; margin:4px 0 12px; }
+  label{
+    display:block; margin:14px 0 5px; font-family:'Cinzel',serif; font-size:11.5px;
+    letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft);
+  }
+  select,input[type=text]{
+    width:100%; font-family:'EB Garamond',serif; font-size:18px; padding:9px 10px;
+    border:1px solid var(--line); background:#faf5e6; color:var(--ink); border-radius:2px;
+  }
+  select:focus,input:focus{ outline:3px solid var(--gold); outline-offset:1px; }
+  .help{ font-size:15px; font-style:italic; color:var(--ink-soft); margin:2px 0 0; }
+
+  .fb{ margin-top:18px; padding:12px 16px; border:1px solid var(--line); background:#faf5e6; }
+  .fb.ok{ background:#dce9df; color:var(--verdigris-dark); border-color:#a8c4b2; }
+  .fb.ko{ background:#f1dcd8; color:var(--pompeii-dark); border-color:#dba9a2; }
+  .fb small{ color:var(--ink-soft); }
+
+  .controls{ display:flex; gap:12px; flex-wrap:wrap; margin-top:20px; align-items:center; }
+  .action{
+    font-family:'Cinzel',serif; font-size:13px; letter-spacing:0.14em; text-transform:uppercase;
+    padding:12px 26px; border-radius:2px; cursor:pointer; border:1px solid transparent;
+    text-decoration:none; display:inline-block; transition:transform .1s ease;
+  }
+  .action:active{ transform:translateY(1px); }
+  .action:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+  .btn-primary{ background:var(--pompeii); color:#fbf3e4; box-shadow:0 4px 10px rgba(124,46,38,0.3); }
+  .btn-primary:hover{ background:var(--pompeii-dark); }
+  .btn-secondary{ background:transparent; color:var(--ink-soft); border-color:var(--line); }
+  .btn-secondary:hover{ background:rgba(0,0,0,0.05); }
+
+  .big{ font-family:'Cinzel',serif; font-size:44px; color:var(--pompeii); margin:4px 0; }
+  .tw{ overflow-x:auto; }
+  table{ border-collapse:collapse; width:100%; margin-top:12px; }
+  th{
+    font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+    background:#d8cba9; text-align:left;
+  }
+  td,th{ border:1px solid var(--line); padding:7px 10px; }
+  td{ background:#faf5e6; }
+  td.ok{ color:var(--verdigris-dark); font-weight:600; } td.ko{ color:var(--pompeii-dark); font-weight:600; }
+
+  footer{ text-align:center; margin-top:46px; font-size:13px; color:var(--ink-soft); font-style:italic; }
+  @media (prefers-reduced-motion:reduce){ *{ transition:none !important; } }
+
+  details.fiche{margin:0 auto 26px;border:1px solid var(--line);background:var(--papyrus-deep);box-shadow:0 4px 14px rgba(60,45,20,0.12)}
+  details.fiche summary{cursor:pointer;list-style:none;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--verdigris-dark);padding:14px 20px;display:flex;align-items:center;gap:10px}
+  details.fiche summary::-webkit-details-marker{display:none}
+  details.fiche summary::before{content:"▸";font-size:12px;color:var(--pompeii);transition:transform .15s}
+  details.fiche[open] summary::before{transform:rotate(90deg)}
+  details.fiche summary:hover{background:rgba(0,0,0,.03)}
+  .fb2{padding:2px 20px 18px;font-size:17px}
+  .fb2 h2{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.05em;margin:20px 0 6px;color:var(--pompeii-dark)}
+  .fb2 p{margin:6px 0}
+  .fb2 th{background:#E8C35D;color:var(--ink)}
+  .fb2 td:first-child{background:#f1e9d3;font-weight:600}
+  .red{color:#c0291b;font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+  .key{border-left:5px solid var(--gold);background:#faf5e6;padding:8px 12px;margin:10px 0}
+  .entry{font-style:italic;font-size:32px;line-height:1.25;margin:6px 0 4px;word-break:break-word}
+  .step{margin-top:14px;padding-top:8px;border-top:1px dashed var(--line)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:560px){.row2{grid-template-columns:1fr}}
+
+
+  .tabs{display:flex;gap:6px}
+  .tab{font-family:'Cinzel',serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;padding:11px 24px;border:1px solid var(--line);border-bottom:none;background:#d8cba9;color:var(--ink-soft);cursor:pointer;border-radius:3px 3px 0 0}
+  .tab[aria-selected="true"]{background:var(--papyrus-deep);color:var(--pompeii);font-weight:700}
+  .tab:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+  .tp{font-style:italic;color:var(--ink-soft);margin:0 0 6px}
+  .row3{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px}
+  @media (max-width:560px){.row3{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<a class="home-fab" href="index.html">🏠 Accueil du site</a>
+<div class="page">
+  <header>
+    <h1>Revoir le <em>parfait</em> de l’indicatif</h1>
+    <svg class="laurel" viewBox="0 0 220 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><line x1="0" y1="7" x2="90" y2="7" stroke="#A9812E" stroke-width="1"/><circle cx="110" cy="7" r="3" fill="#9C3B30"/><line x1="130" y1="7" x2="220" y2="7" stroke="#A9812E" stroke-width="1"/></svg>
+  </header>
+
+  <p class="instructions">
+    <b>Consignes.</b> Relis d’abord ta fiche mémo (parfait actif et parfait passif), puis passe à l’onglet <b>Identifier</b> (n° de la conjugaison, voix, personne, nombre), puis à l’onglet <b>Traduire</b> (un seul sens est donné pour chaque verbe).
+    Tu peux répondre dans la page, <i>ou</i> sur une feuille, <i>ou</i> dans ta tête, puis cliquer sur « Vérifier » : si tu ne remplis rien, la réponse attendue s’affiche et c’est toi qui indiques si tu avais juste.
+    Une seule erreur, et c’est « Faux ». Par convention, à la 3<sup>e</sup> personne on met « il(s) » ou « elle(s) ».<br><b>Pense, pour toutes les formes composées avec PPP, à bien vérifier le genre du PPP avant de traduire !</b>
+  </p>
+
+  <details class="fiche"><summary>📖 Ma fiche mémo : l’indicatif parfait</summary>
+  <div class="fb2">
+    <h2>Remarques préliminaires</h2>
+    <p>• Le parfait latin correspond au <b>passé composé</b> ou au <b>passé simple</b> en français.</p>
+    <p>• ⚠ <b>2 formations</b> : le parfait <b>actif</b> (radical du parfait + <b>terminaisons propres</b>) et le parfait <b>passif</b> (temps composé : PPP + présent de <i>sum</i>).</p>
+    <p class="key">⚠ Attention aux fautes en français sur le passé simple (actif en particulier) !</p>
+    <p>• Pour conjuguer le parfait, il faut bien lire les <b>temps primitifs</b> :</p>
+    <div class="tw"><table><tr><th>Verbe</th><th>1<sup>re</sup> sg présent</th><th>2<sup>e</sup> sg</th><th>Infinitif</th><th>1<sup>re</sup> sg parfait</th><th>Supin</th></tr>
+      <tr><td>amo : aimer</td><td><i>amo</i></td><td><i>as</i></td><td><i>are</i></td><td><i>amavi</i></td><td><i>amatum</i></td></tr>
+      <tr><td>dico : dire</td><td><i>dico</i></td><td><i>is</i></td><td><i>ere</i></td><td><i>dixi</i></td><td><i>dictum</i></td></tr></table></div>
+    <p>→ 1<sup>re</sup> sg + infinitif : <b>n° de la conjugaison</b> ; 1<sup>re</sup> sg du parfait : <b>radical du parfait</b> ; supin : <b>PPP</b>.</p>
+
+    <h2>A. Verbe irrégulier : <i>sum, esse, fui, –</i> : être</h2>
+    <div class="tw"><table><tr><th></th><th>Singulier</th><th>Pluriel</th></tr>
+      <tr><td>1</td><td><i>fui</i></td><td><i>fuimus</i></td></tr>
+      <tr><td>2</td><td><i>fuisti</i></td><td><i>fuistis</i></td></tr>
+      <tr><td>3</td><td><i>fuit</i></td><td><i>fuerunt</i></td></tr></table></div>
+    <p>Radical <b>fu-</b> + les terminaisons du parfait actif, <b>à connaître pour tous les verbes</b>.</p>
+
+    <h2>B. Parfait actif</h2>
+    <p><b>Formation :</b> radical du parfait + terminaisons <i>-i, -isti, -it, -imus, -istis, -erunt</i>.</p>
+    <p><span class="red">Pour trouver le radical du parfait</span> : prendre la forme donnée par les temps primitifs (1<sup>re</sup> sg du parfait) et enlever le <b>–i</b>. Les verbes de toutes les conjugaisons se conjuguent de la même façon au parfait actif, mais tous les parfaits ne se forment pas de la même manière : c’est pourquoi le parfait figure dans les temps primitifs.</p>
+    <p><i>dico, is, ere, dixi, dictum</i> : <i>dixi</i> → radical <b>dix-</b> ; <i>amo, as, are, amavi, amatum</i> : <i>amavi</i> → radical <b>amav-</b>.</p>
+    <div class="tw"><table><tr><th></th><th><i>rogo, as, are, rogavi, rogatum</i> : demander</th><th><i>jubeo, es, ere, jussi, jussum</i> : ordonner</th></tr>
+      <tr><td>1<sup>re</sup> sg</td><td><i>rogavi</i></td><td><i>jussi</i></td></tr>
+      <tr><td>2<sup>e</sup> sg</td><td><i>rogavisti</i></td><td><i>jussisti</i></td></tr>
+      <tr><td>3<sup>e</sup> sg</td><td><i>rogavit</i></td><td><i>jussit</i></td></tr>
+      <tr><td>1<sup>re</sup> pl</td><td><i>rogavimus</i></td><td><i>jussimus</i></td></tr>
+      <tr><td>2<sup>e</sup> pl</td><td><i>rogavistis</i></td><td><i>jussistis</i></td></tr>
+      <tr><td>3<sup>e</sup> pl</td><td><i>rogaverunt</i></td><td><i>jusserunt</i></td></tr></table></div>
+
+    <h2>C. Parfait passif</h2>
+    <p>• Le parfait passif est un <b>temps composé</b> : <b>PPP + présent de <i>sum</i></b> (<i>sum, es, est, sumus, estis, sunt</i>).</p>
+    <p>• Le PPP est formé sur le <b>supin</b> : <i>amatum</i> → <i>amatus, a, um</i> (on remplace <i>-um</i> par <i>-us, -a, -um</i>). Il se décline comme un adjectif de la 1<sup>re</sup> classe (comme <i>dominus</i> au masculin, <i>rosa</i> au féminin, <i>templum</i> au neutre). Un verbe sans supin (ex. <i>fugio</i>) n’a pas de parfait passif.</p>
+    <p>• Le PPP <b>s’accorde avec le sujet</b> :</p>
+    <div class="tw"><table><tr><th></th><th>Singulier (masc. / fém.)</th><th>Pluriel (masc. / fém.)</th></tr>
+      <tr><td>1</td><td><i>amatus / amata sum</i></td><td><i>amati / amatae sumus</i></td></tr>
+      <tr><td>2</td><td><i>amatus / amata es</i></td><td><i>amati / amatae estis</i></td></tr>
+      <tr><td>3</td><td><i>amatus / amata est</i></td><td><i>amati / amatae sunt</i></td></tr></table></div>
+    <p><i>Marcus amatus est</i> : Marcus a été aimé (ou : fut aimé). <i>Cornelia amata est</i> : Cornélia a été aimée. <i>Romani amati sunt</i> : les Romains ont été aimés.</p>
+    <p class="key">⚠ Ne pas traduire un parfait passif latin en calquant la formation française : <i>amatus est</i> ≠ « il est aimé » (ce serait un présent), mais « il a été aimé » / « il fut aimé ».</p>
+  </div></details>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-id" aria-selected="true">Identifier</button>
+    <button class="tab" role="tab" id="tab-tr" aria-selected="false">Traduire</button>
+  </div>
+  <div class="card" id="app" role="tabpanel"></div>
+  <footer>Perfectum bene discere : une fois les terminaisons sues, tout le parfait suit.</footer>
+</div>
+
+<script>
+const CJ={"1":"1re conjugaison","2":"2e conjugaison","3":"3e conjugaison","3m":"3e conjugaison mixte","4":"4e conjugaison"};
+const CNS={"1":"1re","2":"2e","3":"3e","3m":"3e mixte","4":"4e"};
+const VX={act:"actif",pas:"passif"};
+const PE={"1":"1re personne","2":"2e personne","3":"3e personne"};
+const NBL={"1":"singulier","2":"pluriel"};
+const SUM=["sum","es","est","sumus","estis","sunt"];
+const ENDS=["i","isti","it","imus","istis","erunt"];
+const VB={
+ amo:{pd:"amo",a:"as",b:"are",x:"am",d:"1",pf:"amavi",sp:"amatum",pas:1},
+ rogo:{pd:"rogo",a:"as",b:"are",x:"rog",d:"1",pf:"rogavi",sp:"rogatum",pas:1},
+ jubeo:{pd:"jubeo",a:"es",b:"ere",x:"jub",d:"2",pf:"jussi",sp:"jussum",pas:0},
+ dico:{pd:"dīco",a:"is",b:"ere",x:"dic",d:"3",pf:"dixi",sp:"dictum",pas:1},
+ monstro:{pd:"mōnstro",a:"as",b:"are",x:"monstr",d:"1",pf:"monstravi",sp:"monstratum",pas:1},
+ moveo:{pd:"mŏvĕo",a:"es",b:"ere",x:"mov",d:"2",pf:"movi",sp:"motum",pas:1},
+ tego:{pd:"tĕgo",a:"is",b:"ere",x:"teg",d:"3",pf:"texi",sp:"tectum",pas:1},
+ teneo:{pd:"tĕnĕo",a:"es",b:"ere",x:"ten",d:"2",pf:"tenui",sp:"tentum",pas:1},
+ cieo:{pd:"cĭĕo",a:"es",b:"ere",x:"ci",d:"2",pf:"civi",sp:"citum",pas:1},
+ cedo:{pd:"cēdo",a:"is",b:"ere",x:"ced",d:"3",pf:"cessi",sp:"cessum",pas:0},
+ erro:{pd:"ērro",a:"as",b:"are",x:"err",d:"1",pf:"erravi",sp:"erratum",pas:0},
+ fugio:{pd:"fŭgĭo",a:"is",b:"ere",x:"fug",d:"3m",pf:"fugi",sp:"",pas:0},
+ sto:{pd:"stō",a:"as",b:"are",x:"st",d:"1",pf:"steti",sp:"statum",pas:0}
+};
+Object.values(VB).forEach(v=>{v.p1=v.pd.normalize("NFD").replace(/[\u0300-\u036f]/g,"");v.inf=v.x+v.b;v.q=v.pf.slice(0,-1);v.st=v.sp?v.sp.slice(0,-2):""});
+const entry=v=>`${v.pd}, ${v.a}, ${v.b}, ${v.pf}, ${v.sp||"<small>(pas de supin)</small>"}`;
+const FRV={
+ amo:{s:"aimer",pp:["aimé","aimée","aimés","aimées"],ps:["aimai","aimas","aima","aimâmes","aimâtes","aimèrent"]},
+ rogo:{s:"demander",pp:["demandé","demandée","demandés","demandées"],ps:["demandai","demandas","demanda","demandâmes","demandâtes","demandèrent"]},
+ jubeo:{s:"ordonner",pp:["ordonné","ordonnée","ordonnés","ordonnées"],ps:["ordonnai","ordonnas","ordonna","ordonnâmes","ordonnâtes","ordonnèrent"]},
+ dico:{s:"dire",pp:["dit","dite","dits","dites"],ps:["dis","dis","dit","dîmes","dîtes","dirent"]},
+ monstro:{s:"montrer",pp:["montré","montrée","montrés","montrées"],ps:["montrai","montras","montra","montrâmes","montrâtes","montrèrent"]},
+ teneo:{s:"tenir",pp:["tenu","tenue","tenus","tenues"],ps:["tins","tins","tint","tînmes","tîntes","tinrent"]},
+ tego:{s:"couvrir",pp:["couvert","couverte","couverts","couvertes"],ps:["couvris","couvris","couvrit","couvrîmes","couvrîtes","couvrirent"]},
+ erro:{s:"errer",pp:["erré"],ps:["errai","erras","erra","errâmes","errâtes","errèrent"]},
+ cedo:{s:"céder",pp:["cédé"],ps:["cédai","cédas","céda","cédâmes","cédâtes","cédèrent"]},
+ fugio:{s:"fuir",pp:["fui"],ps:["fuis","fuis","fuit","fuîmes","fuîtes","fuirent"]}
+};
+function latForm(v,voix,p,g){
+ if(voix==="act")return v.q+ENDS[p];
+ return v.st+(p<3?(g==="m"?"us":"a"):(g==="m"?"i":"ae"))+" "+SUM[p];
+}
+const subjOf=(p,g)=>["je","tu",g==="f"?"elle":"il","nous","vous",g==="f"?"elles":"ils"][p];
+function remPPP(q){
+ const ppp=q.lat.split(" ")[0],en=ppp.slice(q.v.st.length),subj=subjOf(q.p,q.g);
+ const nat={us:"masculin singulier",a:"féminin singulier",i:"masculin pluriel",ae:"féminin pluriel"}[en];
+ const pp=FRV[q.k].pp[(q.p<3?0:2)+(q.g==="f"?1:0)];
+ const j=(q.p===2||q.p===5)?`justifie le choix du sujet « ${subj} »`:`indique le genre et le nombre du sujet (« ${subj} » est ici ${q.g==="f"?"féminin":"masculin"})`;
+ return `Le PPP <i>${ppp}</i> (terminaison <i>-${en}</i>) est au ${nat} : il s’accorde avec le sujet, ce qui ${j} ; en français, le participe s’accorde aussi : <i>${pp}</i>.`;
+}
+function remTerm(q){
+ const T={0:["-i","1re sg","je"],1:["-isti","2e sg","tu"],4:["-istis","2e pl","vous"],5:["-erunt","3e pl","ils"]}[q.p];
+ if(!T)return "";
+ return `<br>Comme pour le PPP, la terminaison justifie le choix du sujet : <i>${T[0]}</i> = ${T[1]} → « ${T[2]} »`+(q.p===0?" (lorsqu’il est sûr que c’est une forme verbale et non une forme d’un nom de la 2e déclinaison, type <i>dominus</i> ou <i>templum</i>)":"")+".";
+}
+function frForms(k,voix,p,g){
+ const f=FRV[k];
+ const subj=subjOf(p,g);
+ const av=["ai","as","a","avons","avez","ont"][p],et=["fus","fus","fut","fûmes","fûtes","furent"][p];
+ if(voix==="act"){const ps=f.ps[p];return[(p===0?"j’":subj+" ")+av+" "+f.pp[0],(p===0&&/^[aeiouéèêh]/.test(ps)?"j’":subj+" ")+ps]}
+ const pp=f.pp[(p<3?0:2)+(g==="f"?1:0)];
+ return[(p===0?"j’":subj+" ")+av+" été "+pp,subj+" "+et+" "+pp];
+}
+const $=id=>document.getElementById(id);
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’‘`]/g,"'").replace(/\s+/g," ").trim();
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const range=n=>[...Array(n).keys()];
+
+function corrID(q){return `${CJ[q.v.d]} ; parfait ${VX[q.voix]} ; ${PE[q.p%3+1]} du ${NBL[q.p<3?1:2]}`}
+function hintID(q){
+ const v=q.v,c=`Conjugaison : ${v.p1}, ${v.inf} → ${CJ[v.d]}. `;
+ return c+(q.voix==="act"?`Parfait actif = radical du parfait <i>${v.q}-</i> (${v.pf} − <i>-i</i>) + terminaison <i>-${ENDS[q.p]}</i>.`:`Parfait passif = PPP <i>${q.lat.split(" ")[0]}</i> (formé sur le supin <i>${v.sp}</i>) + présent de <i>sum</i> (<i>${SUM[q.p]}</i>).<br>Rappel : ${RC}`);
+}
+function mkID(o){const v=VB[o.k];const q={...o,v};q.lat=latForm(v,o.voix,o.p,o.g);q.exp=corrID(q);return q}
+const RC="attention avec les formes composées (donc passives) en latin, ne pas calquer la formation du passif en français sous peine de faute de temps.";
+const passCombos=n=>{const c=[[2,"m"],[2,"f"],[5,"m"],[5,"f"]];while(c.length<n)c.push([Math.random()<.5?2:5,Math.random()<.5?"m":"f"]);return shuffle(c)};
+function genID(){
+ const keys=Object.keys(VB);
+ const pasK=shuffle(keys.filter(k=>VB[k].pas)).slice(0,6);
+ const actK=shuffle(keys.filter(k=>!pasK.includes(k))).slice(0,6);
+ const pa=shuffle(range(6)),pg=passCombos(6);
+ return shuffle([...pasK.map((k,j)=>({k,voix:"pas",p:pg[j][0],g:pg[j][1]})),...actK.map((k,j)=>({k,voix:"act",p:pa[j],g:"0"}))]).map(mkID);
+}
+function genTR(){
+ const keys=Object.keys(FRV);
+ const pasK=shuffle(keys.filter(k=>VB[k].pas)).slice(0,5);
+ const actK=shuffle(keys.filter(k=>!pasK.includes(k)));
+ const pa=shuffle(range(6)),pg=passCombos(5);
+ return shuffle([...pasK.map((k,j)=>({k,voix:"pas",p:pg[j][0],g:pg[j][1]})),...actK.map((k,j)=>({k,voix:"act",p:pa[j],g:"0"}))]).map(o=>{
+  const v=VB[o.k],fr=frForms(o.k,o.voix,o.p,o.g);
+  const acc=(o.voix==="act"&&(o.p===2||o.p===5))?[...fr,...fr.map(x=>x.replace(/^(ils?) /,(m,a)=>a==="il"?"elle ":"elles "))]:fr;
+  return {...o,v,lat:latForm(v,o.voix,o.p,o.g),fr,acc,sens:FRV[o.k].s,exp:fr.join(" / ")};
+ });
+}
+const newState=t=>({Q:t==="id"?genID():genTR(),i:0,score:0,log:[],fin:false});
+let cur="id",S={id:newState("id"),tr:newState("tr")},go,phase;
+
+function sel(o){return `<option value="">— choisir —</option>`+Object.entries(o).map(([k,t])=>`<option value="${k}">${t}</option>`).join("")}
+function show(){
+ const s=S[cur];phase="q";
+ ["id","tr"].forEach(t=>$("tab-"+t).setAttribute("aria-selected",t===cur));
+ if(s.fin){end();return}
+ const q=s.Q[s.i];
+ let h=`<div class="meta"><span>Question ${s.i+1} / ${s.Q.length}</span><span>Score : ${s.score}</span></div><div class="bar"><i style="width:${s.i/s.Q.length*100}%"></i></div>`;
+ if(cur==="id"){
+  h+=`<div class="type">Identifier la forme</div><div class="form">${q.lat}</div><p class="tp">${entry(q.v)}</p><div id="qa"><div class="row3">
+  <div><label for="cj">Conjugaison du verbe</label><select id="cj">${sel(CNS)}</select></div>
+  <div><label for="vx">Voix</label><select id="vx">${sel(VX)}</select></div>
+  <div><label for="pe">Personne</label><select id="pe">${sel(PE)}</select></div>
+  <div><label for="nb">Nombre</label><select id="nb">${sel(NBL)}</select></div></div></div>`;
+ }else{
+  h+=`<div class="type">Traduire en français</div><div class="form">${q.lat}</div><p class="tp">${entry(q.v)} : <b>${q.sens}</b></p><div id="qa"><label for="tr">Ta réponse</label><input type="text" id="tr" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Écris-la ici, ou sur une feuille, ou dis-la dans ta tête"><p class="help">Avec le pronom sujet ; passé composé ou passé simple.</p></div>`;
+ }
+ h+=`<div id="fq"></div><div class="controls"><button class="action btn-primary" id="go">Vérifier</button></div>`;
+ $("app").innerHTML=h;
+ go=$("go");go.onclick=check;
+ const t=$("tr");if(t){t.focus();t.onkeydown=e=>{if(e.key==="Enter")go.click()}}
+}
+function check(){
+ const s=S[cur],q=s.Q[s.i];
+ if(phase==="next"){s.i++;if(s.i>=s.Q.length)s.fin=true;show();return}
+ if(cur==="id"){
+  const f={d:$("cj").value,voix:$("vx").value,p:$("pe").value,n:$("nb").value};
+  const vals=Object.values(f);
+  if(vals.every(x=>x==="")){ask(q);return}
+  if(vals.some(x=>x==="")){$("fq").innerHTML=`<div class="fb ko">Remplis les quatre menus, ou laisse-les tous vides pour te corriger toi-même.</div>`;return}
+  done(q,f.d===q.v.d&&f.voix===q.voix&&+f.p===q.p%3+1&&+f.n===(q.p<3?1:2));
+ }else{
+  const v=norm($("tr").value);
+  if(!v){ask(q);return}
+  done(q,(q.acc||q.fr).some(a=>norm(a)===v));
+ }
+}
+function ask(q){
+ go.style.display="none";lock();
+ $("fq").innerHTML=`<div class="fb">Réponse attendue : <b>${q.exp}</b><br>Ta réponse (sur feuille ou dans ta tête) était-elle juste, sans la moindre erreur ?</div><div class="controls"><button class="action btn-primary" id="yes">Oui</button><button class="action btn-secondary" id="no">Non</button></div>`;
+ $("yes").onclick=()=>done(q,true);$("no").onclick=()=>done(q,false);
+}
+const lock=()=>[...$("qa").querySelectorAll("select,input")].forEach(e=>e.disabled=true);
+function done(q,ok){
+ const s=S[cur];if(ok)s.score++;s.log.push({q,ok});
+ const rappel=cur==="id"?hintID(q):(q.voix==="pas"?`${RC}<br>Parfait passif = PPP + présent de <i>sum</i> → « a été » / « fut » + participe accordé (et non « est » + participe, qui serait un présent).<br>${remPPP(q)}`:`parfait actif = radical <i>${q.v.q}-</i> + terminaison <i>-${ENDS[q.p]}</i> → passé composé ou passé simple.${remTerm(q)}${q.k==="fugio"?"<br>⚠ Attention à ce passé simple en français, source fréquente de barbarismes en version.":""}`);
+ $("fq").innerHTML=`<div class="fb ${ok?"ok":"ko"}">${ok?"Correct !":"Faux"} <b>${q.exp}</b><br><small>Rappel : ${rappel}</small></div>`;
+ lock();go.style.display="";phase="next";
+ go.textContent=s.i===s.Q.length-1?"Voir le bilan":"Question suivante";go.focus();
+}
+function end(){
+ const s=S[cur],tot=s.Q.length;
+ const msg=s.score>=tot*.9?"Excellent !":s.score>=tot*.7?"Bien, mais revois les erreurs.":"À retravailler : relis ta fiche mémo et le tableau ci-dessous.";
+ $("app").innerHTML=`<div class="meta"><span>Terminé</span></div><div class="big">${s.score} / ${tot}</div><p>${msg}</p><div class="tw"><table><tr><th>Forme</th><th>Réponse attendue</th><th></th></tr>${s.log.map(r=>`<tr><td><i>${r.q.lat}</i></td><td>${r.q.exp}</td><td class="${r.ok?"ok":"ko"}">${r.ok?"✓":"✗"}</td></tr>`).join("")}</table></div><div class="controls"><button class="action btn-primary" id="again">Recommencer</button><button class="action btn-secondary" id="other">Onglet ${cur==="id"?"Traduire":"Identifier"}</button><a class="action btn-secondary" href="index.html">🏠 Accueil du site</a></div>`;
+ $("again").onclick=()=>{S[cur]=newState(cur);show()};
+ $("other").onclick=()=>{cur=cur==="id"?"tr":"id";show()};
+}
+["id","tr"].forEach(t=>$("tab-"+t).onclick=()=>{cur=t;show()});
+show();
+</script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conj 01 — ESSE : infinitif présent, indicatif présent, imparfait et parfait</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --papyrus:#EDE3CE; --papyrus-deep:#E2D5B7; --stone:#DCD0B4;
+    --ink:#2B241C; --ink-soft:#55493a;
+    --pompeii:#9C3B30; --pompeii-dark:#7c2e26;
+    --verdigris:#4C7A6E; --verdigris-dark:#3a5f56;
+    --gold:#A9812E; --line:#b9a97e;
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; background:var(--papyrus);
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.25), transparent 55%),
+      radial-gradient(ellipse at 90% 80%, rgba(0,0,0,0.05), transparent 60%);
+    color:var(--ink); font-family:'EB Garamond',Georgia,serif; font-size:18px; line-height:1.5;
+  }
+  .page{ max-width:760px; margin:0 auto; padding:56px 24px 80px; }
+
+  .home-fab{
+    position:fixed; top:14px; left:14px; z-index:999;
+    display:flex; align-items:center; gap:6px;
+    background:linear-gradient(135deg,#B9812A,#6B1E23);
+    color:#fff; font-family:'Iowan Old Style','Palatino Linotype',Georgia,serif;
+    font-size:0.82rem; font-weight:700; text-decoration:none;
+    padding:8px 14px; border-radius:20px; box-shadow:0 3px 10px rgba(0,0,0,0.25);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .home-fab:hover{ transform:translateY(-2px); box-shadow:0 5px 14px rgba(0,0,0,0.3); }
+  @media (max-width:480px){ .home-fab{ font-size:0.72rem; padding:6px 10px; top:8px; left:8px; } }
+
+  header{ text-align:center; margin-bottom:28px; }
+  h1{
+    font-family:'Cinzel',serif; font-weight:700; font-size:clamp(26px,5vw,40px);
+    letter-spacing:0.02em; margin:0 0 8px; color:var(--ink);
+  }
+  h1 em{ font-style:normal; color:var(--pompeii); }
+  .laurel{ width:220px; height:14px; margin:14px auto 0; opacity:0.75; }
+
+  .instructions{
+    text-align:center; color:var(--ink-soft); font-size:16px;
+    max-width:700px; margin:0 auto 18px;
+  }
+  .rappel{
+    max-width:700px; margin:0 auto 26px; padding:10px 16px;
+    background:var(--papyrus-deep); border:1px solid var(--line);
+    border-left:4px solid var(--pompeii); font-size:16px; color:var(--ink-soft);
+  }
+  .rappel b{ color:var(--pompeii-dark); }
+
+  .card{
+    background:var(--papyrus-deep); border:1px solid var(--line);
+    box-shadow:0 6px 20px rgba(60,45,20,0.15); padding:26px 28px;
+  }
+  .meta{
+    display:flex; justify-content:space-between;
+    font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--verdigris-dark);
+  }
+  .bar{ height:5px; background:#cbb99a; margin:8px 0 20px; }
+  .bar i{ display:block; height:100%; width:0; background:var(--gold); transition:width .3s; }
+  .type{
+    font-family:'Cinzel',serif; font-size:12.5px; letter-spacing:0.22em;
+    text-transform:uppercase; color:var(--pompeii);
+  }
+  .form{ font-style:italic; font-size:48px; line-height:1.2; margin:4px 0 12px; }
+  label{
+    display:block; margin:14px 0 5px; font-family:'Cinzel',serif; font-size:11.5px;
+    letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft);
+  }
+  select,input[type=text]{
+    width:100%; font-family:'EB Garamond',serif; font-size:18px; padding:9px 10px;
+    border:1px solid var(--line); background:#faf5e6; color:var(--ink); border-radius:2px;
+  }
+  select:focus,input:focus{ outline:3px solid var(--gold); outline-offset:1px; }
+  .help{ font-size:15px; font-style:italic; color:var(--ink-soft); margin:2px 0 0; }
+
+  .fb{ margin-top:18px; padding:12px 16px; border:1px solid var(--line); background:#faf5e6; }
+  .fb.ok{ background:#dce9df; color:var(--verdigris-dark); border-color:#a8c4b2; }
+  .fb.ko{ background:#f1dcd8; color:var(--pompeii-dark); border-color:#dba9a2; }
+  .fb small{ color:var(--ink-soft); }
+
+  .controls{ display:flex; gap:12px; flex-wrap:wrap; margin-top:20px; align-items:center; }
+  .action{
+    font-family:'Cinzel',serif; font-size:13px; letter-spacing:0.14em; text-transform:uppercase;
+    padding:12px 26px; border-radius:2px; cursor:pointer; border:1px solid transparent;
+    text-decoration:none; display:inline-block; transition:transform .1s ease;
+  }
+  .action:active{ transform:translateY(1px); }
+  .action:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+  .btn-primary{ background:var(--pompeii); color:#fbf3e4; box-shadow:0 4px 10px rgba(124,46,38,0.3); }
+  .btn-primary:hover{ background:var(--pompeii-dark); }
+  .btn-secondary{ background:transparent; color:var(--ink-soft); border-color:var(--line); }
+  .btn-secondary:hover{ background:rgba(0,0,0,0.05); }
+
+  .big{ font-family:'Cinzel',serif; font-size:44px; color:var(--pompeii); margin:4px 0; }
+  .tw{ overflow-x:auto; }
+  table{ border-collapse:collapse; width:100%; margin-top:12px; }
+  th{
+    font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+    background:#d8cba9; text-align:left;
+  }
+  td,th{ border:1px solid var(--line); padding:7px 10px; }
+  td{ background:#faf5e6; }
+  td.ok{ color:var(--verdigris-dark); font-weight:600; } td.ko{ color:var(--pompeii-dark); font-weight:600; }
+
+  footer{ text-align:center; margin-top:46px; font-size:13px; color:var(--ink-soft); font-style:italic; }
+  @media (prefers-reduced-motion:reduce){ *{ transition:none !important; } }
+</style>
+</head>
+<body>
+<a class="home-fab" href="index.html">🏠 Accueil du site</a>
+
+<div class="page">
+  <header>
+    <h1><em>ESSE</em> : infinitif présent, indicatif présent, imparfait et parfait</h1>
+    <svg class="laurel" viewBox="0 0 220 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <line x1="0" y1="7" x2="90" y2="7" stroke="#A9812E" stroke-width="1"/>
+      <circle cx="110" cy="7" r="3" fill="#9C3B30"/>
+      <line x1="130" y1="7" x2="220" y2="7" stroke="#A9812E" stroke-width="1"/>
+    </svg>
+  </header>
+
+  <p class="instructions">
+    <b>Consignes.</b> Les questions alternent deux types.
+    <b>Identifier</b> : choisis dans les menus le mode et le temps, la personne et le nombre, <i>ou</i> note-les sur une feuille, <i>ou</i> dis-les dans ta tête, puis clique sur « Vérifier ».
+    <b>Traduire</b> : écris ta réponse dans la case, <i>ou</i> sur une feuille, <i>ou</i> dis-la dans ta tête, puis clique sur « Vérifier » ;
+    dans les deux cas, si tu ne remplis rien, la réponse attendue s’affiche et c’est toi qui indiques si tu avais juste.
+    Une seule erreur, et c’est « Faux ».
+  </p>
+  <div class="rappel">
+    <b>Rappel :</b> pour <i>sum</i> il n’y a pas de voix à indiquer.<br>
+    Par convention, pour la 3<sup>e</sup> personne du singulier et du pluriel, on met « il » / « ils ».
+  </div>
+
+  <div class="card" id="app"></div>
+
+  <footer>Sum, es, est… — apprendre le verbe <i>esse</i>, c’est tenir la clé de toutes les conjugaisons.</footer>
+</div>
+
+<script>
+const TEMPS={pres:"Indicatif présent",imp:"Indicatif imparfait",parf:"Indicatif parfait"};
+const LAT={pres:["sum","es","est","sumus","estis","sunt"],imp:["eram","eras","erat","eramus","eratis","erant"],parf:["fui","fuisti","fuit","fuimus","fuistis","fuerunt"]};
+const FR={
+pres:[["je suis"],["tu es"],["il est"],["nous sommes"],["vous êtes"],["ils sont"]],
+imp:[["j’étais"],["tu étais"],["il était"],["nous étions"],["vous étiez"],["ils étaient"]],
+parf:[["j’ai été","je fus"],["tu as été","tu fus"],["il a été","il fut"],["nous avons été","nous fûmes"],["vous avez été","vous fûtes"],["ils ont été","ils furent"]]};
+const PERS=["","1re personne","2e personne","3e personne"];
+const NB=["","singulier","pluriel"];
+const INF={l:"esse",t:"inf",fr:["être"]};
+const forms=[];
+for(const t of ["pres","imp","parf"])for(let i=0;i<6;i++)forms.push({l:LAT[t][i],t,p:i%3+1,n:i<3?1:2,fr:FR[t][i]});
+const PARF_NOTE="<br><small>Rappel : les terminaisons du parfait de <i>esse</i> (-i, -isti, -it, -imus, -istis, -erunt) sont à connaître pour le parfait actif de tous les verbes !</small>";
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’‘`]/g,"'").replace(/\s+/g," ").trim();
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const opts=(arr,s)=>arr.map((o,k)=>`<option value="${k+s}">${o}</option>`).join("");
+let Q,i,score,answered,log;
+const app=document.getElementById("app");
+
+function start(){
+ const fin=shuffle(forms);
+ const ids=fin.slice(0,10).map(f=>({...f,type:"id"}));
+ const trs=shuffle([...fin.slice(10),INF]).map(f=>({...f,type:"tr"}));
+ Q=[];for(let k=0;k<10;k++){Q.push(ids[k]);if(trs[k])Q.push(trs[k])}
+ i=0;score=0;log=[];show();
+}
+function show(){
+ answered=false;const q=Q[i];
+ let h=`<div class="meta"><span>Question ${i+1} / ${Q.length}</span><span>Score : ${score}</span></div><div class="bar"><i style="width:${i/Q.length*100}%"></i></div>`;
+ h+=`<div class="type">${q.type==="id"?"Identifier la forme":"Traduire en français"}</div><div class="form">${q.l}</div>`;
+ if(q.type==="id"){
+  h+=`<label for="st">Mode et temps</label><select id="st"><option value="">— choisir —</option>${Object.entries(TEMPS).map(([k,v])=>`<option value="${k}">${v}</option>`).join("")}</select>`;
+  h+=`<label for="sp">Personne</label><select id="sp"><option value="">— choisir —</option>${opts(PERS.slice(1),1)}</select>`;
+  h+=`<label for="sn">Nombre</label><select id="sn"><option value="">— choisir —</option>${opts(NB.slice(1),1)}</select>`;
+ }else{
+  h+=`<label for="tr">Ta réponse</label><input type="text" id="tr" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Écris-la ici, ou sur une feuille, ou dis-la dans ta tête">`;
+  h+=`<p class="help">Avec le pronom sujet (ou « être » pour l’infinitif), puis clique sur « Vérifier ».</p>`;
+ }
+ h+=`<div id="fb"></div><div class="controls"><button class="action btn-primary" id="go">Vérifier</button></div>`;
+ app.innerHTML=h;
+ const go=document.getElementById("go");go.onclick=()=>answered?next():check();
+ const t=document.getElementById("tr");if(t){t.focus();t.onkeydown=e=>{if(e.key==="Enter")go.click()}}
+}
+function check(){
+ const q=Q[i];let ok,corr;
+ if(q.type==="id"){
+  const t=st.value,p=sp.value,n=sn.value;
+  corr=`${TEMPS[q.t]}, ${PERS[q.p]} du ${NB[q.n]}`;
+  if(!t&&p===""&&n===""){selfGrade(q,corr);return}
+  if(!t||p===""||n===""){fb.innerHTML=`<div class="fb ko">Remplis les trois menus, ou laisse-les tous vides pour te corriger toi-même.</div>`;return}
+  ok=t===q.t&&+p===q.p&&+n===q.n;
+ }else{
+  const v=norm(tr.value);corr=q.fr.join(" / ");
+  if(!v){selfGrade(q,corr);return}
+  ok=q.fr.some(a=>norm(a)===v);
+ }
+ finish(q,ok,corr);
+}
+function finish(q,ok,corr){
+ const pn=q.t==="parf"?PARF_NOTE:"";
+ if(ok)score++;
+ log.push({l:q.l,corr,ok});
+ fb.innerHTML=`<div class="fb ${ok?"ok":"ko"}">${ok?"Correct !":"Faux"} <b>${q.l}</b> : ${corr}${pn}</div>`;
+ answered=true;go.style.display="";go.textContent=i===Q.length-1?"Voir le bilan":"Suivant";
+ [...document.querySelectorAll("select,input")].forEach(e=>e.disabled=true);go.focus();
+}
+function selfGrade(q,corr){
+ go.style.display="none";[...document.querySelectorAll("select,input")].forEach(e=>e.disabled=true);
+ fb.innerHTML=`<div class="fb">Réponse attendue : <b>${corr}</b><br>Ta réponse (écrite sur feuille ou donnée mentalement) était-elle juste, sans la moindre erreur ?</div><div class="controls"><button class="action btn-primary" id="okb">Oui</button><button class="action btn-secondary" id="kob">Non</button></div>`;
+ okb.onclick=()=>finish(q,true,corr);
+ kob.onclick=()=>finish(q,false,corr);
+}
+function next(){i++;i<Q.length?show():end()}
+function end(){
+ const msg=score>=Q.length*.9?"Excellent !":score>=Q.length*.7?"Bien, mais revois les erreurs.":"À retravailler : relis le tableau ci-dessous.";
+ app.innerHTML=`<div class="meta"><span>Terminé</span></div><div class="big">${score} / ${Q.length}</div><p>${msg}</p><div class="tw"><table><tr><th>Forme</th><th>Réponse attendue</th><th></th></tr>${log.map(r=>`<tr><td><i>${r.l}</i></td><td>${r.corr}</td><td class="${r.ok?"ok":"ko"}">${r.ok?"✓":"✗"}</td></tr>`).join("")}</table></div><div class="controls"><button class="action btn-primary" id="again">Recommencer</button><a class="action btn-secondary" href="index.html">🏠 Accueil du site</a></div>`;
+ document.getElementById("again").onclick=start;
+}
+start();
+</script>
+</body>
+</html>

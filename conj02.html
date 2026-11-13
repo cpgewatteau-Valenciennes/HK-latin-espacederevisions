@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conj 02 — Radicaux du présent et du parfait</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --papyrus:#EDE3CE; --papyrus-deep:#E2D5B7; --stone:#DCD0B4;
+    --ink:#2B241C; --ink-soft:#55493a;
+    --pompeii:#9C3B30; --pompeii-dark:#7c2e26;
+    --verdigris:#4C7A6E; --verdigris-dark:#3a5f56;
+    --gold:#A9812E; --line:#b9a97e;
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; background:var(--papyrus);
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.25), transparent 55%),
+      radial-gradient(ellipse at 90% 80%, rgba(0,0,0,0.05), transparent 60%);
+    color:var(--ink); font-family:'EB Garamond',Georgia,serif; font-size:18px; line-height:1.5;
+  }
+  .page{ max-width:760px; margin:0 auto; padding:56px 24px 80px; }
+
+  .home-fab{
+    position:fixed; top:14px; left:14px; z-index:999;
+    display:flex; align-items:center; gap:6px;
+    background:linear-gradient(135deg,#B9812A,#6B1E23);
+    color:#fff; font-family:'Iowan Old Style','Palatino Linotype',Georgia,serif;
+    font-size:0.82rem; font-weight:700; text-decoration:none;
+    padding:8px 14px; border-radius:20px; box-shadow:0 3px 10px rgba(0,0,0,0.25);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .home-fab:hover{ transform:translateY(-2px); box-shadow:0 5px 14px rgba(0,0,0,0.3); }
+  @media (max-width:480px){ .home-fab{ font-size:0.72rem; padding:6px 10px; top:8px; left:8px; } }
+
+  header{ text-align:center; margin-bottom:28px; }
+  h1{
+    font-family:'Cinzel',serif; font-weight:700; font-size:clamp(26px,5vw,40px);
+    letter-spacing:0.02em; margin:0 0 8px; color:var(--ink);
+  }
+  h1 em{ font-style:normal; color:var(--pompeii); }
+  .laurel{ width:220px; height:14px; margin:14px auto 0; opacity:0.75; }
+
+  .instructions{
+    text-align:center; color:var(--ink-soft); font-size:16px;
+    max-width:700px; margin:0 auto 18px;
+  }
+  .rappel{
+    max-width:700px; margin:0 auto 26px; padding:10px 16px;
+    background:var(--papyrus-deep); border:1px solid var(--line);
+    border-left:4px solid var(--pompeii); font-size:16px; color:var(--ink-soft);
+  }
+  .rappel b{ color:var(--pompeii-dark); }
+
+  .card{
+    background:var(--papyrus-deep); border:1px solid var(--line);
+    box-shadow:0 6px 20px rgba(60,45,20,0.15); padding:26px 28px;
+  }
+  .meta{
+    display:flex; justify-content:space-between;
+    font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--verdigris-dark);
+  }
+  .bar{ height:5px; background:#cbb99a; margin:8px 0 20px; }
+  .bar i{ display:block; height:100%; width:0; background:var(--gold); transition:width .3s; }
+  .type{
+    font-family:'Cinzel',serif; font-size:12.5px; letter-spacing:0.22em;
+    text-transform:uppercase; color:var(--pompeii);
+  }
+  .form{ font-style:italic; font-size:48px; line-height:1.2; margin:4px 0 12px; }
+  label{
+    display:block; margin:14px 0 5px; font-family:'Cinzel',serif; font-size:11.5px;
+    letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft);
+  }
+  select,input[type=text]{
+    width:100%; font-family:'EB Garamond',serif; font-size:18px; padding:9px 10px;
+    border:1px solid var(--line); background:#faf5e6; color:var(--ink); border-radius:2px;
+  }
+  select:focus,input:focus{ outline:3px solid var(--gold); outline-offset:1px; }
+  .help{ font-size:15px; font-style:italic; color:var(--ink-soft); margin:2px 0 0; }
+
+  .fb{ margin-top:18px; padding:12px 16px; border:1px solid var(--line); background:#faf5e6; }
+  .fb.ok{ background:#dce9df; color:var(--verdigris-dark); border-color:#a8c4b2; }
+  .fb.ko{ background:#f1dcd8; color:var(--pompeii-dark); border-color:#dba9a2; }
+  .fb small{ color:var(--ink-soft); }
+
+  .controls{ display:flex; gap:12px; flex-wrap:wrap; margin-top:20px; align-items:center; }
+  .action{
+    font-family:'Cinzel',serif; font-size:13px; letter-spacing:0.14em; text-transform:uppercase;
+    padding:12px 26px; border-radius:2px; cursor:pointer; border:1px solid transparent;
+    text-decoration:none; display:inline-block; transition:transform .1s ease;
+  }
+  .action:active{ transform:translateY(1px); }
+  .action:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+  .btn-primary{ background:var(--pompeii); color:#fbf3e4; box-shadow:0 4px 10px rgba(124,46,38,0.3); }
+  .btn-primary:hover{ background:var(--pompeii-dark); }
+  .btn-secondary{ background:transparent; color:var(--ink-soft); border-color:var(--line); }
+  .btn-secondary:hover{ background:rgba(0,0,0,0.05); }
+
+  .big{ font-family:'Cinzel',serif; font-size:44px; color:var(--pompeii); margin:4px 0; }
+  .tw{ overflow-x:auto; }
+  table{ border-collapse:collapse; width:100%; margin-top:12px; }
+  th{
+    font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+    background:#d8cba9; text-align:left;
+  }
+  td,th{ border:1px solid var(--line); padding:7px 10px; }
+  td{ background:#faf5e6; }
+  td.ok{ color:var(--verdigris-dark); font-weight:600; } td.ko{ color:var(--pompeii-dark); font-weight:600; }
+
+  footer{ text-align:center; margin-top:46px; font-size:13px; color:var(--ink-soft); font-style:italic; }
+  @media (prefers-reduced-motion:reduce){ *{ transition:none !important; } }
+
+  details.fiche{margin:0 auto 26px;border:1px solid var(--line);background:var(--papyrus-deep);box-shadow:0 4px 14px rgba(60,45,20,0.12)}
+  details.fiche summary{cursor:pointer;list-style:none;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--verdigris-dark);padding:14px 20px;display:flex;align-items:center;gap:10px}
+  details.fiche summary::-webkit-details-marker{display:none}
+  details.fiche summary::before{content:"▸";font-size:12px;color:var(--pompeii);transition:transform .15s}
+  details.fiche[open] summary::before{transform:rotate(90deg)}
+  details.fiche summary:hover{background:rgba(0,0,0,.03)}
+  .fb2{padding:2px 20px 18px;font-size:17px}
+  .fb2 h2{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.05em;margin:20px 0 6px;color:var(--pompeii-dark)}
+  .fb2 p{margin:6px 0}
+  .fb2 th{background:#E8C35D;color:var(--ink)}
+  .fb2 td:first-child{background:#f1e9d3;font-weight:600}
+  .red{color:#c0291b;font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+  .key{border-left:5px solid var(--gold);background:#faf5e6;padding:8px 12px;margin:10px 0}
+  .entry{font-style:italic;font-size:32px;line-height:1.25;margin:6px 0 4px;word-break:break-word}
+  .step{margin-top:14px;padding-top:8px;border-top:1px dashed var(--line)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:560px){.row2{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<a class="home-fab" href="index.html">🏠 Accueil du site</a>
+<div class="page">
+  <header>
+    <h1>Radicaux du <em>présent</em> et du <em>parfait</em></h1>
+    <svg class="laurel" viewBox="0 0 220 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><line x1="0" y1="7" x2="90" y2="7" stroke="#A9812E" stroke-width="1"/><circle cx="110" cy="7" r="3" fill="#9C3B30"/><line x1="130" y1="7" x2="220" y2="7" stroke="#A9812E" stroke-width="1"/></svg>
+  </header>
+
+  <p class="instructions">
+    <b>Consignes.</b> Pour chaque verbe, lis bien les temps primitifs. <b>Étape 1</b> : donne le numéro de la conjugaison et le radical du présent, puis clique sur « Vérifier ». <b>Étape 2</b> : donne le radical du parfait, puis clique de nouveau sur « Vérifier ».
+    Tu peux répondre dans les cases, <i>ou</i> sur une feuille, <i>ou</i> dans ta tête : si tu ne remplis rien, la réponse attendue s’affiche et c’est toi qui indiques si tu avais juste.
+    Écris les radicaux sans signe sur les voyelles (¯ ou ˘) ; le tiret est facultatif. Une seule erreur, et c’est « Faux ».
+  </p>
+
+  <details class="fiche"><summary>📖 Ma fiche mémo : radicaux du présent et du parfait</summary>
+  <div class="fb2">
+    <h2>1. Identifier le numéro de la conjugaison</h2>
+    <p><b>Les 5 modèles de conjugaison : regarder la 1<sup>re</sup> pers. sg. + l’infinitif</b></p>
+    <div class="tw"><table><tr><th>Conjugaison</th><th>1<sup>re</sup> sg, infinitif</th></tr>
+      <tr><td>1<sup>re</sup></td><td><i>-o, -are</i></td></tr>
+      <tr><td>2<sup>e</sup></td><td><i>-eo, -ere</i></td></tr>
+      <tr><td>3<sup>e</sup></td><td><i>-o, -ere</i></td></tr>
+      <tr><td>3<sup>e</sup> mixte</td><td><i>-io, -ere</i></td></tr>
+      <tr><td>4<sup>e</sup></td><td><i>-io, -ire</i></td></tr></table></div>
+    <p>La 3<sup>e</sup> mixte a la 1<sup>re</sup> pers. sg. de la 4<sup>e</sup> (<i>-io</i>) et l’infinitif de la 3<sup>e</sup> (<i>-ere</i>).</p>
+
+    <h2>2. Trouver le radical du présent</h2>
+    <p>La méthode dépend de la conjugaison :</p>
+    <div class="tw"><table><tr><th>Conjugaison</th><th>Je pars de…</th><th>Méthode</th></tr>
+      <tr><td>1<sup>re</sup> et 2<sup>e</sup></td><td>l’infinitif présent</td><td>j’enlève le <b><i>-re</i></b></td></tr>
+      <tr><td>3<sup>e</sup>, 3<sup>e</sup> mixte et 4<sup>e</sup></td><td>la 1<sup>re</sup> sg</td><td>j’enlève le <b><i>-o</i></b></td></tr></table></div>
+    <p><b>Étapes :</b> 1) lire les infos et identifier la conjugaison → 2) appliquer la règle de sa famille → 3) ce qui reste = le radical du présent.</p>
+    <div class="tw"><table><tr><th>Temps primitifs</th><th>Conj.</th><th>Je pars de…</th><th>Radical du présent</th></tr>
+      <tr><td><i>amo, as, are</i></td><td>1<sup>re</sup></td><td><i>amare</i> → j’enlève <i>-re</i></td><td><b><i>ama-</i></b></td></tr>
+      <tr><td><i>moneo, es, ere</i></td><td>2<sup>e</sup></td><td><i>monere</i> → j’enlève <i>-re</i></td><td><b><i>mone-</i></b></td></tr>
+      <tr><td><i>lego, is, ere</i></td><td>3<sup>e</sup></td><td><i>lego</i> → j’enlève <i>-o</i></td><td><b><i>leg-</i></b></td></tr>
+      <tr><td><i>capio, is, ere</i></td><td>3<sup>e</sup> mixte</td><td><i>capio</i> → j’enlève <i>-o</i></td><td><b><i>capi-</i></b></td></tr>
+      <tr><td><i>audio, is, ire</i></td><td>4<sup>e</sup></td><td><i>audio</i> → j’enlève <i>-o</i></td><td><b><i>audi-</i></b></td></tr></table></div>
+
+    <h2>3. Trouver le radical du parfait</h2>
+    <p><span class="red">Pour trouver le radical du parfait</span> : prendre la forme donnée par les temps primitifs et enlever le <b>–i</b> de la 1<sup>re</sup> sg.</p>
+    <div class="tw"><table><tr><th>Temps primitifs</th><th>Je pars de…</th><th>Radical du parfait</th></tr>
+      <tr><td><i>amo, as, are, amavi, amatum</i></td><td><i>amavi</i> → j’enlève <i>-i</i></td><td><b><i>amav-</i></b></td></tr>
+      <tr><td><i>moneo, es, ere, monui, monitum</i></td><td><i>monui</i> → j’enlève <i>-i</i></td><td><b><i>monu-</i></b></td></tr>
+      <tr><td><i>lego, is, ere, legi, lectum</i></td><td><i>legi</i> → j’enlève <i>-i</i></td><td><b><i>leg-</i></b></td></tr>
+      <tr><td><i>capio, is, ere, cepi, captum</i></td><td><i>cepi</i> → j’enlève <i>-i</i></td><td><b><i>cep-</i></b></td></tr>
+      <tr><td><i>audio, is, ire, audivi, auditum</i></td><td><i>audivi</i> → j’enlève <i>-i</i></td><td><b><i>audiv-</i></b></td></tr></table></div>
+    <p class="key">Attention : le radical du parfait est souvent différent de celui du présent (<i>capio</i> : <i>capi-</i> / <i>cep-</i>).</p>
+  </div></details>
+
+  <div class="card" id="app"></div>
+  <footer>Un bon radical, et la conjugaison se construit toute seule.</footer>
+</div>
+
+<script>
+const CJ={"1":"1re conjugaison","2":"2e conjugaison","3":"3e conjugaison","3m":"3e conjugaison mixte","4":"4e conjugaison"};
+const CN={"1":"1re","2":"2e","3":"3e","3m":"3e mixte","4":"4e"};
+const M={"1":"-o, -are","2":"-eo, -ere","3":"-o, -ere","3m":"-io, -ere","4":"-io, -ire"};
+const V=[
+ {pd:"cēdo",p1:"cedo",a:"is",b:"ere",x:"ced",d:"3",pf:"cessi",sp:"cessum"},
+ {pd:"cĭĕo",p1:"cieo",a:"es",b:"ere",x:"ci",d:"2",pf:"civi",sp:"citum"},
+ {pd:"dīco",p1:"dico",a:"is",b:"ere",x:"dic",d:"3",pf:"dixi",sp:"dictum"},
+ {pd:"ērro",p1:"erro",a:"as",b:"are",x:"err",d:"1",pf:"erravi",sp:"erratum"},
+ {pd:"fŭgĭo",p1:"fugio",a:"is",b:"ere",x:"fug",d:"3m",pf:"fugi",sp:""},
+ {pd:"mōnstro",p1:"monstro",a:"as",b:"are",x:"monstr",d:"1",pf:"monstravi",sp:"monstratum"},
+ {pd:"mŏvĕo",p1:"moveo",a:"es",b:"ere",x:"mov",d:"2",pf:"movi",sp:"motum"},
+ {pd:"stō",p1:"sto",a:"as",b:"are",x:"st",d:"1",pf:"steti",sp:"statum"},
+ {pd:"tĕgo",p1:"tego",a:"is",b:"ere",x:"teg",d:"3",pf:"texi",sp:"tectum"},
+ {pd:"tĕnĕo",p1:"teneo",a:"es",b:"ere",x:"ten",d:"2",pf:"tenui",sp:"tentum"}
+];
+const I=s=>`<i>${s}</i>`;
+V.forEach(v=>{
+ v.inf=v.x+v.b; v.e=`${v.pd}, ${v.a}, ${v.b}, ${v.pf}, ${v.sp||"<small>(pas de supin)</small>"}`;
+ v.r=(v.d==="1"||v.d==="2")?v.inf.slice(0,-2):v.p1.slice(0,-1);
+ v.q=v.pf.slice(0,-1);
+ const note=v.d==="3m"?" Attention : la 3e mixte a la 1re sg de la 4e (-io) et l’infinitif de la 3e (-ere).":"";
+ v.hc=`je regarde la 1re sg et l’infinitif : ${I(v.p1)}, ${I(v.inf)} → modèle ${I(M[v.d])} = <b>${CJ[v.d]}</b>.${note}`;
+ v.hr=(v.d==="1"||v.d==="2")?`conj. 1 et 2 : j’enlève le <b>-re</b> de l’infinitif présent : ${I(v.inf)} → ${I(v.r+"-")}.`:`conj. 3, 3 mixte et 4 : j’enlève le <b>-o</b> de la 1re sg : ${I(v.p1)} → ${I(v.r+"-")}.`;
+ v.hq=`je prends la forme du parfait donnée par les temps primitifs (${I(v.pf)}) et j’enlève le <b>-i</b> de la 1re sg → ${I(v.q+"-")}.`;
+});
+const $=id=>document.getElementById(id);
+const nr=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[-‐–\s]/g,"");
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let Q,i,score,phase,log,cur,go;
+const app=$("app");
+
+function start(){Q=shuffle(V);i=0;score=0;log=[];show()}
+function show(){
+ const v=Q[i];phase="A";cur={};
+ app.innerHTML=`<div class="meta"><span>Verbe ${i+1} / ${Q.length}</span><span>Score : ${score} / ${i*2}</span></div><div class="bar"><i style="width:${i/Q.length*100}%"></i></div>
+ <div class="entry">${v.e}</div>
+ <div class="step" id="sA"><div class="type">Étape 1 — conjugaison et radical du présent</div>
+  <div class="row2"><div><label for="cj">Conjugaison</label><select id="cj"><option value="">— choisir —</option>${Object.entries(CN).map(([k,t])=>`<option value="${k}">${t}</option>`).join("")}</select></div>
+  <div><label for="rr">Radical du présent</label><input type="text" id="rr" autocomplete="off" autocapitalize="off" spellcheck="false"></div></div>
+  <div id="fA"></div></div>
+ <div class="step" id="sB" hidden><div class="type">Étape 2 — radical du parfait</div>
+  <label for="rf">Radical du parfait</label><input type="text" id="rf" autocomplete="off" autocapitalize="off" spellcheck="false">
+  <div id="fB"></div></div>
+ <div class="controls"><button class="action btn-primary" id="go">Vérifier</button></div>`;
+ go=$("go");go.onclick=check;
+ ["rr","rf"].forEach(id=>$(id).onkeydown=e=>{if(e.key==="Enter")go.click()});
+ $("rr").focus();
+}
+function check(){
+ const v=Q[i];
+ if(phase==="A"){
+  const c=$("cj").value,r=$("rr").value.trim();
+  const corr=`${CJ[v.d]} ; radical du présent : <b>${v.r}-</b>`;
+  if(!c&&!r){ask("A",corr);return}
+  if(!c||!r){$("fA").innerHTML=`<div class="fb ko">Remplis la conjugaison et le radical, ou laisse tout vide pour te corriger toi-même.</div>`;return}
+  done("A",c===v.d&&nr(r)===nr(v.r));
+ }else if(phase==="B"){
+  const r=$("rf").value.trim();
+  if(!r){ask("B",`radical du parfait : <b>${v.q}-</b>`);return}
+  done("B",nr(r)===nr(v.q));
+ }else{i++;i<Q.length?show():end()}
+}
+const lock=id=>[...$(id).querySelectorAll("select,input")].forEach(e=>e.disabled=true);
+function ask(st,corr){
+ go.style.display="none";lock("s"+st);
+ $("f"+st).innerHTML=`<div class="fb">Réponse attendue : ${corr}<br>Ta réponse (sur feuille ou dans ta tête) était-elle juste, sans la moindre erreur ?</div><div class="controls"><button class="action btn-primary" id="yes">Oui</button><button class="action btn-secondary" id="no">Non</button></div>`;
+ $("yes").onclick=()=>done(st,true);$("no").onclick=()=>done(st,false);
+}
+function done(st,ok){
+ const v=Q[i];if(ok)score++;cur[st]=ok;
+ const t=st==="A"?`${CJ[v.d]}, radical du présent : <b>${v.r}-</b><br><small>Rappel : ${v.hc} ${v.hr}</small>`:`radical du parfait : <b>${v.q}-</b><br><small>Rappel : <span class="red">Pour trouver le radical du parfait</span> : ${v.hq}</small>`;
+ $("f"+st).innerHTML=`<div class="fb ${ok?"ok":"ko"}">${ok?"Correct !":"Faux"} ${t}</div>`;
+ lock("s"+st);go.style.display="";
+ if(st==="A"){$("sB").hidden=false;phase="B";$("rf").focus()}
+ else{phase="next";log.push({v,a:cur.A,b:cur.B});go.textContent=i===Q.length-1?"Voir le bilan":"Verbe suivant";go.focus()}
+}
+function end(){
+ const tot=Q.length*2,m=n=>n?"✓":"✗";
+ const msg=score>=tot*.9?"Excellent !":score>=tot*.7?"Bien, mais revois les erreurs.":"À retravailler : relis ta fiche mémo et le tableau ci-dessous.";
+ app.innerHTML=`<div class="meta"><span>Terminé</span></div><div class="big">${score} / ${tot}</div><p>${msg}</p><div class="tw"><table><tr><th>Verbe</th><th>Conj. et radical du présent</th><th>Radical du parfait</th></tr>${log.map(r=>`<tr><td><i>${r.v.p1}</i></td><td class="${r.a?"ok":"ko"}">${CN[r.v.d]} · ${r.v.r}- ${m(r.a)}</td><td class="${r.b?"ok":"ko"}">${r.v.q}- ${m(r.b)}</td></tr>`).join("")}</table></div><div class="controls"><button class="action btn-primary" id="again">Recommencer</button><a class="action btn-secondary" href="index.html">🏠 Accueil du site</a></div>`;
+ $("again").onclick=start;
+}
+start();
+</script>
+</body>
+</html>

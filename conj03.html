@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conj 03 — Aimer, venir, éternuer : indicatif présent, imparfait et parfait</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --papyrus:#EDE3CE; --papyrus-deep:#E2D5B7; --stone:#DCD0B4;
+    --ink:#2B241C; --ink-soft:#55493a;
+    --pompeii:#9C3B30; --pompeii-dark:#7c2e26;
+    --verdigris:#4C7A6E; --verdigris-dark:#3a5f56;
+    --gold:#A9812E; --line:#b9a97e;
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; background:var(--papyrus);
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(255,255,255,0.25), transparent 55%),
+      radial-gradient(ellipse at 90% 80%, rgba(0,0,0,0.05), transparent 60%);
+    color:var(--ink); font-family:'EB Garamond',Georgia,serif; font-size:18px; line-height:1.5;
+  }
+  .page{ max-width:760px; margin:0 auto; padding:56px 24px 80px; }
+
+  .home-fab{
+    position:fixed; top:14px; left:14px; z-index:999;
+    display:flex; align-items:center; gap:6px;
+    background:linear-gradient(135deg,#B9812A,#6B1E23);
+    color:#fff; font-family:'Iowan Old Style','Palatino Linotype',Georgia,serif;
+    font-size:0.82rem; font-weight:700; text-decoration:none;
+    padding:8px 14px; border-radius:20px; box-shadow:0 3px 10px rgba(0,0,0,0.25);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .home-fab:hover{ transform:translateY(-2px); box-shadow:0 5px 14px rgba(0,0,0,0.3); }
+  @media (max-width:480px){ .home-fab{ font-size:0.72rem; padding:6px 10px; top:8px; left:8px; } }
+
+  header{ text-align:center; margin-bottom:28px; }
+  h1{
+    font-family:'Cinzel',serif; font-weight:700; font-size:clamp(26px,5vw,40px);
+    letter-spacing:0.02em; margin:0 0 8px; color:var(--ink);
+  }
+  h1 em{ font-style:normal; color:var(--pompeii); }
+  .laurel{ width:220px; height:14px; margin:14px auto 0; opacity:0.75; }
+
+  .instructions{
+    text-align:center; color:var(--ink-soft); font-size:16px;
+    max-width:700px; margin:0 auto 18px;
+  }
+  .rappel{
+    max-width:700px; margin:0 auto 26px; padding:10px 16px;
+    background:var(--papyrus-deep); border:1px solid var(--line);
+    border-left:4px solid var(--pompeii); font-size:16px; color:var(--ink-soft);
+  }
+  .rappel b{ color:var(--pompeii-dark); }
+
+  .card{
+    background:var(--papyrus-deep); border:1px solid var(--line);
+    box-shadow:0 6px 20px rgba(60,45,20,0.15); padding:26px 28px;
+  }
+  .meta{
+    display:flex; justify-content:space-between;
+    font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--verdigris-dark);
+  }
+  .bar{ height:5px; background:#cbb99a; margin:8px 0 20px; }
+  .bar i{ display:block; height:100%; width:0; background:var(--gold); transition:width .3s; }
+  .type{
+    font-family:'Cinzel',serif; font-size:12.5px; letter-spacing:0.22em;
+    text-transform:uppercase; color:var(--pompeii);
+  }
+  .form{ font-style:italic; font-size:48px; line-height:1.2; margin:4px 0 12px; }
+  label{
+    display:block; margin:14px 0 5px; font-family:'Cinzel',serif; font-size:11.5px;
+    letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft);
+  }
+  select,input[type=text]{
+    width:100%; font-family:'EB Garamond',serif; font-size:18px; padding:9px 10px;
+    border:1px solid var(--line); background:#faf5e6; color:var(--ink); border-radius:2px;
+  }
+  select:focus,input:focus{ outline:3px solid var(--gold); outline-offset:1px; }
+  .help{ font-size:15px; font-style:italic; color:var(--ink-soft); margin:2px 0 0; }
+
+  .fb{ margin-top:18px; padding:12px 16px; border:1px solid var(--line); background:#faf5e6; }
+  .fb.ok{ background:#dce9df; color:var(--verdigris-dark); border-color:#a8c4b2; }
+  .fb.ko{ background:#f1dcd8; color:var(--pompeii-dark); border-color:#dba9a2; }
+  .fb small{ color:var(--ink-soft); }
+
+  .controls{ display:flex; gap:12px; flex-wrap:wrap; margin-top:20px; align-items:center; }
+  .action{
+    font-family:'Cinzel',serif; font-size:13px; letter-spacing:0.14em; text-transform:uppercase;
+    padding:12px 26px; border-radius:2px; cursor:pointer; border:1px solid transparent;
+    text-decoration:none; display:inline-block; transition:transform .1s ease;
+  }
+  .action:active{ transform:translateY(1px); }
+  .action:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+  .btn-primary{ background:var(--pompeii); color:#fbf3e4; box-shadow:0 4px 10px rgba(124,46,38,0.3); }
+  .btn-primary:hover{ background:var(--pompeii-dark); }
+  .btn-secondary{ background:transparent; color:var(--ink-soft); border-color:var(--line); }
+  .btn-secondary:hover{ background:rgba(0,0,0,0.05); }
+
+  .big{ font-family:'Cinzel',serif; font-size:44px; color:var(--pompeii); margin:4px 0; }
+  .tw{ overflow-x:auto; }
+  table{ border-collapse:collapse; width:100%; margin-top:12px; }
+  th{
+    font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+    background:#d8cba9; text-align:left;
+  }
+  td,th{ border:1px solid var(--line); padding:7px 10px; }
+  td{ background:#faf5e6; }
+  td.ok{ color:var(--verdigris-dark); font-weight:600; } td.ko{ color:var(--pompeii-dark); font-weight:600; }
+
+  footer{ text-align:center; margin-top:46px; font-size:13px; color:var(--ink-soft); font-style:italic; }
+  @media (prefers-reduced-motion:reduce){ *{ transition:none !important; } }
+
+  details.fiche{margin:0 auto 26px;border:1px solid var(--line);background:var(--papyrus-deep);box-shadow:0 4px 14px rgba(60,45,20,0.12)}
+  details.fiche summary{cursor:pointer;list-style:none;font-family:'Cinzel',serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--verdigris-dark);padding:14px 20px;display:flex;align-items:center;gap:10px}
+  details.fiche summary::-webkit-details-marker{display:none}
+  details.fiche summary::before{content:"▸";font-size:12px;color:var(--pompeii);transition:transform .15s}
+  details.fiche[open] summary::before{transform:rotate(90deg)}
+  details.fiche summary:hover{background:rgba(0,0,0,.03)}
+  .fb2{padding:2px 20px 18px;font-size:17px}
+  .fb2 h2{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.05em;margin:20px 0 6px;color:var(--pompeii-dark)}
+  .fb2 p{margin:6px 0}
+  .fb2 th{background:#E8C35D;color:var(--ink)}
+  .fb2 td:first-child{background:#f1e9d3;font-weight:600}
+  .red{color:#c0291b;font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+  .key{border-left:5px solid var(--gold);background:#faf5e6;padding:8px 12px;margin:10px 0}
+  .entry{font-style:italic;font-size:32px;line-height:1.25;margin:6px 0 4px;word-break:break-word}
+  .step{margin-top:14px;padding-top:8px;border-top:1px dashed var(--line)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:560px){.row2{grid-template-columns:1fr}}
+
+
+  .tp{font-style:italic;color:var(--ink-soft);margin:0 0 6px}
+  .row3{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px}
+  @media (max-width:560px){.row3{grid-template-columns:1fr}}
+  .verbs{margin:0 0 6px;padding-left:18px}
+
+</style>
+</head>
+<body>
+<a class="home-fab" href="index.html">🏠 Accueil du site</a>
+<div class="page">
+  <header>
+    <h1><em>Aimer, venir, éternuer</em> : indicatif présent, imparfait et parfait</h1>
+    <svg class="laurel" viewBox="0 0 220 14" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><line x1="0" y1="7" x2="90" y2="7" stroke="#A9812E" stroke-width="1"/><circle cx="110" cy="7" r="3" fill="#9C3B30"/><line x1="130" y1="7" x2="220" y2="7" stroke="#A9812E" stroke-width="1"/></svg>
+  </header>
+
+  <p class="instructions">
+    <b>À quoi sert cet exercice ?</b> Il permet de travailler l’<b>identification des formes verbales latines</b> (temps, voix, personne, nombre), mais aussi de <b>vérifier que tu domines bien les temps et les voix en français</b>, à partir des trois verbes choisis dans le polycopié : <i>aimer</i>, <i>venir</i>, <i>éternuer</i>.
+  </p>
+  <p class="instructions">
+    <b>Consignes.</b> Pour chaque forme latine : <b>étape 1</b>, identifie le temps, la voix, la personne et le nombre, puis clique sur « Vérifier » ; <b>étape 2</b>, traduis en français, puis clique de nouveau sur « Vérifier ».
+    Tu peux répondre dans la page, <i>ou</i> sur une feuille, <i>ou</i> dans ta tête : si tu ne remplis rien, la réponse attendue s’affiche et c’est toi qui indiques si tu avais juste.
+    <b>Pour les conjugaisons françaises, reporte-toi au polycopié distribué.</b> Une seule erreur, et c’est « Faux ». Par convention, à la 3<sup>e</sup> personne on met « il(s) » ou « elle(s) ».<br><b>Pense, pour toutes les formes composées avec PPP, à bien vérifier le genre du PPP avant de traduire !</b>
+  </p>
+
+  <div class="rappel">
+    <b>Les trois verbes</b>
+    <ul class="verbs">
+      <li><i>amo, amas, amare, amavi, amatum</i> : aimer</li>
+      <li><i>venio, venis, venire, veni, ventum</i> : venir</li>
+      <li><i>sternuo, sternuis, sternuere, sternui</i> (pas de supin attesté) : éternuer</li>
+    </ul>
+    N.B. : si le Gaffiot ne donne pas de supin pour <i>sternuo</i>, c’est que le verbe est intransitif en latin : il n’existe donc logiquement aucune attestation de formes passives composées, puisque celles-ci se construisent sur un participe parfait passif (PPP) tiré justement du supin.
+  </div>
+
+  <div class="card" id="app"></div>
+  <footer>Identifier en latin, traduire en français : deux façons de vérifier qu’on maîtrise les temps et les voix.</footer>
+</div>
+
+<script>
+const TN={pres:"présent",imp:"imparfait",pft:"parfait"};
+const TSEL={pres:"Indicatif présent",imp:"Indicatif imparfait",pft:"Indicatif parfait"};
+const VX={act:"actif",pas:"passif"};
+const PE={"1":"1re personne","2":"2e personne","3":"3e personne"};
+const NBL={"1":"singulier","2":"pluriel"};
+const SUM=["sum","es","est","sumus","estis","sunt"];
+const ENDS=["i","isti","it","imus","istis","erunt"];
+const PRIM={
+ amo:"amo, amas, amare, amavi, amatum",
+ venio:"venio, venis, venire, veni, ventum",
+ sternuo:"sternuo, sternuis, sternuere, sternui <small>(pas de supin attesté)</small>"};
+const LATIN={
+ amo:{pres:["amo","amas","amat","amamus","amatis","amant"],imp:["amabam","amabas","amabat","amabamus","amabatis","amabant"],pft:["amavi","amavisti","amavit","amavimus","amavistis","amaverunt"],pres_p:["amor","amaris","amatur","amamur","amamini","amantur"],imp_p:["amabar","amabaris","amabatur","amabamur","amabamini","amabantur"]},
+ venio:{pres:["venio","venis","venit","venimus","venitis","veniunt"],imp:["veniebam","veniebas","veniebat","veniebamus","veniebatis","veniebant"],pft:["veni","venisti","venit","venimus","venistis","venerunt"]},
+ sternuo:{pres:["sternuo","sternuis","sternuit","sternuimus","sternuitis","sternuunt"],imp:["sternuebam","sternuebas","sternuebat","sternuebamus","sternuebatis","sternuebant"],pft:["sternui","sternuisti","sternuit","sternuimus","sternuistis","sternuerunt"]}};
+const FRD={
+ amo:{pres:["j’aime","tu aimes","il aime","nous aimons","vous aimez","ils aiment"],imp:["j’aimais","tu aimais","il aimait","nous aimions","vous aimiez","ils aimaient"],pc:["j’ai aimé","tu as aimé","il a aimé","nous avons aimé","vous avez aimé","ils ont aimé"],ps:["j’aimai","tu aimas","il aima","nous aimâmes","vous aimâtes","ils aimèrent"]},
+ venio:{pres:["je viens","tu viens","il vient","nous venons","vous venez","ils viennent"],imp:["je venais","tu venais","il venait","nous venions","vous veniez","ils venaient"],pc:["je suis venu","tu es venu","il est venu","nous sommes venus","vous êtes venus","ils sont venus"],ps:["je vins","tu vins","il vint","nous vînmes","vous vîntes","ils vinrent"],alt:[["je suis venue"],["tu es venue"],[],["nous sommes venues"],["vous êtes venues"],[]]},
+ sternuo:{pres:["j’éternue","tu éternues","il éternue","nous éternuons","vous éternuez","ils éternuent"],imp:["j’éternuais","tu éternuais","il éternuait","nous éternuions","vous éternuiez","ils éternuaient"],pc:["j’ai éternué","tu as éternué","il a éternué","nous avons éternué","vous avez éternué","ils ont éternué"],ps:["j’éternuai","tu éternuas","il éternua","nous éternuâmes","vous éternuâtes","ils éternuèrent"]}};
+const PASFR={
+ pres:[["je suis aimé","je suis aimée"],["tu es aimé","tu es aimée"],["il est aimé"],["nous sommes aimés","nous sommes aimées"],["vous êtes aimés","vous êtes aimées"],["ils sont aimés"]],
+ imp:[["j’étais aimé","j’étais aimée"],["tu étais aimé","tu étais aimée"],["il était aimé"],["nous étions aimés","nous étions aimées"],["vous étiez aimés","vous étiez aimées"],["ils étaient aimés"]],
+ pft:{"2m":["il a été aimé","il fut aimé"],"2f":["elle a été aimée","elle fut aimée"],"5m":["ils ont été aimés","ils furent aimés"],"5f":["elles ont été aimées","elles furent aimées"]}};
+const ALL=[];
+const fem=(x,agree)=>{let y=x.replace(/^ils /,"elles ").replace(/^il /,"elle ");return agree?y.replace(/(venu|aimé)(s?)$/,(m,a,b)=>(a==="venu"?"venue":"aimée")+b):y};
+const addAcc=(e,agree)=>{e.acc=[...e.fr];if(e.p===2||e.p===5)e.fr.forEach(x=>{if(/^ils? /.test(x))e.acc.push(fem(x,agree(x)))});return e};
+for(const vb of Object.keys(LATIN))for(const t of ["pres","imp","pft"])for(let p=0;p<6;p++){
+ const f=FRD[vb];
+ const fr=t==="pft"?[f.pc[p],f.ps[p],...(f.alt?f.alt[p]:[])]:[f[t][p]];
+ ALL.push(addAcc({vb,v:"act",t,p,lat:LATIN[vb][t][p],fr},x=>vb==="venio"&&/ (est|sont) venus?$/.test(x)));
+}
+for(const t of ["pres","imp"])for(let p=0;p<6;p++)ALL.push(addAcc({vb:"amo",v:"pas",t,p,lat:LATIN.amo[t+"_p"][p],fr:PASFR[t][p]},()=>true));
+for(const p of [2,5])for(const g of ["m","f"])ALL.push({vb:"amo",v:"pas",t:"pft",p,g,lat:"amat"+(p<3?(g==="m"?"us":"a"):(g==="m"?"i":"ae"))+" "+SUM[p],fr:PASFR.pft[p+g]});
+
+const FORM={
+ pres_act:"radical du présent + terminaisons actives (3e, 3e mixte et 4e conjugaisons : voyelle de liaison I, sauf U à la 3e pl.).",
+ pres_pas:"radical du présent + terminaisons passives.",
+ imp_act:"radical du présent + BA (ou EBA) + terminaisons actives.",
+ imp_pas:"radical du présent + BA (ou EBA) + terminaisons passives.",
+ pft_act:"radical du parfait + terminaisons du parfait actif (-i, -isti, -it, -imus, -istis, -erunt).",
+ pft_pas:"PPP accordé + présent de esse."};
+const FRNOTE={
+ pres_act:"présent de l’indicatif.",
+ pres_pas:"voix passive : « être » au présent + participe passé (ce n’est pas un passé composé).",
+ imp_act:"imparfait de l’indicatif.",
+ imp_pas:"voix passive : « être » à l’imparfait + participe passé (ce n’est pas un plus-que-parfait).",
+ pft_act:"passé composé <i>ou</i> passé simple.",
+ pft_pas:"voix passive : « a été » / « fut » + participe passé accordé (et non « est » + participe, qui serait un présent)."};
+const $=id=>document.getElementById(id);
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[’‘`]/g,"'").replace(/\s+/g," ").trim();
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const sel=o=>`<option value="">— choisir —</option>`+Object.entries(o).map(([k,t])=>`<option value="${k}">${t}</option>`).join("");
+
+const idText=r=>`Indicatif ${TN[r.t]} ${VX[r.v]}, ${["1re","2e","3e"][r.p%3]} personne du ${r.p<3?"singulier":"pluriel"}`;
+function gen(){
+ const used=new Set(),out=[];
+ const card=x=>({vb:x.vb,lat:x.lat,rs:ALL.filter(y=>y.vb===x.vb&&y.lat===x.lat)});
+ const amb=vb=>{const m={};ALL.filter(x=>x.vb===vb).forEach(x=>m[x.lat]=(m[x.lat]||0)+1);return Object.keys(m).filter(l=>m[l]>1)};
+ const pick=(vb,v,n)=>{
+  const A=amb(vb),ts=shuffle(["pres","imp","pft"]);let k=0,guard=0;
+  while(n>0&&guard++<60){
+   const t=ts[k++%3];
+   const c=shuffle(ALL.filter(x=>x.vb===vb&&x.v===v&&x.t===t&&!used.has(x.lat)&&!A.includes(x.lat)))[0];
+   if(c){used.add(c.lat);out.push(card(c));n--}
+  }
+ };
+ for(const vb of ["venio","sternuo"]){
+  const l=shuffle(amb(vb))[0];used.add(l);out.push(card(ALL.find(x=>x.vb===vb&&x.lat===l)));
+  pick(vb,"act",5);
+ }
+ pick("amo","act",6);
+ for(const t of ["pres","imp","pft"]){
+  const c=shuffle(ALL.filter(x=>x.vb==="amo"&&x.v==="pas"&&x.t===t))[0];used.add(c.lat);out.push(card(c));
+ }
+ return shuffle(out);
+}
+let Q,i,score,phase,log,cur,go;
+const app=$("app");
+function start(){Q=gen();i=0;score=0;log=[];show()}
+function show(){
+ const q=Q[i];phase="A";cur={};
+ app.innerHTML=`<div class="meta"><span>Forme ${i+1} / ${Q.length}</span><span>Score : ${score} / ${i*2}</span></div><div class="bar"><i style="width:${i/Q.length*100}%"></i></div>
+ <p class="tp">Temps primitifs : ${PRIM[q.vb]}</p><div class="form">${q.lat}</div>
+ <div class="step" id="sA"><div class="type">Étape 1 — identifier la forme</div>
+  <div class="row3">
+   <div><label for="st">Temps (indicatif)</label><select id="st">${sel(TSEL)}</select></div>
+   <div><label for="sv">Voix</label><select id="sv">${sel(VX)}</select></div>
+   <div><label for="sp">Personne</label><select id="sp">${sel(PE)}</select></div>
+   <div><label for="sn">Nombre</label><select id="sn">${sel(NBL)}</select></div></div>
+  <div id="fA"></div></div>
+ <div class="step" id="sB" hidden><div class="type">Étape 2 — traduire en français</div>
+  <label for="tr">Ta traduction</label><input type="text" id="tr" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Écris-la ici, ou sur une feuille, ou dis-la dans ta tête">
+  <p class="help">Avec le pronom sujet. Pour les conjugaisons françaises : voir le polycopié.</p>
+  <div id="fB"></div></div>
+ <div class="controls"><button class="action btn-primary" id="go">Vérifier</button></div>`;
+ go=$("go");go.onclick=check;
+ $("tr").onkeydown=e=>{if(e.key==="Enter")go.click()};
+}
+const lock=id=>[...$(id).querySelectorAll("select,input")].forEach(e=>e.disabled=true);
+function check(){
+ const q=Q[i];
+ if(phase==="A"){
+  const f={t:$("st").value,v:$("sv").value,p:$("sp").value,n:$("sn").value},vals=Object.values(f);
+  if(vals.every(x=>x==="")){ask("A",q);return}
+  if(vals.some(x=>x==="")){$("fA").innerHTML=`<div class="fb ko">Remplis les quatre menus, ou laisse-les tous vides pour te corriger toi-même.</div>`;return}
+  done("A",q.rs.some(r=>r.t===f.t&&r.v===f.v&&r.p%3+1===+f.p&&(r.p<3?1:2)===+f.n));
+ }else if(phase==="B"){
+  const v=norm($("tr").value);
+  if(!v){ask("B",q);return}
+  done("B",q.rs.some(r=>(r.acc||r.fr).some(a=>norm(a)===v)));
+ }else{i++;i<Q.length?show():end()}
+}
+const expA=q=>q.rs.map(idText).join(" <b>ou</b> ");
+const expB=q=>[...new Set(q.rs.map(r=>r.fr.join(" / ")))].join(" <b>ou</b> ");
+function ask(st,q){
+ go.style.display="none";lock("s"+st);
+ $("f"+st).innerHTML=`<div class="fb">Réponse attendue : <b>${st==="A"?expA(q):expB(q)}</b><br>Ta réponse (sur feuille ou dans ta tête) était-elle juste, sans la moindre erreur ?</div><div class="controls"><button class="action btn-primary" id="yes">Oui</button><button class="action btn-secondary" id="no">Non</button></div>`;
+ $("yes").onclick=()=>done(st,true);$("no").onclick=()=>done(st,false);
+}
+function notesA(q){
+ let h=q.rs.map(r=>`${idText(r)} : ${FORM[r.t+"_"+r.v]}`).join("<br>");
+ if(q.rs.length>1)h+=`<br><b>Deux lectures possibles</b> : la forme du présent et celle du parfait coïncident ici, seul le contexte permettra de trancher.`;
+ else{
+  const r=q.rs[0];
+  if(r.t==="pres"&&r.v==="act")h+=` Repère de voyelle avant la désinence : A = 1re conj., E = 2e conj., I = 3e/3e mixte/4e, sauf U à la 3e pl.`;
+  if(r.t==="pft"&&r.v==="act"&&[0,1,4,5].includes(r.p))h+=` Repère : la terminaison <i>-${ENDS[r.p]}</i> ne se trouve qu’au parfait actif (comme <i>-i</i>, <i>-isti</i>, <i>-istis</i>, <i>-erunt</i>).`;
+  if(r.t==="pft"&&r.v==="pas")h+=`<br>Rappel : attention avec les formes composées (donc passives) en latin, ne pas calquer la formation du passif en français sous peine de faute de temps.`;
+ }
+ return h;
+}
+function notesB(q){
+ let h=q.rs.map(r=>FRNOTE[r.t+"_"+r.v]).filter((x,k,a)=>a.indexOf(x)===k).join("<br>");
+ if(q.rs.some(r=>r.t==="pft"&&r.v==="act")){
+  if(q.vb==="venio")h+=`<br>Au passé composé, <i>venir</i> se conjugue avec « être » (je suis venu[e]) ; passé simple : vins, vins, vint, vînmes, vîntes, vinrent.`;
+  else h+=`<br>Au passé composé, « avoir » + participe passé ; au passé simple, attention aux terminaisons (-ai, -as, -a, -âmes, -âtes, -èrent).`;
+ }
+ return h+`<br>Voir le polycopié sur les conjugaisons françaises.`;
+}
+function done(st,ok){
+ const q=Q[i];if(ok)score++;cur[st]=ok;
+ const t=st==="A"?`<b>${expA(q)}</b><br><small>Rappel : ${notesA(q)}</small>`:`<b>${expB(q)}</b><br><small>Rappel : ${notesB(q)}</small>`;
+ $("f"+st).innerHTML=`<div class="fb ${ok?"ok":"ko"}">${ok?"Correct !":"Faux"} ${t}</div>`;
+ lock("s"+st);go.style.display="";
+ if(st==="A"){$("sB").hidden=false;phase="B";$("tr").focus()}
+ else{phase="next";log.push({q,a:cur.A,b:cur.B});go.textContent=i===Q.length-1?"Voir le bilan":"Forme suivante";go.focus()}
+}
+function end(){
+ const tot=Q.length*2,m=n=>n?"✓":"✗";
+ const msg=score>=tot*.9?"Excellent !":score>=tot*.7?"Bien, mais revois les erreurs.":"À retravailler : relis le polycopié sur les conjugaisons et le tableau ci-dessous.";
+ app.innerHTML=`<div class="meta"><span>Terminé</span></div><div class="big">${score} / ${tot}</div><p>${msg}</p><div class="tw"><table><tr><th>Forme</th><th>Identification</th><th>Traduction</th></tr>${log.map(r=>`<tr><td><i>${r.q.lat}</i></td><td class="${r.a?"ok":"ko"}">${expA(r.q)} ${m(r.a)}</td><td class="${r.b?"ok":"ko"}">${expB(r.q)} ${m(r.b)}</td></tr>`).join("")}</table></div><div class="controls"><button class="action btn-primary" id="again">Recommencer</button><a class="action btn-secondary" href="index.html">🏠 Accueil du site</a></div>`;
+ $("again").onclick=start;
+}
+start();
+</script>
+</body>
+</html>
