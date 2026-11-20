@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voc03liste CB1 – Intrus et mise en ordre</title>
+<style>
+/* thème parchemin, repris de l’espace de révisions */
+:root{--bg:#eee0c4;--card:#f8eed6;--ink:#2b1a10;--mute:#6f5a42;--line:#cdae72;--acc:#7a2a1e;--acc-ink:#fff7e6;--ok:#3f6b3a;--ko:#a3321f;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;line-height:1.55;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+main{max-width:760px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.8rem;margin:0 0 4px;font-weight:600;color:var(--acc);border-bottom:1px solid var(--line);padding-bottom:6px}
+.sub{margin:0 0 14px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+button{font:inherit;cursor:pointer;border:1px solid #dba855;background:linear-gradient(#fbf3df,#f0deb0);color:var(--ink);padding:9px 14px;border-radius:6px}
+button:hover{border-color:var(--acc)}
+button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+button.on,button.primary{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.hide{display:none!important}
+.mute{color:var(--mute)}
+.meta{display:flex;justify-content:space-between;gap:12px;color:var(--mute);font-size:.9rem;margin-bottom:12px}
+.prog{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:4px 0 6px}
+.prog i{display:block;height:100%;background:var(--acc);width:0;transition:width .25s}
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:14px}
+.box h2{margin:0 0 6px;font-size:1.25rem;color:var(--acc)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.92rem;margin:0 0 16px;padding:10px 12px;background:var(--card);border:1px solid var(--line);border-radius:6px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:16px;height:16px;border-radius:4px;border:2px solid var(--line);display:inline-block}
+.sw.sel{background:var(--acc);border-color:var(--acc)}.sw.ok{background:var(--ok);border-color:var(--ok)}.sw.ko{background:var(--ko);border-color:var(--ko)}.sw.ms{border:2px dashed var(--ok)}
+.words{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:14px 0}
+.words button{font-size:1.05rem;font-style:italic;font-weight:600;padding:14px 10px}
+.words button[aria-pressed="true"]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.words button.right,.words button.done{background:var(--ok);border-color:var(--ok);color:#fff}
+.words button.wrong{background:var(--ko);border-color:var(--ko);color:#fff}
+.words button.miss{border:2px dashed var(--ok);color:var(--ok)}
+.words button:disabled{opacity:.55;cursor:default}
+.bins{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:14px 0}
+.bin{border:1px dashed var(--line);border-radius:8px;padding:8px;background:var(--bg)}
+.bin button{width:100%;font-weight:600;margin-bottom:6px}
+.pl{font-size:.95rem;min-height:1.5em}
+.words button.done:disabled{opacity:1}
+.seq{font-size:1.1rem;font-style:italic;min-height:1.6em;margin:0}
+.fb{margin-top:6px;padding-top:12px;border-top:1px solid var(--line)}
+.fb p{margin:6px 0}
+.res ul{padding-left:18px}
+</style>
+</head>
+<body>
+<main>
+<h1>Quel est l’intrus ? Mets en ordre</h1>
+<p class="sub"><b>Quel est l’intrus ?</b> Dans chaque série de mots latins, repère l’intrus ou les intrus. La consigne précise le critère (le sens, la catégorie grammaticale, le genre…) et le nombre d’intrus à trouver. <b>Mets en ordre</b> : clique sur les mots dans l’ordre demandé, forme des paires de mots de sens contraire, ou range les mots dans leur catégorie grammaticale.</p>
+
+<div class="legend" aria-label="Légende des couleurs">
+  <span><i class="sw sel"></i> mot choisi</span>
+  <span><i class="sw ok"></i> bonne réponse</span>
+  <span><i class="sw ko"></i> faux</span>
+  <span><i class="sw ms"></i> mot oublié (en pointillés)</span>
+</div>
+
+<div class="bar" id="tabs">
+  <button data-k="i" class="on">Quel est l’intrus ?</button>
+  <button data-k="o">Mets en ordre</button>
+</div>
+
+<section id="ex">
+  <div class="prog"><i id="pb"></i></div>
+  <div class="meta"><span id="cnt"></span><span id="sc"></span></div>
+  <div class="box">
+    <h2 id="ti"></h2>
+    <p class="mute" id="cr" style="margin:0"></p>
+    <div class="words" id="wd"></div>
+    <div class="bins hide" id="bins"></div>
+    <p class="seq hide" id="seq"></p>
+    <p class="mute hide" id="hint"></p>
+    <div class="bar" style="margin:12px 0 0">
+      <button class="primary" id="ck">Valider</button>
+      <button id="cl" class="hide">Effacer</button>
+    </div>
+    <div class="fb hide" id="fb"></div>
+    <div class="bar" style="margin:14px 0 0"><button class="primary hide" id="nx">Suite</button></div>
+  </div>
+</section>
+<section id="end" class="box res hide"></section>
+</main>
+
+<script>
+const F={et:"et",ac:"et",atque:"et","-que":"et",tamen:"cependant, pourtant",enim:"en effet",deus:"dieu",dea:"déesse",amicus:"ami",magister:"maître (d’école)",discipulus:"élève",ante:"devant ; avant",post:"derrière ; après",cum:"avec","in":"dans, en, sur",semper:"toujours",saepe:"souvent",nonnumquam:"parfois",numquam:"jamais",deinde:"ensuite, puis",denique:"enfin, à la fin",amo:"aimer",video:"voir",audio:"entendre ; écouter",scribo:"écrire",lego:"lire",capio:"prendre",moneo:"avertir"};
+const FULL={amicus:"amicus, i, m.",dea:"dea, ae, f.",deus:"deus, i, m.",discipulus:"discipulus, i, m.",magister:"magister, tri, m.",amo:"amo, as, are, amavi, amatum",audio:"audio, is, ire, audivi, auditum",lego:"lego, is, ere, legi, lectum",scribo:"scribo, is, ere, scripsi, scriptum",video:"video, es, ere, vidi, visum",capio:"capio, is, ere, cepi, captum",moneo:"moneo, es, ere, monui, monitum"};
+const full=w=>FULL[w]||w;
+const PREP={ante:"acc.",post:"acc.",cum:"abl.","in":"abl. ou acc."};
+const GR="la catégorie grammaticale";
+const I=[
+ {c:"le sens",k:1,w:["et","-que","atque","ac","tamen"],a:["tamen"],n:"<em>et</em>, <em>-que</em>, <em>atque</em> et <em>ac</em> signifient tous « et » ; <em>tamen</em> exprime l’opposition."},
+ {c:"le sens",k:2,w:["deus","amicus","magister","dea","discipulus"],a:["deus","dea"],n:"<em>amicus</em>, <em>magister</em> et <em>discipulus</em> désignent des humains ; <em>deus</em> et <em>dea</em> désignent des divinités."},
+ {c:"le sens",k:1,w:["post","deinde","denique","tamen"],a:["tamen"],n:"<em>post</em> (préposition + acc.), <em>deinde</em> et <em>denique</em> situent dans le temps (après, ensuite, enfin) ; <em>tamen</em> exprime l’opposition."},
+ {c:"le sens",k:1,w:["semper","saepe","numquam","nonnumquam","denique"],a:["denique"],n:"Les quatre autres expriment la fréquence, c’est-à-dire la répétition dans le temps (toujours, souvent, jamais, parfois) ; <em>denique</em> sert à enchaîner (enfin)."},
+ {c:GR,k:1,w:["ante","post","semper","numquam","magister"],a:["magister"],n:"Les quatre autres sont invariables (prépositions ou adverbes) ; <em>magister</em> est un nom, qui se décline."},
+ {c:GR,k:1,w:["amicus","dea","magister","discipulus","video"],a:["video"],n:"<em>video</em> est un verbe ; les quatre autres sont des noms."},
+ {c:GR,k:2,w:["amo","audio","video","ante","saepe"],a:["ante","saepe"],n:"<em>amo</em>, <em>audio</em> et <em>video</em> sont des verbes ; <em>ante</em> (préposition + acc.) et <em>saepe</em> (adverbe) sont invariables."},
+ {c:"la déclinaison",k:1,w:["dea","deus","amicus","discipulus","magister"],a:["dea"],n:"<em>dea</em> est de la 1re déclinaison (génitif en -ae). Les quatre autres sont de la 2e déclinaison (génitif en -i).<br>Rappel : pour reconnaître la déclinaison, on regarde le génitif singulier.<br>Le genre est différent aussi : dans la 1re déclinaison, la très grande majorité des noms sont féminins ; dans la 2e, on a surtout des masculins et des neutres."},
+ {c:"le sens",k:1,last:1,w:["scribo","discipulus","magister","audio","lego","deus"],a:["deus"],n:"<em>scribo</em> (écrire), <em>discipulus</em> (élève), <em>magister</em> (maître), <em>audio</em> (écouter) et <em>lego</em> (lire) peuvent être rattachés au thème de l’école ; <em>deus</em> est un dieu."}
+].map(x=>({t:'i',...x}));
+const FREQ="Rappel : <em>nonnumquam</em> = <em>non</em> + <em>numquam</em> => pas … jamais = quelquefois.";
+const O=[
+ {t:'o',q:"Classe ces mots selon la fréquence, de la plus fréquente à la moins fréquente.",a:["semper","saepe","nonnumquam","numquam"],n:FREQ},
+ {t:'o',q:"Classe ces mots selon la fréquence, de la moins fréquente à la plus fréquente.",a:["numquam","nonnumquam","saepe","semper"],n:FREQ},
+ {t:'o',q:"Remets dans l’ordre les verbes modèles des conjugaisons, de la 1re à la 4e.",a:["amo","moneo","lego","capio","audio"],n:"<em>amo</em> : 1re conjugaison ; <em>moneo</em> : 2e ; <em>lego</em> : 3e ; <em>capio</em> : 3e mixte (en -io) ; <em>audio</em> : 4e.<br>Ce sont les verbes qui servent de modèle dans la plupart des grammaires."},
+ {t:'p',q:"Regroupe ces mots par paires de sens contraire : clique sur un mot, puis sur celui qui lui est opposé.",w:["ante","post","numquam","semper"],pairs:[["ante","post"],["numquam","semper"]],n:"<em>ante</em> (devant, avant) s’oppose à <em>post</em> (derrière, après) ; <em>semper</em> (toujours) s’oppose à <em>numquam</em> (jamais)."},
+ {t:'p',q:"Regroupe par paires les mots de sens contraire. Attention : il restera peut-être des mots.",w:["post","semper","deus","ante","numquam","amicus"],pairs:[["ante","post"],["numquam","semper"]],n:"<em>ante</em> / <em>post</em> et <em>semper</em> / <em>numquam</em> sont des contraires ; <em>deus</em> et <em>amicus</em> n’ont pas de contraire dans la série."},
+ {t:'g',q:"Regroupe les mots par catégorie grammaticale identique.",bins:["Prépositions","Adverbes","Noms"],w:["post","cum","in","saepe","numquam","deinde","amicus","dea","magister"],map:{post:0,cum:0,"in":0,saepe:1,numquam:1,deinde:1,amicus:2,dea:2,magister:2},n:"Les prépositions sont suivies d’un cas ; les adverbes sont invariables ; les noms se déclinent."},
+ {t:'g',q:"Regroupe les mots par catégorie grammaticale identique.",bins:["Verbes","Noms","Prépositions"],w:["amo","video","discipulus","deus","ante","in"],map:{amo:0,video:0,discipulus:1,deus:1,ante:2,"in":2},n:"Les verbes se conjuguent ; les noms se déclinent ; les prépositions sont invariables et suivies d’un cas."}
+];
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const shuffle=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
+const em=a=>a.map(x=>'<em>'+esc(full(x))+'</em>').join(' ; ');
+let tab='i',L=[],ix=0,sc=0,miss=[],st={},it;
+
+[...$('tabs').children].forEach(b=>b.onclick=()=>{[...$('tabs').children].forEach(c=>c.classList.toggle('on',c===b));begin(b.dataset.k)});
+function begin(k){tab=k;L=k==='i'?[...shuffle(I.filter(x=>!x.last)),...I.filter(x=>x.last)].slice(0,10):shuffle(O).slice(0,10);ix=0;sc=0;miss=[];$('end').classList.add('hide');$('ex').classList.remove('hide');show()}
+function show(){
+  it=L[ix];st={sel:new Set(),seq:[],s1:null,found:0,err:0,done:false};
+  $('cnt').textContent='Série '+(ix+1)+' / '+L.length;$('sc').textContent=sc+' réussie'+(sc>1?'s':'');
+  $('pb').style.width=(ix/L.length*100)+'%';
+  if(it.t==='i'){$('ti').textContent=it.k>1?'Quels sont les '+it.k+' intrus ?':'Quel est l’intrus ?';$('cr').textContent='Critère : '+it.c+'.'}
+  else{$('ti').textContent=it.q;$('cr').textContent=it.t==='o'?'Clique sur les mots dans l’ordre. « Effacer » permet de recommencer.':it.t==='g'?'Clique sur un mot, puis sur la catégorie où le ranger.':''}
+  $('wd').innerHTML=shuffle(it.w||it.a).map(x=>'<button data-w="'+esc(x)+'" aria-pressed="false">'+esc(full(x))+'</button>').join('');
+  [...$('wd').children].forEach(b=>b.onclick=()=>pick(b));
+  $('bins').classList.toggle('hide',it.t!=='g');
+  if(it.t==='g'){$('bins').innerHTML=it.bins.map((n,k)=>'<div class="bin"><button data-b="'+k+'">'+esc(n)+'</button><div class="pl" id="pl'+k+'"></div></div>').join('');
+    [...$('bins').querySelectorAll('button')].forEach(b=>b.onclick=()=>putBin(+b.dataset.b))}
+  else $('bins').innerHTML='';
+  $('ck').classList.toggle('hide',it.t==='p'||it.t==='g');$('cl').classList.toggle('hide',it.t!=='o');
+  $('seq').classList.toggle('hide',it.t!=='o');$('seq').textContent='';
+  $('hint').classList.add('hide');$('fb').classList.add('hide');$('nx').classList.add('hide');
+}
+function pick(b){
+  if(st.done)return;const w=b.dataset.w;
+  if(it.t==='i'){st.sel.has(w)?st.sel.delete(w):st.sel.add(w);b.setAttribute('aria-pressed',st.sel.has(w))}
+  else if(it.t==='o'){if(b.disabled)return;b.disabled=true;st.seq.push(w);$('seq').textContent=st.seq.map(full).join('  →  ')}
+  else if(it.t==='g'){if(b.classList.contains('done'))return;[...$('wd').children].forEach(c=>c.setAttribute('aria-pressed','false'));st.s1=b;b.setAttribute('aria-pressed','true')}
+  else{
+    if(b.classList.contains('done'))return;
+    if(!st.s1){st.s1=b;b.setAttribute('aria-pressed','true');return}
+    if(st.s1===b){b.setAttribute('aria-pressed','false');st.s1=null;return}
+    const a=st.s1;st.s1=null;a.setAttribute('aria-pressed','false');
+    if(it.pairs.some(p=>p.includes(a.dataset.w)&&p.includes(w))){
+      a.classList.add('done');b.classList.add('done');st.found++;
+      if(st.found===it.pairs.length){const lone=it.w.filter(x=>!it.pairs.flat().includes(x));finish(!st.err,'Les paires : '+it.pairs.map(q=>em(q).replace(' ; ',' / ')).join(' ; ')+'.'+(lone.length?(lone.length>1?' Les mots sans contraire : ':' Le mot sans contraire : ')+em(lone)+'.':''))}
+    }else{st.err++;a.classList.add('wrong');b.classList.add('wrong');setTimeout(()=>{a.classList.remove('wrong');b.classList.remove('wrong')},650)}
+  }
+}
+function putBin(k){
+  if(st.done)return;
+  if(!st.s1){$('hint').textContent='Clique d’abord sur un mot.';$('hint').classList.remove('hide');return}
+  $('hint').classList.add('hide');
+  const b=st.s1,w=b.dataset.w;st.s1=null;b.setAttribute('aria-pressed','false');
+  if(it.map[w]===k){
+    b.classList.add('done');b.disabled=true;st.found++;
+    $('pl'+k).innerHTML+=(st.pl&&st.pl[k]?' · ':'')+'<em>'+esc(full(w))+'</em>';(st.pl=st.pl||{})[k]=1;
+    if(st.found===it.w.length)finish(!st.err,'Classement :<br>'+it.bins.map((n,j)=>esc(n)+' : '+em(it.w.filter(x=>it.map[x]===j))).join('<br>'));
+  }else{st.err++;b.classList.add('wrong');setTimeout(()=>b.classList.remove('wrong'),650)}
+}
+$('cl').onclick=()=>{if(st.done)return;st.seq=[];$('seq').textContent='';[...$('wd').children].forEach(b=>b.disabled=false)};
+$('ck').onclick=()=>{
+  if(st.done)return;
+  if(it.t==='i'){
+    if(st.sel.size!==it.k){$('hint').textContent='Sélectionne exactement '+it.k+' mot'+(it.k>1?'s':'')+' avant de valider.';$('hint').classList.remove('hide');return}
+    let ok=true;
+    [...$('wd').children].forEach(b=>{const w=b.dataset.w,on=st.sel.has(w),need=it.a.includes(w);b.setAttribute('aria-pressed','false');
+      if(on&&need)b.classList.add('right');else if(on){b.classList.add('wrong');ok=false}else if(need){b.classList.add('miss');ok=false}});
+    finish(ok,(ok?'Réponse : ':'Il fallait trouver : ')+em(it.a)+'.');
+  }else{
+    if(st.seq.length<it.a.length){$('hint').textContent='Clique d’abord sur tous les mots.';$('hint').classList.remove('hide');return}
+    const ok=st.seq.join('|')===it.a.join('|');
+    finish(ok,'Ordre attendu : '+it.a.map(x=>'<em>'+esc(full(x))+'</em>').join(' → ')+'.');
+  }
+};
+function finish(ok,extra){
+  st.done=true;$('hint').classList.add('hide');
+  if(ok)sc++;else miss.push(it);
+  const ws=it.w||it.a;
+  const nn=it.n.replace(/<em>([^<]+)<\/em>/g,(m,w)=>'<em>'+esc(full(w))+'</em>');
+  $('fb').innerHTML='<p>'+(ok?'Bien vu. ':'<b>FAUX.</b> ')+extra+'</p><p>'+nn+'</p><p class="mute">'+ws.map(x=>'<em>'+esc(full(x))+'</em> : '+esc(F[x])+(PREP[x]?' (préposition + '+PREP[x]+')':'')).join('<br>')+'</p>';
+  $('fb').classList.remove('hide');$('nx').classList.remove('hide');$('ck').classList.add('hide');$('cl').classList.add('hide');
+  $('nx').textContent=ix+1<L.length?'Suite':'Voir le résultat';
+  $('sc').textContent=sc+' réussie'+(sc>1?'s':'');
+}
+$('nx').onclick=()=>{ix++;if(ix<L.length)show();else endAll()};
+function endAll(){
+  $('pb').style.width='100%';
+  $('end').innerHTML='<h2>'+sc+' / '+L.length+'</h2><p>'+(miss.length?'Tu peux refaire l’exercice : les séries sont mélangées.':'Sans faute. Bravo !')+'</p><div class="bar"><button class="primary" id="again">Recommencer</button></div>';
+  $('end').classList.remove('hide');$('ex').classList.add('hide');$('again').onclick=()=>begin(tab);
+}
+begin('i');
+</script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voc01liste CB1 – Flashcards</title>
+<style>
+/* thème parchemin, repris de l’espace de révisions */
+:root{--bg:#eee0c4;--card:#f8eed6;--ink:#2b1a10;--mute:#6f5a42;--line:#cdae72;--acc:#7a2a1e;--acc-ink:#fff7e6;--ok:#3f6b3a;--ko:#a3321f;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;line-height:1.55;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+main{max-width:720px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.9rem;margin:0 0 4px;font-weight:600;color:var(--acc);border-bottom:1px solid var(--line);padding-bottom:6px}
+.sub{color:var(--mute);margin:0 0 20px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+button{font:inherit;cursor:pointer;border:1px solid #dba855;background:linear-gradient(#fbf3df,#f0deb0);color:var(--ink);padding:8px 14px;border-radius:6px}
+button:hover{border-color:var(--acc)}
+button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+button.on,button.primary{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+button.ok{border-color:var(--ok);color:var(--ok)}button.ko{border-color:var(--ko);color:var(--ko)}
+.prog{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:4px 0 6px}
+.prog i{display:block;height:100%;background:var(--acc);width:0;transition:width .25s}
+.meta{display:flex;justify-content:space-between;color:var(--mute);font-size:.9rem;margin-bottom:12px}
+.flash{background:var(--card);border:1px solid var(--line);border-radius:10px;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px 20px;cursor:pointer;width:100%}
+.flash .q{font-size:1.7rem}
+.flash .a{font-size:1.4rem;color:var(--acc);margin-top:14px;padding-top:14px;border-top:1px solid var(--line);width:100%}
+.note{align-self:center;color:var(--acc);font-style:italic;margin-left:6px}
+.q small{display:block;font-size:.95rem;color:var(--mute);margin-top:8px}
+.a small{display:block;font-size:.95rem;color:var(--ink);margin-top:10px}
+.hint{color:var(--mute);font-size:.9rem;margin-top:12px}
+.act{display:flex;gap:10px;margin-top:14px}.act button{flex:1;padding:12px}
+.hide{display:none!important}
+.wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{width:50%;font-weight:600}
+td.n{width:2rem;color:var(--mute);font-weight:400}
+.res{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px}
+.res h2{margin:0 0 8px}
+.res ul{padding-left:18px;margin:8px 0 16px}
+</style>
+</head>
+<body>
+<main>
+<h1>Flashcards pour réviser la liste pour le CB1</h1>
+<p class="sub">32 mots à connaître. Pense à la réponse, retourne la carte, puis coche honnêtement.</p>
+
+<div class="bar" role="group" aria-label="Mode">
+  <button id="m-lf" class="on">Latin → Français</button>
+  <button id="m-list">Voir la liste</button>
+</div>
+
+<section id="quiz">
+  <div class="prog"><i id="pb"></i></div>
+  <div class="meta"><span id="cnt"></span><span id="score"></span></div>
+  <button class="flash" id="card" aria-live="polite">
+    <div class="q" id="q"></div>
+    <div class="a hide" id="a"></div>
+    <div class="hint" id="h">Touche la carte pour voir la réponse</div>
+  </button>
+  <div class="act hide" id="act">
+    <button class="ko" id="no">À revoir</button>
+    <button class="ok" id="yes">Je savais</button>
+  </div>
+</section>
+
+<section id="end" class="res hide"></section>
+
+<section id="list" class="wrap hide"><table id="tbl"></table></section>
+</main>
+
+<script>
+const W=[
+["ab / a  (selon que le mot suivant commence par une voyelle ou une consonne)","par / de (complément d’agent)",{cas:"abl.",note:"Attention : en version, vous avez tendance au début à vous tromper quand c’est juste *a* (vous ne reconnaissez plus le mot !)."}],
+["ac / atque (selon que le mot suivant commence par une voyelle ou une consonne)","et"],
+["amicus, i, m.","ami"],
+["amo, as, are, amavi, amatum","aimer"],
+["ante","devant ; avant",{cas:"acc.",deux:1}],
+["atque / ac (selon que le mot suivant commence par une voyelle ou une consonne)","et"],
+["audio, is, ire, audivi, auditum","entendre ; écouter"],
+["capio, is, ere, cepi, captum","prendre"],
+["cum","avec",{cas:"abl."}],
+["dea, ae, f.","déesse"],
+["deinde","ensuite, puis"],
+["denique","enfin, à la fin"],
+["deus, i, m.","dieu"],
+["discipulus, i, m.","élève"],
+["enim","en effet"],
+["et","et"],
+["etsi, conj. sub. + indicatif","bien que, quoique",{note:"Souvenez-vous de ce que j’ai dit sur les erreurs possibles en expression française avec « bien que » et du truc que j’ai donné."}],
+["in","dans, en, sur",{cas:"abl. ou acc."}],
+["lego, is, ere, legi, lectum","lire"],
+["magister, tri, m.","maître (d’école)"],
+["moneo, es, ere, monui, monitum","avertir"],
+["non","négation => pas / ne … pas"],
+["nonnumquam","parfois"],
+["numquam","jamais"],
+["post","derrière ; après",{cas:"acc.",deux:1}],
+["-que","et"],
+["quia, conj. sub. + indicatif","parce que"],
+["saepe","souvent"],
+["scribo, is, ere, scripsi, scriptum","écrire"],
+["semper","toujours"],
+["tamen","cependant, pourtant"],
+["video, es, ere, vidi, visum","voir"]
+];
+const $=id=>document.getElementById(id);
+let dir=0,deck=[],i=0,good=0,missed=[],flipped=false;
+
+function shuffle(a){a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a}
+function show(v){$('quiz').classList.toggle('hide',v!=='quiz');$('end').classList.toggle('hide',v!=='end');$('list').classList.toggle('hide',v!=='list')}
+function start(words){deck=shuffle(words);i=0;good=0;missed=[];show('quiz');render()}
+function render(){
+  flipped=false;
+  const w=deck[i];
+  $('q').innerHTML=qHtml(w);
+  $('a').innerHTML=aHtml(w);
+  $('a').classList.add('hide');$('act').classList.add('hide');$('h').classList.remove('hide');
+  $('cnt').textContent='Mot '+(i+1)+' / '+deck.length;
+  $('score').textContent=good+' su'+(good>1?'s':'');
+  $('pb').style.width=(i/deck.length*100)+'%';
+  $('card').focus({preventScroll:true});
+}
+function flip(){if(flipped)return;flipped=true;$('a').classList.remove('hide');$('act').classList.remove('hide');$('h').classList.add('hide')}
+function answer(ok){
+  if(!flipped)return;
+  if(ok)good++;else missed.push(deck[i]);
+  i++;
+  if(i<deck.length)render();else finish();
+}
+function finish(){
+  $('pb').style.width='100%';
+  const n=deck.length;
+  let h='<h2>'+good+' / '+n+'</h2><p>'+(missed.length?'Il te reste '+missed.length+' mot'+(missed.length>1?'s':'')+' à revoir :':'Tout est su. Bravo !')+'</p>';
+  if(missed.length){h+='<ul>'+missed.map(w=>'<li><b>'+esc(w[0])+(w[2]&&w[2].cas?' + '+esc(w[2].cas):'')+'</b> : '+esc(w[1])+'</li>').join('')+'</ul>'}
+  h+='<div class="bar">';
+  if(missed.length)h+='<button class="primary" id="redo">Refaire les mots à revoir</button>';
+  h+='<button id="all">Tout recommencer</button></div>';
+  $('end').innerHTML=h;show('end');
+  if($('redo'))$('redo').onclick=()=>start(missed);
+  $('all').onclick=()=>start(W);
+}
+const PN='Attention : en contrôle, je demande toujours d’indiquer le(s) cas.';
+function qHtml(w){const e=w[2]||{};return esc(w[0])+(e.cas?'<small>De quel(s) cas cette préposition peut-elle être suivie ?</small>':'')}
+function aHtml(w){const e=w[2]||{};let h=esc(w[1]);
+  if(e.deux)h+='<small><b>Connaître les 2 sens !</b></small>';
+  if(e.cas)h+='<small>Cas : <b>'+esc(e.cas)+'</b></small><small>'+PN+'</small><small>Rappel : en latin, après une préposition, on peut avoir soit l’acc., soit l’abl., soit les 2 (cela dépend de la préposition).</small>';
+  if(e.note)h+='<small>'+esc(e.note).replace(/\*(.+?)\*/g,'<em>$1</em>')+'</small>';return h}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function setMode(){$('m-lf').classList.add('on');$('m-list').classList.remove('on');start(W)}
+
+$('card').onclick=flip;
+$('yes').onclick=()=>answer(true);
+$('no').onclick=()=>answer(false);
+$('m-lf').onclick=setMode;
+$('m-list').onclick=()=>{
+  $('m-lf').classList.remove('on');$('m-list').classList.add('on');
+  $('tbl').innerHTML=W.map((w,k)=>'<tr><td class="n">'+(k+1)+'</td><td>'+esc(w[0])+(w[2]&&w[2].cas?' + '+esc(w[2].cas):'')+'</td><td>'+esc(w[1])+'</td></tr>').join('');
+  show('list');
+};
+document.addEventListener('keydown',e=>{
+  if($('quiz').classList.contains('hide'))return;
+  if(e.key===' '||e.key==='Enter'){if(!flipped){e.preventDefault();flip()}}
+  else if(e.key==='ArrowRight')answer(true);
+  else if(e.key==='ArrowLeft')answer(false);
+});
+start(W);
+</script>
+</body>
+</html>

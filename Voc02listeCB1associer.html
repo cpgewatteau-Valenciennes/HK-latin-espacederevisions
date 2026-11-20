@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voc02liste CB1 – Associer</title>
+<style>
+/* thème parchemin, repris de l’espace de révisions */
+:root{--bg:#eee0c4;--card:#f8eed6;--ink:#2b1a10;--mute:#6f5a42;--line:#cdae72;--acc:#7a2a1e;--acc-ink:#fff7e6;--ok:#3f6b3a;--ko:#a3321f;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;line-height:1.55;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+main{max-width:760px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.8rem;margin:0 0 4px;font-weight:600;color:var(--acc);border-bottom:1px solid var(--line);padding-bottom:6px}
+.sub{margin:0 0 14px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+button{font:inherit;cursor:pointer;border:1px solid #dba855;background:linear-gradient(#fbf3df,#f0deb0);color:var(--ink);padding:9px 14px;border-radius:6px}
+button:hover{border-color:var(--acc)}
+button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+button.on,button.primary{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.hide{display:none!important}
+.mute{color:var(--mute)}
+.meta{display:flex;justify-content:space-between;gap:12px;color:var(--mute);font-size:.9rem;margin-bottom:12px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:14px}
+.box h2{margin:0 0 8px;font-size:1.25rem}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.92rem;margin:0 0 16px;padding:10px 12px;background:var(--card);border:1px solid var(--line);border-radius:6px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:16px;height:16px;border-radius:4px;border:2px solid var(--line);display:inline-block}
+.sw.sel{border-color:var(--acc)}.sw.ok{background:var(--ok);border-color:var(--ok)}.sw.ko{background:var(--ko);border-color:var(--ko)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.col{display:flex;flex-direction:column;gap:8px}
+.col button{text-align:center;font-size:1rem}
+.col button.sel{border:2px solid var(--acc)}
+.col button.done{background:var(--ok);border-color:var(--ok);color:#fff;cursor:default}
+.col button.err{background:var(--ko);border-color:var(--ko);color:#fff}
+table{border-collapse:collapse;width:100%;margin:10px 0}
+td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{font-weight:600;width:50%}
+.opts{display:flex;flex-direction:column;gap:10px;margin:14px 0}
+.opts button{text-align:left;font-size:1.05rem;padding:12px 14px}
+.opts button.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.opts button.wrong{background:var(--ko);border-color:var(--ko);color:#fff}
+.big{font-size:1.5rem;font-style:italic;font-weight:600;margin:0}
+.res ul{padding-left:18px}
+</style>
+</head>
+<body>
+<main>
+<h1>Associer : la liste du CB1</h1>
+<p class="sub">Clique sur un mot latin, puis sur sa traduction française. Pense que sur les prépositions, tu dois aussi réviser le(s) cas dont elle(s) sont suivie(s).</p>
+
+<div class="legend" aria-label="Légende des couleurs">
+  <span><i class="sw sel"></i> mot choisi (entouré)</span>
+  <span><i class="sw ok"></i> bonne association : les deux mots passent au vert</span>
+  <span><i class="sw ko"></i> erreur : rouge un instant, puis tu peux réessayer</span>
+</div>
+
+<div class="bar" id="tabs">
+  <button id="t1" class="on">Associer</button>
+  <button id="t2">Prépositions : quel cas ?</button>
+</div>
+
+<section id="s1">
+  <div class="meta"><span id="rn"></span><span id="rc"></span></div>
+  <div class="box" id="mb">
+    <div class="two"><div class="col" id="ml"></div><div class="col" id="mr"></div></div>
+  </div>
+  <div class="box hide" id="rec">
+    <h2>Série terminée</h2>
+    <table id="rt"></table>
+    <p class="mute hide" id="pnote">Attention : en contrôle, je demande toujours d’indiquer le(s) cas.</p>
+    <div class="bar"><button class="primary" id="nx">Série suivante</button></div>
+  </div>
+  <div class="box res hide" id="fin"></div>
+</section>
+
+<section id="s2" class="hide">
+  <div class="meta"><span id="qn"></span><span id="qs"></span></div>
+  <div class="box" id="qb">
+    <p class="mute" style="margin:0 0 6px">Quel cas cette préposition régit-elle ?</p>
+    <p class="big" id="qw"></p>
+    <p class="mute" id="qm" style="margin:2px 0 0"></p>
+    <div class="opts" id="qo"></div>
+    <p id="qf" class="hide"></p>
+    <div class="bar"><button class="primary hide" id="qx">Suite</button></div>
+  </div>
+  <div class="box res hide" id="qe"></div>
+</section>
+</main>
+
+<script>
+const D=[
+["ab / a","par / de (complément d’agent)","abl."],
+["ac / atque","et"],
+["amicus, i, m.","ami"],
+["amo, as, are, amavi, amatum","aimer"],
+["ante","devant ; avant","acc."],
+["atque / ac","et"],
+["audio, is, ire, audivi, auditum","entendre ; écouter"],
+["capio, is, ere, cepi, captum","prendre"],
+["cum","avec","abl."],
+["dea, ae, f.","déesse"],
+["deinde","ensuite, puis"],
+["denique","enfin, à la fin"],
+["deus, i, m.","dieu"],
+["discipulus, i, m.","élève"],
+["enim","en effet"],
+["et","et"],
+["etsi, conj. sub. + indicatif","bien que, quoique"],
+["in","dans, en, sur","abl. ou acc."],
+["lego, is, ere, legi, lectum","lire"],
+["magister, tri, m.","maître (d’école)"],
+["moneo, es, ere, monui, monitum","avertir"],
+["non","pas / ne … pas"],
+["nonnumquam","parfois"],
+["numquam","jamais"],
+["post","derrière ; après","acc."],
+["-que","et"],
+["quia, conj. sub. + indicatif","parce que"],
+["saepe","souvent"],
+["scribo, is, ere, scripsi, scriptum","écrire"],
+["semper","toujours"],
+["tamen","cependant, pourtant"],
+["video, es, ere, vidi, visum","voir"]
+];
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const shuffle=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
+const lab=w=>'<em>'+esc(w[0])+'</em>'+(w[2]?' + '+esc(w[2]):'');
+
+$('t1').onclick=()=>{$('t1').classList.add('on');$('t2').classList.remove('on');$('s1').classList.remove('hide');$('s2').classList.add('hide')};
+$('t2').onclick=()=>{$('t2').classList.add('on');$('t1').classList.remove('on');$('s2').classList.remove('hide');$('s1').classList.add('hide');if(!qd.length)startQ()};
+
+// ---- Associer : 4 séries de 8 (un seul « et » par série)
+let rounds=[],ri=0,cur=[],ms=null,mr=null,done=0,err=0,total=0;
+function startAll(){
+  const et=shuffle(D.filter(w=>w[1]==='et')),rest=shuffle(D.filter(w=>w[1]!=='et'));
+  rounds=et.map((e,k)=>shuffle([e,...rest.slice(k*7,k*7+7)]));
+  ri=0;total=0;$('fin').classList.add('hide');$('mb').classList.remove('hide');round();
+}
+function round(){
+  cur=rounds[ri];ms=mr=null;done=0;err=0;
+  $('rec').classList.add('hide');$('mb').classList.remove('hide');
+  $('rn').textContent='Série '+(ri+1)+' / '+rounds.length;count();
+  $('ml').innerHTML=shuffle(cur.map((w,k)=>[w[0],k])).map(x=>'<button data-k="'+x[1]+'">'+esc(x[0])+'</button>').join('');
+  $('mr').innerHTML=shuffle(cur.map((w,k)=>[w[1],k])).map(x=>'<button data-k="'+x[1]+'">'+esc(x[0])+'</button>').join('');
+  [...$('ml').children].forEach(b=>b.onclick=()=>pick(b,'l'));
+  [...$('mr').children].forEach(b=>b.onclick=()=>pick(b,'r'));
+}
+function count(){$('rc').textContent=done+' / '+cur.length+' · '+err+' erreur'+(err>1?'s':'')}
+function pick(b,side){
+  if(b.classList.contains('done'))return;
+  [...(side==='l'?$('ml'):$('mr')).children].forEach(c=>c.classList.remove('sel'));
+  b.classList.add('sel');
+  if(side==='l')ms=b;else mr=b;
+  if(!(ms&&mr))return;
+  const a=ms,c=mr;ms=mr=null;
+  if(a.dataset.k===c.dataset.k){a.className=c.className='done';done++;if(done===cur.length)endRound()}
+  else{err++;total++;a.className=c.className='err';setTimeout(()=>{a.className=c.className=''},650)}
+  count();
+}
+function endRound(){
+  $('mb').classList.add('hide');
+  $('rt').innerHTML=cur.map(w=>'<tr><td>'+lab(w)+'</td><td>'+esc(w[1])+'</td></tr>').join('');
+  $('pnote').classList.toggle('hide',!cur.some(w=>w[2]));
+  $('nx').textContent=ri+1<rounds.length?'Série suivante':'Voir le bilan';
+  $('rec').classList.remove('hide');
+}
+$('nx').onclick=()=>{ri++;if(ri<rounds.length)round();else{
+  $('rec').classList.add('hide');
+  $('fin').innerHTML='<h2>Bilan</h2><p>'+(total?total+' erreur'+(total>1?'s':'')+' sur l’ensemble des 4 séries.':'Aucune erreur. Bravo !')+'</p><div class="bar"><button class="primary" id="again">Recommencer (nouvelles séries)</button></div>';
+  $('fin').classList.remove('hide');$('again').onclick=startAll}};
+
+// ---- Prépositions : quel cas ?
+const OPT=[["accusatif ou ablatif","abl. ou acc."],["accusatif","acc."],["ablatif","abl."]];
+const NOTE={"ab / a":"Attention : en version, vous avez tendance au début à vous tromper quand c’est juste *a* (vous ne reconnaissez plus le mot !).","ante":"Connaître les 2 sens !","post":"Connaître les 2 sens !"};
+let qd=[],qi=0,qg=0,ans=false;
+function startQ(){qd=shuffle(D.filter(w=>w[2]));qi=0;qg=0;$('qe').classList.add('hide');$('qb').classList.remove('hide');showQ()}
+function showQ(){
+  const w=qd[qi];ans=false;
+  $('qn').textContent='Préposition '+(qi+1)+' / '+qd.length;$('qs').textContent=qg+' bonne'+(qg>1?'s':'')+' réponse'+(qg>1?'s':'');
+  $('qw').textContent=w[0];$('qm').textContent='« '+w[1]+' »';
+  $('qo').innerHTML=OPT.map(o=>'<button data-c="'+o[1]+'">'+o[0]+'</button>').join('');
+  [...$('qo').children].forEach(b=>b.onclick=()=>{
+    if(ans)return;ans=true;const ok=b.dataset.c===w[2];if(ok)qg++;
+    [...$('qo').children].forEach(c=>{if(c.dataset.c===w[2])c.classList.add('right')});
+    if(!ok)b.classList.add('wrong');
+    const o=OPT.find(o=>o[1]===w[2])[0];
+    $('qf').innerHTML=(ok?'Bien vu. ':'<b>FAUX.</b> ')+'<em>'+esc(w[0])+'</em> est suivi de : <b>'+o+'</b>. '+(NOTE[w[0]]?esc(NOTE[w[0]]).replace(/\*(.+?)\*/g,'<em>$1</em>')+' ':'')+'Attention : en contrôle, je demande toujours d’indiquer le(s) cas.'+(ok?'':' En version, ne pas connaître le(s) cas après une préposition sera source d’erreurs.');
+    $('qf').classList.remove('hide');$('qx').classList.remove('hide');
+    $('qx').textContent=qi+1<qd.length?'Suite':'Voir le résultat';
+    $('qs').textContent=qg+' bonne'+(qg>1?'s':'')+' réponse'+(qg>1?'s':'');
+  });
+  $('qf').classList.add('hide');$('qx').classList.add('hide');
+}
+$('qx').onclick=()=>{qi++;if(qi<qd.length)showQ();else{
+  $('qb').classList.add('hide');
+  $('qe').innerHTML='<h2>'+qg+' / '+qd.length+'</h2><p>'+(qg===qd.length?'Sans faute. Bravo !':'Recommence pour fixer les cas.')+'</p><p class="mute">Rappel : en latin, après une préposition, on peut avoir soit l’acc., soit l’abl., soit les 2 (cela dépend de la préposition).</p><div class="bar"><button class="primary" id="qr">Recommencer</button></div>';
+  $('qe').classList.remove('hide');$('qr').onclick=startQ}};
+
+startAll();
+</script>
+</body>
+</html>

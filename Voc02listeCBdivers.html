@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voc02liste CB divers – Quelques catégories</title>
+<style>
+/* thème parchemin, repris de l’espace de révisions */
+:root{--bg:#eee0c4;--card:#f8eed6;--ink:#2b1a10;--mute:#6f5a42;--line:#cdae72;--acc:#7a2a1e;--acc-ink:#fff7e6;--ok:#3f6b3a;--ko:#a3321f;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;line-height:1.55;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+main{max-width:760px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.8rem;margin:0 0 4px;font-weight:600;color:var(--acc);border-bottom:1px solid var(--line);padding-bottom:6px}
+.sub{color:var(--mute);margin:0 0 20px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+button{font:inherit;cursor:pointer;border:1px solid #dba855;background:linear-gradient(#fbf3df,#f0deb0);color:var(--ink);padding:8px 14px;border-radius:6px}
+button:hover{border-color:var(--acc)}
+button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+button.on,button.primary{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+button.ok{border-color:var(--ok);color:var(--ok)}button.ko{border-color:var(--ko);color:var(--ko)}
+.hide{display:none!important}
+.prog{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:4px 0 6px}
+.prog i{display:block;height:100%;background:var(--acc);width:0;transition:width .25s}
+.meta{display:flex;justify-content:space-between;color:var(--mute);font-size:.9rem;margin-bottom:12px}
+.intro{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--acc);border-radius:6px;padding:12px 14px;margin-bottom:14px}
+.flash{background:var(--card);border:1px solid var(--line);border-radius:10px;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px 20px;cursor:pointer;width:100%}
+.flash .q{font-size:1.7rem}
+.flash .a{font-size:1.4rem;color:var(--acc);margin-top:14px;padding-top:14px;border-top:1px solid var(--line);width:100%}
+.q small{display:block;font-size:.95rem;color:var(--mute);margin-top:8px}
+.a small{display:block;font-size:.95rem;color:var(--ink);margin-top:10px}
+.hint{color:var(--mute);font-size:.9rem;margin-top:12px}
+.act{display:flex;gap:10px;margin-top:14px}.act button{flex:1;padding:12px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:14px}
+.box h2{margin:0 0 8px}
+.wrap{overflow-x:auto;margin-top:14px}
+table{border-collapse:collapse;width:100%}
+td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td:first-child{width:50%;font-weight:600}
+.words{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.words button{font-size:1.2rem;padding:10px 16px}
+.words button[aria-pressed="true"]{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)}
+.words button.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.words button.wrong{background:var(--ko);border-color:var(--ko);color:#fff}
+.words button.miss{border:2px dashed var(--ok);color:var(--ok)}
+.res ul{padding-left:18px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.col{display:flex;flex-direction:column;gap:8px}
+.col button{font-size:1.05rem;text-align:center}
+.col button.sel{border:2px solid var(--acc)}
+.col button.done{background:var(--ok);border-color:var(--ok);color:#fff;cursor:default}
+.col button.err{background:var(--ko);border-color:var(--ko);color:#fff}
+.words button:disabled{opacity:.5;cursor:default}
+.seq{font-size:1.15rem;min-height:1.6em}
+</style>
+</head>
+<body>
+<main>
+<h1>Quelques catégories</h1>
+<p class="sub">Le vocabulaire de la liste, classé par catégories. Choisis un onglet, révise avec les flashcards, puis teste-toi avec les exercices (cliquer, intrus, vrai ou faux, associer, remettre dans l’ordre).</p>
+
+<div class="bar" id="tabs" role="group" aria-label="Catégories"></div>
+<div class="bar" id="tabs2" role="group" aria-label="Exercices"></div>
+
+<section id="fc">
+  <div class="intro hide" id="intro"></div>
+  <div class="prog"><i id="pb"></i></div>
+  <div class="meta"><span id="cnt"></span><span id="score"></span></div>
+  <button class="flash" id="card" aria-live="polite">
+    <div class="q" id="q"></div>
+    <div class="a hide" id="a"></div>
+    <div class="hint" id="h">Touche la carte pour voir la réponse</div>
+  </button>
+  <div class="act hide" id="act">
+    <button class="ko" id="no">À revoir</button>
+    <button class="ok" id="yes">Je savais</button>
+  </div>
+  <div class="bar" style="margin-top:14px"><button id="lst">Voir la liste</button></div>
+  <div class="wrap hide" id="list"><table id="tbl"></table></div>
+</section>
+
+<section id="end" class="box res hide"></section>
+
+<section id="cl" class="hide">
+  <div class="meta"><span id="rcnt"></span><span id="rsc"></span></div>
+  <div class="box">
+    <h2 id="rq"></h2>
+    <div class="words" id="rw"></div>
+    <div class="bar"><button class="primary" id="rv">Valider</button><button class="hide" id="rn">Suite</button></div>
+    <p id="rfb" class="hide"></p>
+  </div>
+  <div class="box res hide" id="rend"></div>
+</section>
+<section id="qz" class="hide">
+  <div class="meta"><span id="qcnt"></span><span id="qsc"></span></div>
+  <div class="box" id="qb">
+    <h2 id="qt"></h2>
+    <p id="qq"></p>
+    <div class="words" id="qo"></div>
+    <p id="qfb" class="hide"></p>
+    <div class="bar"><button class="primary hide" id="qn">Suite</button></div>
+  </div>
+  <div class="box res hide" id="qe"></div>
+</section>
+
+<section id="mt" class="hide">
+  <div class="meta"><span>Relie chaque mot latin à son sens : clique sur un mot de chaque colonne.</span><span id="mcnt"></span></div>
+  <div class="box">
+    <div class="two"><div class="col" id="ml"></div><div class="col" id="mr"></div></div>
+    <p id="mfb" class="hide"></p>
+    <div class="bar" style="margin-top:14px"><button class="primary" id="mnew">Nouvelle série</button></div>
+  </div>
+</section>
+
+<section id="od" class="hide">
+  <div class="box">
+    <h2 id="oq"></h2>
+    <p class="mute">Clique sur les mots dans l’ordre.</p>
+    <div class="words" id="ow"></div>
+    <p class="seq" id="oseq"></p>
+    <div class="bar"><button class="primary" id="ov">Valider</button><button id="oc">Effacer</button><button class="hide" id="onx">Autre série</button></div>
+    <p id="ofb" class="hide"></p>
+  </div>
+</section>
+</main>
+
+<script>
+const PN='Attention : en contrôle, je demande toujours d’indiquer le(s) cas.';
+const RAPPEL='Rappel : en latin, après une préposition, on peut avoir soit l’acc., soit l’abl., soit les 2 (cela dépend de la préposition).';
+const ET='selon que le mot suivant commence par une voyelle ou une consonne';
+const CATS=[
+{n:"Personnes",w:[
+ ["amicus, i, m.","ami"],["dea, ae, f.","déesse"],["deus, i, m.","dieu"],["discipulus, i, m.","élève"],["magister, tri, m.","maître (d’école)"]]},
+{n:"Verbes",w:[
+ ["amo, as, are, amavi, amatum","aimer",{m:"1re conjugaison"}],
+ ["audio, is, ire, audivi, auditum","entendre ; écouter",{m:"4e conjugaison"}],
+ ["capio, is, ere, cepi, captum","prendre",{m:"3e conjugaison mixte (en -io)"}],
+ ["lego, is, ere, legi, lectum","lire",{m:"3e conjugaison"}],
+ ["moneo, es, ere, monui, monitum","avertir",{m:"2e conjugaison"}],
+ ["scribo, is, ere, scripsi, scriptum","écrire"],
+ ["video, es, ere, vidi, visum","voir"]]},
+{n:"Prépositions",w:[
+ ["ab / a  ("+ET+")","par / de (complément d’agent)",{cas:"abl.",note:"Attention : en version, vous avez tendance au début à vous tromper quand c’est juste *a* (vous ne reconnaissez plus le mot !)."}],
+ ["ante","devant ; avant",{cas:"acc.",deux:1}],
+ ["cum","avec",{cas:"abl."}],
+ ["in","dans, en, sur",{cas:"abl. ou acc."}],
+ ["post","derrière ; après",{cas:"acc.",deux:1}]]},
+{n:"Mots de liaison",w:[
+ ["et","et"],["-que","et"],
+ ["ac / atque  ("+ET+")","et"],["atque / ac  ("+ET+")","et"],
+ ["deinde","ensuite, puis"],["denique","enfin, à la fin"],["enim","en effet"],["tamen","cependant, pourtant"]]},
+{n:"Conjonctions de sub.",w:[
+ ["etsi, conj. sub. + indicatif","bien que, quoique",{note:"Souvenez-vous de ce que j’ai dit sur les erreurs possibles en expression française avec « bien que » et du truc que j’ai donné."}],
+ ["quia, conj. sub. + indicatif","parce que"]]},
+{n:"À quelle fréquence ?",intro:"Ces adverbes répondent à la question « À quelle fréquence ? » : ils disent à quel rythme une action se répète.",w:[
+ ["numquam","jamais"],
+ ["nonnumquam","parfois",{note:"non + numquam => pas … jamais = quelquefois"}],
+ ["saepe","souvent"],["semper","toujours"]]}
+];
+const R=[
+ {q:"Clique sur les prépositions.",w:["ante","amicus","cum","video","in","saepe","deinde","post"],ok:["ante","cum","in","post"]},
+ {q:"Clique sur les noms désignant des humains.",w:["amicus","deus","magister","scribo","discipulus","ante","semper","dea"],ok:["amicus","magister","discipulus"],n:"Deus et dea désignent des divinités, pas des humains."},
+ {q:"Clique sur les noms en lien avec l’école.",w:["discipulus","dea","magister","amicus","lego","deus","saepe","scribo"],ok:["discipulus","magister"],n:"Lego et scribo ont un lien avec l’école, mais ce sont des verbes, pas des noms."},
+ {q:"Clique sur les mots signifiant « et ».",w:["et","atque","-que","ac","enim","tamen","cum","deinde"],ok:["et","atque","-que","ac"]},
+ {q:"Clique sur les verbes de la 2e conjugaison.",w:["amo","moneo","audio","video","lego","capio","scribo","saepe"],ok:["moneo","video"]},
+ {q:"Clique sur les mots qui répondent à la question « À quelle fréquence ? ».",w:["semper","numquam","saepe","nonnumquam","non","denique","tamen","in"],ok:["semper","numquam","saepe","nonnumquam"],n:"Non est une négation, pas un adverbe de fréquence."},
+ {q:"Clique sur les prépositions suivies seulement de l’accusatif.",w:["ante","cum","post","in","ab / a","amicus","et","enim"],ok:["ante","post"],n:"Cum et ab / a veulent l’abl. ; in peut avoir l’acc. ou l’abl."},
+ {q:"Clique sur les conjonctions de subordination.",w:["etsi","quia","et","atque","tamen","enim","denique","-que"],ok:["etsi","quia"]}
+];
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const shuffle=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
+
+// onglets
+$('tabs').innerHTML=CATS.map((c,k)=>'<button data-k="'+k+'">'+esc(c.n)+'</button>').join('');
+$('tabs2').innerHTML=[['x','Cliquer sur les bons mots'],['i','L’intrus'],['v','Vrai ou faux'],['a','Associer'],['o','Dans l’ordre']].map(t=>'<button data-k="'+t[0]+'">'+esc(t[1])+'</button>').join('');
+[...$('tabs').children,...$('tabs2').children].forEach(b=>b.onclick=()=>openTab(b.dataset.k));
+function openTab(k){
+  [...$('tabs').children,...$('tabs2').children].forEach(b=>b.classList.toggle('on',b.dataset.k===String(k)));
+  ['fc','cl','qz','mt','od','end'].forEach(x=>$(x).classList.add('hide'));
+  if(k==='x'){$('cl').classList.remove('hide');startR()}
+  else if(k==='i'||k==='v'){$('qz').classList.remove('hide');startQ(k)}
+  else if(k==='a'){$('mt').classList.remove('hide');startM()}
+  else if(k==='o'){$('od').classList.remove('hide');startO()}
+  else{cat=+k;$('list').classList.add('hide');$('lst').textContent='Voir la liste';
+    const c=CATS[cat];$('intro').classList.toggle('hide',!c.intro);$('intro').textContent=c.intro||'';
+    $('tbl').innerHTML=c.w.map(w=>'<tr><td>'+esc(w[0])+(w[2]&&w[2].cas?' + '+esc(w[2].cas):'')+'</td><td>'+esc(w[1])+'</td></tr>').join('');
+    $('fc').classList.remove('hide');start(c.w)}
+}
+
+// flashcards
+let cat=0,deck=[],i=0,good=0,missed=[],flipped=false;
+function qHtml(w){const e=w[2]||{};return esc(w[0])+(e.cas?'<small>De quel(s) cas cette préposition peut-elle être suivie ?</small>':'')}
+function aHtml(w){const e=w[2]||{};let h=esc(w[1]);
+  if(e.deux)h+='<small><b>Connaître les 2 sens !</b></small>';
+  if(e.cas)h+='<small>Cas : <b>'+esc(e.cas)+'</b></small><small>'+PN+'</small><small>'+RAPPEL+'</small>';
+  if(e.m)h+='<small><b>À retenir :</b> c’est le verbe qui sert de modèle pour la '+esc(e.m)+' dans la plupart des grammaires.</small>';
+  if(e.note)h+='<small>'+esc(e.note).replace(/\*(.+?)\*/g,'<em>$1</em>')+'</small>';
+  return h}
+function start(ws){deck=shuffle(ws);i=0;good=0;missed=[];$('end').classList.add('hide');$('fc').classList.remove('hide');render()}
+function render(){
+  flipped=false;const w=deck[i];
+  $('q').innerHTML=qHtml(w);$('a').innerHTML=aHtml(w);
+  $('a').classList.add('hide');$('act').classList.add('hide');$('h').classList.remove('hide');
+  $('cnt').textContent='Mot '+(i+1)+' / '+deck.length;
+  $('score').textContent=good+' su'+(good>1?'s':'');
+  $('pb').style.width=(i/deck.length*100)+'%';
+}
+function flip(){if(flipped)return;flipped=true;$('a').classList.remove('hide');$('act').classList.remove('hide');$('h').classList.add('hide')}
+function answer(ok){
+  if(!flipped)return;
+  if(ok)good++;else missed.push(deck[i]);
+  i++;i<deck.length?render():finish();
+}
+function finish(){
+  $('pb').style.width='100%';
+  let h='<h2>'+good+' / '+deck.length+'</h2><p>'+(missed.length?'À revoir :':'Tout est su. Bravo !')+'</p>';
+  if(missed.length)h+='<ul>'+missed.map(w=>'<li><b>'+esc(w[0])+'</b> : '+esc(w[1])+'</li>').join('')+'</ul>';
+  h+='<div class="bar">'+(missed.length?'<button class="primary" id="redo">Refaire les mots à revoir</button>':'')+'<button id="all">Recommencer cette catégorie</button></div>';
+  $('end').innerHTML=h;$('end').classList.remove('hide');$('fc').classList.add('hide');
+  if($('redo'))$('redo').onclick=()=>start(missed);
+  $('all').onclick=()=>start(CATS[cat].w);
+}
+$('card').onclick=flip;
+$('yes').onclick=()=>answer(true);
+$('no').onclick=()=>answer(false);
+$('lst').onclick=()=>{const h=$('list').classList.toggle('hide');$('lst').textContent=h?'Voir la liste':'Masquer la liste'};
+document.addEventListener('keydown',e=>{
+  if($('fc').classList.contains('hide'))return;
+  if(e.key===' '||e.key==='Enter'){if(!flipped){e.preventDefault();flip()}}
+  else if(e.key==='ArrowRight')answer(true);
+  else if(e.key==='ArrowLeft')answer(false);
+});
+
+// exercice de clic
+let rd=[],ri=0,rg=0,rsel=new Set(),rdone=false;
+function startR(){rd=shuffle(R);ri=0;rg=0;$('rend').classList.add('hide');$('rq').parentNode.classList.remove('hide');renderR()}
+function renderR(){
+  const r=rd[ri];rsel=new Set();rdone=false;
+  $('rcnt').textContent='Série '+(ri+1)+' / '+rd.length;
+  $('rsc').textContent=rg+' réussie'+(rg>1?'s':'');
+  $('rq').textContent=r.q;
+  $('rw').innerHTML=shuffle(r.w).map(x=>'<button aria-pressed="false">'+esc(x)+'</button>').join('');
+  [...$('rw').children].forEach(b=>b.onclick=()=>{
+    if(rdone)return;const t=b.textContent;
+    rsel.has(t)?rsel.delete(t):rsel.add(t);
+    b.setAttribute('aria-pressed',rsel.has(t));
+  });
+  $('rv').classList.remove('hide');$('rn').classList.add('hide');$('rfb').classList.add('hide');
+}
+$('rv').onclick=()=>{
+  if(rdone)return;rdone=true;const r=rd[ri];
+  let err=0;
+  [...$('rw').children].forEach(b=>{
+    const t=b.textContent,on=rsel.has(t),need=r.ok.includes(t);
+    if(on&&need)b.classList.add('right');
+    else if(on&&!need){b.classList.add('wrong');err++}
+    else if(!on&&need){b.classList.add('miss');err++}
+  });
+  if(!err)rg++;
+  $('rfb').innerHTML=(err?'Pas tout à fait : en vert plein les bons choix, en pointillés ceux que tu as oubliés, en rouge les erreurs.':'Parfait.')+(r.n?' '+esc(r.n):'');
+  $('rfb').classList.remove('hide');$('rv').classList.add('hide');$('rn').classList.remove('hide');
+  $('rn').textContent=ri+1<rd.length?'Série suivante':'Voir le résultat';
+  $('rsc').textContent=rg+' réussie'+(rg>1?'s':'');
+};
+$('rn').onclick=()=>{ri++;ri<rd.length?renderR():endR()};
+function endR(){
+  $('rq').parentNode.classList.add('hide');
+  $('rend').innerHTML='<h2>'+rg+' / '+rd.length+'</h2><p>'+(rg===rd.length?'Sans faute. Bravo !':'Tu peux refaire l’exercice : les séries sont mélangées.')+'</p><div class="bar"><button class="primary" id="rr">Recommencer</button></div>';
+  $('rend').classList.remove('hide');$('rr').onclick=startR;
+}
+
+// intrus et vrai/faux
+const Q={
+ i:{t:"Quel est l’intrus ?",items:[
+  {o:["ante","post","cum","deinde"],a:"deinde",n:"Les trois autres sont des prépositions ; deinde est un mot de liaison (ensuite, puis)."},
+  {o:["amicus","magister","discipulus","deus"],a:"deus",n:"Deus est un dieu ; les trois autres désignent des humains."},
+  {o:["amo","video","scribo","saepe"],a:"saepe",n:"Saepe (souvent) est un adverbe ; les autres sont des verbes."},
+  {o:["et","ac","-que","tamen"],a:"tamen",n:"Les trois autres signifient « et » ; tamen veut dire cependant, pourtant."},
+  {o:["semper","saepe","numquam","enim"],a:"enim",n:"Enim (en effet) n’exprime pas la fréquence."},
+  {o:["dea","amicus","magister","discipulus"],a:"dea",n:"Dea est féminin ; les trois autres sont masculins."},
+  {o:["semper","saepe","nonnumquam","denique"],a:"denique",n:"Denique (enfin) est un mot de liaison ; les autres disent la fréquence."}]},
+ v:{t:"Vrai ou faux ?",items:[
+  {q:"Ante est suivi de l’ablatif.",a:"Faux",n:"Ante est suivi de l’accusatif."},
+  {q:"Cum est suivi de l’ablatif.",a:"Vrai",n:"Cum + abl. : avec."},
+  {q:"In peut être suivi de l’accusatif ou de l’ablatif.",a:"Vrai",n:"Les deux cas sont possibles avec in."},
+  {q:"Nonnumquam signifie « jamais ».",a:"Faux",n:"Non + numquam => pas … jamais = quelquefois."},
+  {q:"-que se colle à la fin du mot qu’il relie.",a:"Vrai",n:"-que est accroché au mot, il ne s’écrit pas séparément."},
+  {q:"Enim est généralement le premier mot de sa proposition.",a:"Faux",n:"Enim se place en général en 2e position."},
+  {q:"Dans notre liste, etsi est suivi de l’indicatif.",a:"Vrai",n:"Etsi, conj. sub. + indicatif : bien que, quoique."},
+  {q:"Quia signifie « bien que ».",a:"Faux",n:"Quia signifie « parce que » ; « bien que » se dit etsi."},
+  {q:"Deus est un nom masculin.",a:"Vrai",n:"Deus, i, m. : dieu."},
+  {q:"Amo sert de modèle pour la 1re conjugaison.",a:"Vrai",n:"Amo, as, are : 1re conjugaison."},
+  {q:"Post signifie seulement « après ».",a:"Faux",n:"Post a 2 sens : derrière ; après."},
+  {q:"On emploie « ab » devant un mot qui commence par une voyelle.",a:"Vrai",n:"Ab devant voyelle, a devant consonne."},
+  {q:"On emploie « ac » devant un mot qui commence par une voyelle.",a:"Faux",n:"Ac devant consonne, atque devant voyelle."}]}
+};
+let qk='i',qd=[],qi=0,qg=0,qdone=false;
+function startQ(k){qk=k;qd=shuffle(Q[k].items).slice(0,k==='i'?7:10);qi=0;qg=0;$('qe').classList.add('hide');$('qb').classList.remove('hide');renderQ()}
+function renderQ(){
+  const it=qd[qi];qdone=false;
+  $('qcnt').textContent='Question '+(qi+1)+' / '+qd.length;$('qsc').textContent=qg+' bonne'+(qg>1?'s':'')+' réponse'+(qg>1?'s':'');
+  $('qt').textContent=Q[qk].t;$('qq').textContent=it.q||'';
+  const o=qk==='v'?['Vrai','Faux']:shuffle(it.o);
+  $('qo').innerHTML=o.map(x=>'<button>'+esc(x)+'</button>').join('');
+  [...$('qo').children].forEach(b=>b.onclick=()=>{
+    if(qdone)return;qdone=true;const ok=b.textContent===it.a;if(ok)qg++;
+    [...$('qo').children].forEach(c=>{if(c.textContent===it.a)c.classList.add('right')});
+    if(!ok)b.classList.add('wrong');
+    $('qfb').innerHTML=(ok?'Bien vu. ':'Pas tout à fait. ')+esc(it.n);$('qfb').classList.remove('hide');
+    $('qn').classList.remove('hide');$('qn').textContent=qi+1<qd.length?'Suite':'Voir le résultat';
+    $('qsc').textContent=qg+' bonne'+(qg>1?'s':'')+' réponse'+(qg>1?'s':'');
+  });
+  $('qfb').classList.add('hide');$('qn').classList.add('hide');
+}
+$('qn').onclick=()=>{qi++;if(qi<qd.length)renderQ();else{
+  $('qb').classList.add('hide');
+  $('qe').innerHTML='<h2>'+qg+' / '+qd.length+'</h2><p>'+(qg===qd.length?'Sans faute. Bravo !':'Tu peux recommencer : les questions sont mélangées.')+'</p><div class="bar"><button class="primary" id="qr">Recommencer</button></div>';
+  $('qe').classList.remove('hide');$('qr').onclick=()=>startQ(qk)}};
+
+// associer
+const P=[["amicus","ami"],["amo","aimer"],["ante","devant ; avant"],["audio","entendre ; écouter"],["capio","prendre"],["cum","avec"],["dea","déesse"],["deinde","ensuite, puis"],["denique","enfin, à la fin"],["deus","dieu"],["discipulus","élève"],["enim","en effet"],["etsi","bien que, quoique"],["in","dans, en, sur"],["lego","lire"],["magister","maître (d’école)"],["moneo","avertir"],["nonnumquam","parfois"],["numquam","jamais"],["post","derrière ; après"],["quia","parce que"],["saepe","souvent"],["scribo","écrire"],["semper","toujours"],["tamen","cependant, pourtant"],["video","voir"]];
+let mp=[],ms=null,mrr=null,mdone=0,merr=0;
+function startM(){
+  mp=shuffle(P).slice(0,6);ms=mrr=null;mdone=0;merr=0;$('mfb').classList.add('hide');
+  const L=shuffle(mp.map((x,k)=>[x[0],k])),R2=shuffle(mp.map((x,k)=>[x[1],k]));
+  $('ml').innerHTML=L.map(x=>'<button data-k="'+x[1]+'">'+esc(x[0])+'</button>').join('');
+  $('mr').innerHTML=R2.map(x=>'<button data-k="'+x[1]+'">'+esc(x[0])+'</button>').join('');
+  [...$('ml').children].forEach(b=>b.onclick=()=>mpick(b,'l'));
+  [...$('mr').children].forEach(b=>b.onclick=()=>mpick(b,'r'));
+  mcount();
+}
+function mcount(){$('mcnt').textContent=mdone+' / 6 · '+merr+' erreur'+(merr>1?'s':'')}
+function mpick(b,side){
+  if(b.classList.contains('done'))return;
+  const col=side==='l'?$('ml'):$('mr');
+  [...col.children].forEach(c=>c.classList.remove('sel'));b.classList.add('sel');
+  if(side==='l')ms=b;else mrr=b;
+  if(ms&&mrr){
+    const a=ms,c=mrr;ms=mrr=null;
+    if(a.dataset.k===c.dataset.k){a.className=c.className='done';mdone++;
+      if(mdone===6){$('mfb').textContent=merr?'Terminé avec '+merr+' erreur'+(merr>1?'s':'')+'.':'Terminé sans erreur. Bravo !';$('mfb').classList.remove('hide')}}
+    else{merr++;a.className=c.className='err';setTimeout(()=>{a.className=c.className=''},600)}
+    mcount();
+  }
+}
+$('mnew').onclick=startM;
+
+// dans l'ordre
+const O=[{q:"De la plus fréquente à la moins fréquente",a:["semper","saepe","nonnumquam","numquam"]},{q:"De la moins fréquente à la plus fréquente",a:["numquam","nonnumquam","saepe","semper"]}];
+let oi=0,oseq=[];
+function startO(){oi=0;renderO()}
+function renderO(){
+  const o=O[oi];oseq=[];
+  $('oq').textContent=o.q;$('oseq').textContent='';$('ofb').classList.add('hide');$('onx').classList.add('hide');
+  $('ow').innerHTML=shuffle(o.a).map(x=>'<button>'+esc(x)+'</button>').join('');
+  [...$('ow').children].forEach(b=>b.onclick=()=>{b.disabled=true;oseq.push(b.textContent);$('oseq').textContent=oseq.join('  →  ')});
+}
+$('oc').onclick=renderO;
+$('ov').onclick=()=>{
+  const o=O[oi];if(oseq.length<o.a.length)return;
+  const ok=oseq.join()===o.a.join();
+  $('ofb').innerHTML=ok?'Bien vu : '+esc(o.a.join(' → '))+'.':'Pas tout à fait. L’ordre attendu : '+esc(o.a.join(' → '))+'. Rappel : non + numquam => pas … jamais = quelquefois.';
+  $('ofb').classList.remove('hide');$('onx').classList.remove('hide');
+};
+$('onx').onclick=()=>{oi=(oi+1)%O.length;renderO()};
+
+openTab(0);
+</script>
+</body>
+</html>
