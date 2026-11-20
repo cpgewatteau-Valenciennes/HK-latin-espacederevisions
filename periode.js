@@ -42,7 +42,15 @@ const PERIODE = [
       }
     ]
   },
-  { nom: "Vocabulaire", fichiers: [] },
+  {
+    nom: "Vocabulaire",
+    fichiers: [
+      { nom: "Voc 01 — Flashcards : la liste du CB1", url: "Voc01listeCB1.html", pictos: ["voc"], periode: "P1" },
+      { nom: "Voc 02 — Associer : la liste du CB1", url: "Voc02listeCB1associer.html", pictos: ["voc"], periode: "P1" },
+      { nom: "Voc 02 — Quelques catégories", url: "Voc02listeCBdivers.html", pictos: ["voc"], periode: "P1" },
+      { nom: "Voc 03 — Intrus et mise en ordre : la liste du CB1", url: "Voc03listeCB1intrusordre.html", pictos: ["voc"], periode: "P1" }
+    ]
+  },
   { nom: "Version", fichiers: [] },
   { nom: "Thème", fichiers: [] }
 ];
