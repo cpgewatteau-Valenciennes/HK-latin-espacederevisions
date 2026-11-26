@@ -52,9 +52,19 @@ td:first-child{width:50%;font-weight:600}
 .col button.err{background:var(--ko);border-color:var(--ko);color:#fff}
 .words button:disabled{opacity:.5;cursor:default}
 .seq{font-size:1.15rem;min-height:1.6em}
+
+/* boutons flottants : accueil + exercice suivant */
+.home-fab,.next-fab{position:fixed;top:14px;z-index:999;display:flex;align-items:center;gap:6px;color:#fff;font-family:'Iowan Old Style','Palatino Linotype',Georgia,serif;font-size:.82rem;font-weight:700;text-decoration:none;padding:8px 14px;border-radius:20px;box-shadow:0 3px 10px rgba(0,0,0,.25);transition:transform .15s ease,box-shadow .15s ease}
+.home-fab{left:14px;background:linear-gradient(135deg,#B9812A,#6B1E23)}
+.next-fab{right:14px;background:linear-gradient(135deg,#6B1E23,#B9812A)}
+.home-fab:hover,.next-fab:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(0,0,0,.3)}
+body{padding-top:calc(52px + env(safe-area-inset-top,0))}
+@media (max-width:480px){.home-fab,.next-fab{font-size:.72rem;padding:6px 10px;top:8px}.home-fab{left:8px}.next-fab{right:8px}body{padding-top:calc(44px + env(safe-area-inset-top,0))}}
 </style>
 </head>
 <body>
+<a class="home-fab" href="index.html#liste-du-cb1">🏠 Accueil du site</a>
+<a class="next-fab" href="Voc03listeCB1intrusordre.html">Exercice suivant →</a>
 <main>
 <h1>Quelques catégories</h1>
 <p class="sub">Le vocabulaire de la liste, classé par catégories. Choisis un onglet, révise avec les flashcards, puis teste-toi avec les exercices (cliquer, intrus, vrai ou faux, associer, remettre dans l’ordre).</p>
