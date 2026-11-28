@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Traduire et réviser les conjugaisons en latin et en français</title>
+<style>
+:root{--bg:#f1e6ce;--card:#f7efdc;--ink:#2c1810;--mut:#7a6650;--bd:#d9a94f;--bur:#6b1e23;--act:#a8731a;--pas:#7a2f6b;--ok:#4a6b2a;--okb:#e4ebd8;--ko:#a01d1d;--kob:#f3d9d9;--am:#b9601a;--amb:#f3e3d0;--r:#1f4fa3;--l:#1e7a44;--d:#c0262d;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1812;--card:#2a231a;--ink:#f0e6d2;--mut:#b5a58a;--bd:#7a5d2a;--bur:#e08a8f;--act:#e0b05a;--pas:#d58cc6;--ok:#9bd07a;--okb:#27381b;--ko:#f09a9a;--kob:#472222;--am:#f0a860;--amb:#43301a;--r:#8fb4ff;--l:#7fd69a;--d:#ff8f94;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1d1812;--card:#2a231a;--ink:#f0e6d2;--mut:#b5a58a;--bd:#7a5d2a;--bur:#e08a8f;--act:#e0b05a;--pas:#d58cc6;--ok:#9bd07a;--okb:#27381b;--ko:#f09a9a;--kob:#472222;--am:#f0a860;--amb:#43301a;--r:#8fb4ff;--l:#7fd69a;--d:#ff8f94;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 'Iowan Old Style','Palatino Linotype',Georgia,serif}
+.wrap{max-width:760px;margin:0 auto;padding:28px 16px 60px}
+header{text-align:center;margin-bottom:26px}
+h1{font-size:clamp(24px,4vw,32px);font-weight:600;color:var(--bur);margin:0 0 6px}
+.sub{color:var(--mut);margin:0 0 14px}
+.rule{width:120px;height:1px;margin:0 auto 16px;background:linear-gradient(90deg,transparent,var(--bd),transparent)}
+.intro{max-width:600px;margin:0 auto;font-size:16px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center;margin:14px 0 0;font-size:14px}
+.r{color:var(--r);font-style:normal;font-weight:700}.l{color:var(--l);font-style:normal;font-weight:700}.d{color:var(--d);font-style:normal;font-weight:700}
+.a{color:var(--act);font-weight:700}.p{color:var(--pas);font-weight:700}
+details{background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:8px 14px;margin:14px 0;font-size:15px}
+summary{cursor:pointer;font-weight:600;color:var(--bur)}
+summary:focus-visible,button:focus-visible{outline:2px solid var(--bur);outline-offset:2px}
+.vl{margin:6px 0 0;padding-left:18px;color:var(--mut)}
+.score{text-align:center;margin:18px 0 0;font-size:14px;letter-spacing:.06em;color:var(--bur)}
+.grid{display:flex;flex-direction:column;gap:24px;margin-top:26px}
+.card{background:var(--card);border:1px solid var(--bd);border-left-width:5px;border-radius:6px;padding:22px 22px 18px;position:relative}
+.card.A{border-left-color:var(--act)}.card.P{border-left-color:var(--pas)}
+.num{position:absolute;top:-13px;left:20px;background:var(--bur);color:var(--bg);font-size:12px;letter-spacing:.12em;padding:2px 10px;border-radius:3px}
+.word{font-size:28px;font-weight:700;margin:6px 0 0}
+.lemma{font-size:15px;color:var(--mut);font-style:italic;margin-bottom:8px}
+.rl{font-size:13px;color:var(--mut);margin:10px 0 5px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font:600 15px 'Iowan Old Style','Palatino Linotype',Georgia,serif;color:var(--ink);background:transparent;border:1px solid var(--bd);border-radius:20px;padding:5px 14px;cursor:pointer}
+.chip:hover{border-color:var(--bur)}
+.chip[data-o=A]{border-color:var(--act);color:var(--act)}.chip[data-o=P]{border-color:var(--pas);color:var(--pas)}
+.chip.sel{background:var(--bur);border-color:var(--bur);color:var(--bg)}
+.chip.sel[data-o=A]{background:var(--act);border-color:var(--act);color:var(--bg)}
+.chip.sel[data-o=P]{background:var(--pas);border-color:var(--pas);color:var(--bg)}
+.chip.lock{cursor:default}
+.chip.ok{background:var(--okb);border-color:var(--ok);color:var(--ok)}.chip.ok::after{content:" ✓"}
+.chip.ko{background:var(--kob);border-color:var(--ko);color:var(--ko)}.chip.ko::after{content:" ✗"}
+.chip.mi{background:var(--amb);border-color:var(--am);color:var(--am);border-style:dashed}.chip.mi::after{content:" (réponse)";font-size:12px;font-style:italic}
+.vb{text-align:right;margin-top:14px}
+.vb button,.reset{font:inherit;font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:8px 18px;border-radius:3px;border:1px solid var(--bur);background:var(--bur);color:var(--bg);cursor:pointer}
+.vb button:disabled{opacity:.5;cursor:default;background:none;color:var(--mut);border-color:var(--bd)}
+.fb{display:none;margin-top:14px;padding-top:12px;border-top:1px dashed var(--bd);font-size:16px}
+.fb.show{display:block}
+.tag{font-size:13px;padding:3px 10px;border-radius:3px;margin-right:8px}
+.tag.ok{background:var(--okb);color:var(--ok)}.tag.ko{background:var(--kob);color:var(--ko)}.tag.pa{background:var(--amb);color:var(--am)}
+.dec{font-size:24px;margin:10px 0 4px;letter-spacing:.04em}
+.ex{color:var(--mut);margin:6px 0 0}.ex b{color:var(--ink)}.dec2{font-size:19px;letter-spacing:.04em}
+.tr{width:100%;box-sizing:border-box;font:inherit;font-size:16px;padding:6px 10px;border:1px solid var(--bd);border-radius:5px;background:transparent;color:var(--ink)}
+.end{text-align:center;margin-top:34px}
+.reset{background:none;color:var(--bur)}
+table{border-collapse:collapse;width:100%;font-size:15px}td,th{border-bottom:1px solid var(--bd);padding:4px 6px;text-align:left}
+.home-fab{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:14px;z-index:999;background:linear-gradient(135deg,#b9812a,#6b1e23);color:#fff;font-size:.82rem;font-weight:700;text-decoration:none;padding:8px 14px;border-radius:20px;box-shadow:0 3px 10px rgba(0,0,0,.25)}.home-fab[hidden]{display:none}body.sa .wrap{padding-top:64px}@media (max-width:480px){.home-fab{font-size:.72rem;padding:6px 10px;top:8px;left:8px}}.b1,.b2{font:inherit;font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:8px 18px;border-radius:3px;border:1px solid var(--bur);background:var(--bur);color:var(--bg);cursor:pointer;margin:4px}.b2{background:none;color:var(--bur)}.prim{font-size:15px;color:var(--mut);font-style:italic;line-height:1.7}.cc{text-align:center}.cc .word{font-size:34px;margin:10px 0 14px}.pg{text-align:center;color:var(--bur);font-size:14px;letter-spacing:.06em}.fb .ex b{color:var(--ink)}.fb ul{margin:4px 0;padding-left:22px}</style></head><body><a class="home-fab" id="hf" href="https://cpgewatteau-valenciennes.github.io/Kh2026-2027/index.html" hidden>🏠 Accueil du site</a><div class="wrap">
+<header>
+<h1>Traduire et réviser les conjugaisons en latin et en français</h1>
+<p class="sub">Indicatif présent, imparfait et parfait, actif et passif : <i>aimer</i>, <i>venir</i>, <i>éternuer</i> et <i>être</i></p>
+<div class="rule"></div>
+<p class="intro">Cet exercice sert à <b>bien identifier</b> les formes latines, mais aussi à <b>travailler les conjugaisons en français</b> ! Reporte-toi au poly qui donne les conjugaisons de <i>aimer</i>, <i>venir</i>, <i>éternuer</i> et des auxiliaires <i>être</i> et <i>avoir</i>.</p>
+<p class="intro">Pas de saisie : traduis sur une feuille ou dans ta tête, puis retourne la carte. Pour <i>sum</i>, tu rencontreras les mêmes temps, plus l’infinitif présent <i>esse</i>. Attention : un temps latin ne correspond pas toujours terme à terme à un temps français (le parfait latin se rend par un passé composé ou un passé simple).</p>
+</header>
+<div class="pg" id="pg"></div>
+<div class="card cc">
+<div class="prim" id="pr"></div><div class="word" id="w"></div>
+<div id="act" hidden><button class="b2" onclick="rev(1)">Plusieurs réponses possibles ?</button><button class="b1" onclick="rev(0)">Retourner la carte</button></div>
+<div class="fb" id="fb" style="text-align:left"></div>
+<div id="self" hidden><p class="ex">Ta réponse était :</p><button class="b1" onclick="nx(1)">✓ Bonne</button><button class="b2" onclick="nx(0)">✗ Fausse</button></div>
+<div id="nxw" hidden><button class="b1" id="nxb" onclick="go()"></button></div>
+</div></div>
+<script>
+const AMO="amo, amas, amare, amavi, amatum",VEN="venio, venis, venire, veni, ventum",STE="sternuo, sternuis, sternuere, sternui (pas de supin attesté)",SUM="sum, es, esse, fui";
+const E6='(<b><u>-i</u></b>, <b><u>-isti</u></b>, <b>-it</b>, <b>-imus</b>, <b><u>-istis</u></b>, <b><u>-erunt</u></b>)',SURE=" Terminaisons qui ne peuvent pas être confondues avec d’autres et qui permettent d’être certain que c’est une forme du parfait actif : <b><u>-i, -isti, -istis, -erunt</u></b>.";
+const FM={"Prés. ind. actif":"radical du présent + terminaisons actives (dans les 3e, 3e mixte et 4e conjugaisons : voyelle de liaison I, sauf U à la 3e pl.).","Prés. ind. passif":"radical du présent + terminaisons passives.","Impft ind. actif":"radical du présent + BA (ou EBA) + terminaisons actives.","Impft ind. passif":"radical du présent + BA (ou EBA) + terminaisons passives.","Pft ind. actif":"radical du parfait + terminaisons du parfait actif "+E6+"."+SURE,"Pft ind. passif":"PPP accordé + indicatif présent de esse.","Inf. prés.":"esse est l’infinitif présent de sum.","Pft venimus":"radical du parfait + terminaisons du parfait actif "+E6+". Donc ici ven-imus."+SURE};
+const FN={"Pft ind. actif":"Le parfait latin se traduit par un passé composé ou un passé simple. ","Pft ind. passif":"Attention : forme composée qui fait assez souvent faire des fautes de temps en traduction ; le temps est le parfait, même si <i>esse</i> est au présent : « a été / fut », jamais « est ». "};
+const VOY=w=>" Repère de voyelle avant la désinence : A = 1re conj., E = 2e conj., I = 3e/3e mixte/4e, sauf U à la 3e pl."+(/mus$/i.test(w)?" Et un A juste avant -MUS (désinence active) signale forcément la 1re conjugaison.":"");
+const BAR="Je rappelle que le passé simple français vous fait souvent faire des barbarismes ! Méfiez-vous !",CIRC=x=>` Rappel : Au passé simple, l’accent circonflexe n’apparaît qu’aux 1re et 2e personnes du pluriel (${x}).`;
+const ACCB=`<div class="ex">Rappel : la terminaison du PPP indique que le sujet est masculin ou féminin, singulier ou pluriel. Par ex. :<ul><li><i>amatus est</i> → <b>-us</b>, masculin singulier</li><li><i>amata est</i> → <b>-a</b>, féminin singulier</li><li><i>amatae sunt</i> → <b>-ae</b>, féminin pluriel</li><li><i>amati sumus</i> → <b>-i</b>, masculin pluriel</li></ul></div>`;
+const PASS="<b>Je rappelle ce que j’ai expliqué en classe.</b> En français, pour conjuguer un verbe au passif sans se tromper : on prend l’auxiliaire <b>être</b> au temps du passif que l’on veut + on met le participe passé du verbe. Exemple avec <i>donner</i>, à la 3e pers. sg. : passif présent : il <b>EST</b> donné ; passif imparfait : il <b>ÉTAIT</b> donné ; passé composé : il <b>A ÉTÉ</b> donné ; passé simple : il <b>FUT</b> donné (et cela est valable pour les autres temps !)";
+const PA="Prés. ind. actif",PP="Prés. ind. passif",IA="Impft ind. actif",IP="Impft ind. passif",FA="Pft ind. actif",FP="Pft ind. passif";
+const N=(p,w,c,t,k,ci,acc)=>({p,w,c,t,k,ci,acc});
+const X=(p,w,cj,r1,k1,r2,k2,n,ci)=>({p,w,amb:1,cj,r:[[r1,k1],[r2,k2,ci]],n});
+const POOL=[
+N(AMO,"amamus","Prés. ind. actif, 1re pl","« nous aimons »",PA),N(AMO,"amant","Prés. ind. actif, 3e pl","« ils aiment »",PA),N(AMO,"amabas","Impft ind. actif, 2e sg","« tu aimais »",IA),N(AMO,"amabamus","Impft ind. actif, 1re pl","« nous aimions »",IA),N(AMO,"amabant","Impft ind. actif, 3e pl","« ils aimaient »",IA),N(AMO,"amavi","Pft ind. actif, 1re sg","« j’ai aimé / j’aimai »",FA),N(AMO,"amaverunt","Pft ind. actif, 3e pl","« ils ont aimé / ils aimèrent »",FA),N(AMO,"amavistis","Pft ind. actif, 2e pl","« vous avez aimé / vous aimâtes »",FA,"vous aimâtes"),N(AMO,"amavimus","Pft ind. actif, 1re pl","« nous avons aimé / nous aimâmes »",FA,"nous aimâmes"),N(AMO,"amatur","Prés. ind. passif, 3e sg","« il est aimé »",PP),N(AMO,"amantur","Prés. ind. passif, 3e pl","« ils sont aimés »",PP),N(AMO,"amor","Prés. ind. passif, 1re sg","« je suis aimé(e) »",PP),N(AMO,"amamur","Prés. ind. passif, 1re pl","« nous sommes aimés »",PP),N(AMO,"amabaris","Impft ind. passif, 2e sg","« tu étais aimé(e) »",IP),N(AMO,"amabatur","Impft ind. passif, 3e sg","« il était aimé »",IP),N(AMO,"amabantur","Impft ind. passif, 3e pl","« ils étaient aimés »",IP),N(AMO,"amabamur","Impft ind. passif, 1re pl","« nous étions aimés »",IP),N(AMO,"amatus est","Pft ind. passif, 3e sg (masc.)","« il a été aimé / il fut aimé »",FP),N(AMO,"amata est","Pft ind. passif, 3e sg (fém.)","« elle a été aimée / elle fut aimée »",FP),N(AMO,"amatae sunt","Pft ind. passif, 3e pl (fém.)","« elles ont été aimées / elles furent aimées »",FP),N(AMO,"amati sumus","Pft ind. passif, 1re pl","« nous avons été aimés / nous fûmes aimés »",FP,"nous fûmes aimés"),N(AMO,"amati estis","Pft ind. passif, 2e pl","« vous avez été aimés / vous fûtes aimés »",FP,"vous fûtes aimés"),
+N(VEN,"veniebam","Impft ind. actif, 1re sg","« je venais »",IA),N(VEN,"veniebatis","Impft ind. actif, 2e pl","« vous veniez »",IA),N(VEN,"veniebant","Impft ind. actif, 3e pl","« ils venaient »",IA),N(VEN,"venis","Prés. ind. actif, 2e sg","« tu viens »",PA),N(VEN,"venio","Prés. ind. actif, 1re sg","« je viens »",PA),N(VEN,"venerunt","Pft ind. actif, 3e pl","« ils sont venus / ils vinrent »",FA),N(VEN,"venistis","Pft ind. actif, 2e pl","« vous êtes venus / vous vîntes »",FA,"vous vîntes"),N(VEN,"venisti","Pft ind. actif, 2e sg","« tu es venu / tu vins »",FA),
+X(VEN,"venit","venio : 4e conjugaison","Indicatif présent actif, 3e sg → « il vient ».",PA,"Indicatif parfait actif, 3e sg → « il est venu / il vint ».",FA,"(Le radical du parfait, veni-, coïncide avec celui du présent.)"),
+X(VEN,"venimus","venio : 4e conjugaison","Indicatif présent actif, 1re pl → « nous venons ».",PA,"Indicatif parfait actif, 1re pl → « nous sommes venus / nous vînmes ».","Pft venimus","(Le radical du parfait, veni-, coïncide avec celui du présent.)","nous vînmes"),
+N(STE,"sternuunt","Prés. ind. actif, 3e pl","« ils éternuent »",PA),N(STE,"sternuis","Prés. ind. actif, 2e sg","« tu éternues »",PA),N(STE,"sternuo","Prés. ind. actif, 1re sg","« j’éternue »",PA),N(STE,"sternuebat","Impft ind. actif, 3e sg","« il éternuait »",IA),N(STE,"sternuebam","Impft ind. actif, 1re sg","« j’éternuais »",IA),N(STE,"sternuebamus","Impft ind. actif, 1re pl","« nous éternuions »",IA),N(STE,"sternui","Pft ind. actif, 1re sg","« j’ai éternué / j’éternuai »",FA),N(STE,"sternuistis","Pft ind. actif, 2e pl","« vous avez éternué / vous éternuâtes »",FA,"vous éternuâtes"),N(STE,"sternuisti","Pft ind. actif, 2e sg","« tu as éternué / tu éternuas »",FA),N(STE,"sternuerunt","Pft ind. actif, 3e pl","« ils ont éternué / ils éternuèrent »",FA),
+X(STE,"sternuit","sternuo : 3e conjugaison","Indicatif présent actif, 3e sg → « il éternue ».",PA,"Indicatif parfait actif, 3e sg → « il a éternué / il éternua ».",FA,"(Le radical du parfait, sternu-, coïncide avec celui du présent.)"),
+N(SUM,"sumus","Prés. ind., 1re pl","« nous sommes »",PA),N(SUM,"estis","Prés. ind., 2e pl","« vous êtes »",PA),N(SUM,"sunt","Prés. ind., 3e pl","« ils sont »",PA),N(SUM,"erat","Impft ind., 3e sg","« il était »",IA),N(SUM,"eramus","Impft ind., 1re pl","« nous étions »",IA),N(SUM,"erant","Impft ind., 3e pl","« ils étaient »",IA),N(SUM,"fuit","Pft ind., 3e sg","« il a été / il fut »",FA),N(SUM,"fuerunt","Pft ind., 3e pl","« ils ont été / ils furent »",FA),N(SUM,"fuistis","Pft ind., 2e pl","« vous avez été / vous fûtes »",FA,"vous fûtes"),N(SUM,"fuimus","Pft ind., 1re pl","« nous avons été / nous fûmes »",FA,"nous fûmes"),N(SUM,"esse","Infinitif présent","« être »","Inf. prés.")];
+const $=id=>document.getElementById(id),sh=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function deck(){const g={};sh(POOL).forEach(c=>(g[c.p]=g[c.p]||[]).push(c));const out=[];let last=null;
+ while(Object.values(g).some(a=>a.length)){let ks=Object.keys(g).filter(k=>g[k].length),el=ks.filter(k=>k!==last);if(!el.length)el=ks;const m=Math.max(...el.map(k=>g[k].length)),cs=el.filter(k=>g[k].length==m),k=cs[Math.floor(Math.random()*cs.length)];out.push(g[k].shift());last=k}return out}
+let q,i,onR,good;
+function start(){q=deck();i=0;onR=1;good=0;draw()}
+function draw(){$("fb").className="fb";$("act").hidden=$("self").hidden=$("nxw").hidden=true;
+ if(i>=q.length){$("pg").textContent="Paquet terminé";$("pr").textContent="";$("w").textContent="";$("fb").className="fb show";$("fb").innerHTML=`<p class="ex"><b>${good} bonnes réponses sur ${q.length}.</b></p>`;$("nxb").textContent="Refaire un paquet";$("nxw").hidden=false;return}
+ if(onR){$("pg").textContent="Avant de commencer";$("pr").innerHTML=[AMO,VEN,STE,SUM].map(x=>`<b>${x}</b>`).join("<br>");$("w").textContent="";$("fb").className="fb show";$("fb").innerHTML='<p class="ex">N.B. : si le Gaffiot ne donne pas de supin pour <i>sternuo</i>, c’est que le verbe est intransitif en latin : il n’existe donc logiquement aucune attestation de formes passives composées, puisque celles-ci se construisent sur un participe parfait passif (PPP) tiré justement du supin. Pour <i>sum</i>, on ne travaille que l’indicatif présent, imparfait, parfait, et l’infinitif présent <i>esse</i>.</p>';$("nxb").textContent="Commencer →";$("nxw").hidden=false;return}
+ const c=q[i];$("pg").textContent=`Carte ${i+1} / ${q.length}`;$("pr").textContent="Temps primitifs : "+c.p;$("w").textContent=c.w;$("act").hidden=false}
+function go(){if(onR)onR=0;else if(i>=q.length)return start();draw()}
+function rev(sp){const c=q[i];let h;$("act").hidden=true;
+ if(c.amb){h=(sp?"":"Avais-tu pensé aux deux lectures possibles ? ")+"<b>Deux réponses possibles !</b>"+c.r.map((r,n)=>`<p class="ex"><b>${n+1}) ${r[0]}</b>${/^Pft/.test(r[1])?" "+BAR+(r[2]?CIRC(r[2]):""):""} (${c.cj}) Formule : ${FM[r[1]]}</p>`).join("")+`<p class="ex">En regardant les temps primitifs, on s’aperçoit qu’il y a deux réponses possibles : seul le contexte permettra de trancher. ${c.n}${VOY(c.w)}</p>`}
+ else{h=(sp?"<b>En fait, une seule lecture possible ici.</b> ":"")+`<p class="ex"><b>Traduction :</b> ${c.t} (${c.c}).${c.k==FA?" "+BAR:""}${c.ci?CIRC(c.ci):""}</p><p class="ex">${FN[c.k]||""}Formule : ${FM[c.k]}${c.k==PA&&c.p!=SUM?VOY(c.w):""}</p>${c.k==FP?ACCB:""}${/passif/.test(c.c)?`<p class="ex">${PASS}</p>`:""}`}
+ $("fb").innerHTML=h;$("fb").className="fb show";$("self").hidden=false}
+function nx(ok){good+=ok;i++;draw()}
+start();
+</script>
+<script>(function(){function r(){parent.postMessage({conj05h:document.documentElement.scrollHeight},"*")}if(window.parent===window){document.getElementById("hf").hidden=false;document.body.classList.add("sa")}if(window.parent!==window){new ResizeObserver(r).observe(document.body);addEventListener("message",r);addEventListener("load",r)}})()</script>
+</body></html>

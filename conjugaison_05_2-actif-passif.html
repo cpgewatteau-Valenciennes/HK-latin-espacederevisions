@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Réviser actif et passif au présent, imparfait et parfait</title>
+<style>
+:root{--bg:#f1e6ce;--card:#f7efdc;--ink:#2c1810;--mut:#7a6650;--bd:#d9a94f;--bur:#6b1e23;--act:#a8731a;--pas:#7a2f6b;--ok:#4a6b2a;--okb:#e4ebd8;--ko:#a01d1d;--kob:#f3d9d9;--am:#b9601a;--amb:#f3e3d0;--r:#1f4fa3;--l:#1e7a44;--d:#c0262d;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1812;--card:#2a231a;--ink:#f0e6d2;--mut:#b5a58a;--bd:#7a5d2a;--bur:#e08a8f;--act:#e0b05a;--pas:#d58cc6;--ok:#9bd07a;--okb:#27381b;--ko:#f09a9a;--kob:#472222;--am:#f0a860;--amb:#43301a;--r:#8fb4ff;--l:#7fd69a;--d:#ff8f94;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1d1812;--card:#2a231a;--ink:#f0e6d2;--mut:#b5a58a;--bd:#7a5d2a;--bur:#e08a8f;--act:#e0b05a;--pas:#d58cc6;--ok:#9bd07a;--okb:#27381b;--ko:#f09a9a;--kob:#472222;--am:#f0a860;--amb:#43301a;--r:#8fb4ff;--l:#7fd69a;--d:#ff8f94;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 'Iowan Old Style','Palatino Linotype',Georgia,serif}
+.wrap{max-width:760px;margin:0 auto;padding:28px 16px 60px}
+header{text-align:center;margin-bottom:26px}
+h1{font-size:clamp(24px,4vw,32px);font-weight:600;color:var(--bur);margin:0 0 6px}
+.sub{color:var(--mut);margin:0 0 14px}
+.rule{width:120px;height:1px;margin:0 auto 16px;background:linear-gradient(90deg,transparent,var(--bd),transparent)}
+.intro{max-width:600px;margin:0 auto;font-size:16px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center;margin:14px 0 0;font-size:14px}
+.r{color:var(--r);font-style:normal;font-weight:700}.l{color:var(--l);font-style:normal;font-weight:700}.d{color:var(--d);font-style:normal;font-weight:700}
+.a{color:var(--act);font-weight:700}.p{color:var(--pas);font-weight:700}
+details{background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:8px 14px;margin:14px 0;font-size:15px}
+summary{cursor:pointer;font-weight:600;color:var(--bur)}
+summary:focus-visible,button:focus-visible{outline:2px solid var(--bur);outline-offset:2px}
+.vl{margin:6px 0 0;padding-left:18px;color:var(--mut)}
+.score{text-align:center;margin:18px 0 0;font-size:14px;letter-spacing:.06em;color:var(--bur)}
+.grid{display:flex;flex-direction:column;gap:24px;margin-top:26px}
+.card{background:var(--card);border:1px solid var(--bd);border-left-width:5px;border-radius:6px;padding:22px 22px 18px;position:relative}
+.card.A{border-left-color:var(--act)}.card.P{border-left-color:var(--pas)}
+.num{position:absolute;top:-13px;left:20px;background:var(--bur);color:var(--bg);font-size:12px;letter-spacing:.12em;padding:2px 10px;border-radius:3px}
+.word{font-size:28px;font-weight:700;margin:6px 0 0}
+.lemma{font-size:15px;color:var(--mut);font-style:italic;margin-bottom:8px}
+.rl{font-size:13px;color:var(--mut);margin:10px 0 5px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font:600 15px 'Iowan Old Style','Palatino Linotype',Georgia,serif;color:var(--ink);background:transparent;border:1px solid var(--bd);border-radius:20px;padding:5px 14px;cursor:pointer}
+.chip:hover{border-color:var(--bur)}
+.chip[data-o=A]{border-color:var(--act);color:var(--act)}.chip[data-o=P]{border-color:var(--pas);color:var(--pas)}
+.chip.sel{background:var(--bur);border-color:var(--bur);color:var(--bg)}
+.chip.sel[data-o=A]{background:var(--act);border-color:var(--act);color:var(--bg)}
+.chip.sel[data-o=P]{background:var(--pas);border-color:var(--pas);color:var(--bg)}
+.chip.lock{cursor:default}
+.chip.ok{background:var(--okb);border-color:var(--ok);color:var(--ok)}.chip.ok::after{content:" ✓"}
+.chip.ko{background:var(--kob);border-color:var(--ko);color:var(--ko)}.chip.ko::after{content:" ✗"}
+.chip.mi{background:var(--amb);border-color:var(--am);color:var(--am);border-style:dashed}.chip.mi::after{content:" (réponse)";font-size:12px;font-style:italic}
+.vb{text-align:right;margin-top:14px}
+.vb button,.reset{font:inherit;font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:8px 18px;border-radius:3px;border:1px solid var(--bur);background:var(--bur);color:var(--bg);cursor:pointer}
+.vb button:disabled{opacity:.5;cursor:default;background:none;color:var(--mut);border-color:var(--bd)}
+.fb{display:none;margin-top:14px;padding-top:12px;border-top:1px dashed var(--bd);font-size:16px}
+.fb.show{display:block}
+.tag{font-size:13px;padding:3px 10px;border-radius:3px;margin-right:8px}
+.tag.ok{background:var(--okb);color:var(--ok)}.tag.ko{background:var(--kob);color:var(--ko)}.tag.pa{background:var(--amb);color:var(--am)}
+.dec{font-size:24px;margin:10px 0 4px;letter-spacing:.04em}
+.ex{color:var(--mut);margin:6px 0 0}.ex b{color:var(--ink)}.dec2{font-size:19px;letter-spacing:.04em}
+.tr{width:100%;box-sizing:border-box;font:inherit;font-size:16px;padding:6px 10px;border:1px solid var(--bd);border-radius:5px;background:transparent;color:var(--ink)}
+.end{text-align:center;margin-top:34px}
+.reset{background:none;color:var(--bur)}
+table{border-collapse:collapse;width:100%;font-size:15px}td,th{border-bottom:1px solid var(--bd);padding:4px 6px;text-align:left}
+.home-fab{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:14px;z-index:999;background:linear-gradient(135deg,#b9812a,#6b1e23);color:#fff;font-size:.82rem;font-weight:700;text-decoration:none;padding:8px 14px;border-radius:20px;box-shadow:0 3px 10px rgba(0,0,0,.25)}.home-fab[hidden]{display:none}body.sa .wrap{padding-top:64px}@media (max-width:480px){.home-fab{font-size:.72rem;padding:6px 10px;top:8px;left:8px}}</style></head><body><a class="home-fab" id="hf" href="https://cpgewatteau-valenciennes.github.io/Kh2026-2027/index.html" hidden>🏠 Accueil du site</a><div class="wrap">
+<header>
+<h1>Réviser actif et passif au présent, imparfait et parfait</h1>
+<p class="sub">Revois la formation du parfait passif si nécessaire, dans ton cours ou dans l’aide-mémoire ci-dessous.</p>
+<div class="rule"></div>
+<p class="intro"><b>Les verbes ici utilisés sont ceux qui figurent sur l’exercice distribué le 26/11.</b></p>
+<p class="intro">Pour chaque forme, le verbe est donné avec ses temps primitifs. Choisis le <b>numéro de conjugaison</b> du verbe, puis la <b>voix</b>, le <b>temps</b>, la <b>personne</b>. Attention : toutes les formes ne sont pas composées ! Ensuite clique sur « Vérifier ». J’ai ajouté la traduction si tu veux t’entraîner en même temps.</p>
+<div class="legend"><span><span class="a">Actif</span> / <span class="p">passif</span></span><span><i class="r">radical</i> · <i class="l">voyelle de liaison, suffixe temporel ou terminaison d’accord du participe</i> · <i class="d">désinence</i></span><span>Abréviations : <b>pers.</b> = personne · <b>sg.</b> = singulier · <b>pl.</b> = pluriel</span></div>
+</header>
+<details open><summary>Aide-mémoire : la formation du parfait passif</summary>
+<p class="ex"><b>PPP</b> (participe parfait passif, 5e forme des temps primitifs : <i>datum</i> → <i>datus, data, datum</i>), <b>accordé avec le sujet</b> en genre et en nombre (nominatif : <i>-us, -a, -um</i> / <i>-i, -ae, -a</i>) <b>+ présent du verbe <i>esse</i></b> : <i>sum, es, est, sumus, estis, sunt</i>. Exemple : <i>amatus sum</i>.</p>
+<p class="ex">La <b>personne</b> se lit sur <i>esse</i> ; le <b>genre et le nombre</b> se lisent sur le participe. Le temps est le <b>parfait</b>, même si <i>esse</i> est au présent. Les autres formes de l’exercice (présent et imparfait passifs, parfait actif) sont des formes simples, en un seul mot : voir l’onglet 1.</p></details>
+<div class="score" id="score"></div>
+<div class="grid" id="grid"></div>
+<div class="end"><button class="reset" onclick="build()">Tout recommencer</button></div>
+</div>
+<script>
+const VP={do:"do, das, dare, dedi, datum : donner",lego1:"lego, as, are, legavi, legatum : léguer",lego3:"lego, is, ere, legi, lectum : lire",capio:"capio, is, ere, cepi, captum : prendre",scio:"scio, is, ire, scivi, scitum : savoir",jubeo:"jubeo, es, ere, jussi, jussum : ordonner",vinco:"vinco, is, ere, vici, victum : vaincre",vincio:"vincio, is, ire, vinxi, vinctum : attacher"};
+const SUP={do:"datum",lego1:"legatum",lego3:"lectum",capio:"captum",scio:"scitum",jubeo:"jussum",vinco:"victum",vincio:"vinctum"};
+const QA=[{k:"c",l:"Conjugaison du verbe",o:[["1","1re"],["2","2e"],["3","3e"],["3m","3e mixte"],["4","4e"]]},{k:"v",l:"Voix",o:[["A","actif"],["P","passif"]]},{k:"t",l:"Temps",o:[["pres","présent"],["impft","imparfait"],["pft","parfait"]]},{k:"p",l:"Personne",o:[["1sg","1re pers. sg."],["2sg","2e pers. sg."],["3sg","3e pers. sg."],["1pl","1re pers. pl."],["2pl","2e pers. pl."],["3pl","3e pers. pl."]]},{k:"a",l:"Participe : genre et nombre",o:[["m-sg","masc. sg."],["f-sg","fém. sg."],["n-sg","neutre sg."],["m-pl","masc. pl."],["f-pl","fém. pl."],["n-pl","neutre pl."],["0","pas de participe"]]}];
+const QS=QA.slice(0,4);
+const END={"m-sg":"us","f-sg":"a","n-sg":"um","m-pl":"i","f-pl":"ae","n-pl":"a"};
+const D=(...a)=>a.map(s=>`<i class="${s[0]}">${s.slice(2)}</i>`).join("-");
+const CT={"1":"1re : 1re pers. sg. en -o, infinitif en -are (-ARE = forcément la 1re conjugaison).","2":"2e : 1re pers. sg. en -eo, infinitif en -ere (à distinguer de la 3e, dont la 1re pers. sg. est en -o).","3":"3e : 1re pers. sg. en -o, infinitif en -ere (à distinguer de la 2e, dont la 1re pers. sg. est en -eo).","3m":"3e mixte : 1re pers. sg. en -io (comme la 4e), infinitif en -ere (comme la 3e) — c’est un « mixte » de la 3e et de la 4e.","4":"4e : 1re pers. sg. en -io, infinitif en -ire (-IRE = forcément la 4e conjugaison)."};
+const O=(a,x)=>`À l’autre voix (${a?"passif":"actif"}), on aurait : <span class="dec2">${x}</span>`;
+const lab=(k,c)=>QA.find(q=>q.k==k).o.find(o=>o[0]==c)[1];
+const C=(f,vb,c,p,a,tr,act,x="")=>{const [pp,aux]=f.split(" "),e=END[a],st=pp.slice(0,-e.length);
+ return{f,vb,c,v:"P",t:"pft",p,a,tr,dec:D("r:"+st,"l:"+e)+" + "+D("d:"+aux),
+ ex:`Participe parfait passif <i>${pp}</i> (sur <i>${SUP[vb]}</i> : ${st}us, -a, -um), accordé avec le sujet : <b>-${e}</b> = ${lab("a",a)}. <b>${aux}</b> est le présent d’<i>esse</i> : ${lab("p",p)}. Le temps est le <b>parfait passif</b> : on traduit « a été » ou « fut », jamais « est ».${x}`,
+ ot:O(0,act)+" (parfait actif, forme simple)."}};
+const S=(f,vb,c,v,t,p,tr,dec,ex,ot)=>({f,vb,c,v,t,p,a:"0",tr,dec,ex,ot});
+const IT=[
+S("datur","do","1","P","pres","3sg","Il est donné",D("r:da","d:tur"),"Forme simple (un seul mot, pas de participe) : <b>-tur</b> = 3e pers. sg. passif ; présent.",O(0,D("r:da","d:t"))),
+C("data est","do","1","3sg","f-sg","Elle a été donnée // Elle fut donnée",D("r:ded","d:it")),
+S("legebantur","lego3","3","P","impft","3pl","Ils étaient lus",D("r:leg","l:eba","d:ntur"),"Forme simple : suffixe temporel <b>-eba-</b> (pour les 3e, 3e mixte et 4e) + <b>-ntur</b> (3e pers. pl. passif) : imparfait passif.",O(0,D("r:leg","l:eba","d:nt"))),
+C("victi sumus","vinco","3","1pl","m-pl","Nous avons été vaincus // Nous fûmes vaincus",D("r:vic","d:imus")),
+C("captae sunt","capio","3m","3pl","f-pl","Elles ont été prises // Elles furent prises",D("r:cep","d:erunt")),
+S("capimur","capio","3m","P","pres","1pl","Nous sommes pris",D("r:capi","d:mur"),"Forme simple (un seul mot, pas de participe) : radical <i>capi-</i> + <b>-mur</b> (1re pers. pl. passif) : présent passif.",O(0,D("r:capi","d:mus"))),
+S("capiebantur","capio","3m","P","impft","3pl","Ils étaient pris",D("r:capi","l:eba","d:ntur"),"Forme simple : radical <i>capi-</i> + suffixe temporel <b>-eba-</b> + <b>-ntur</b> (3e pers. pl. passif) : imparfait passif.",O(0,D("r:capi","l:eba","d:nt"))),
+S("vinciebamur","vincio","4","P","impft","1pl","Nous étions attachés",D("r:vinci","l:eba","d:mur"),"Forme simple : radical <i>vinci-</i> + suffixe temporel <b>-eba-</b> + <b>-mur</b> (1re pers. pl. passif) : imparfait passif.",O(0,D("r:vinci","l:eba","d:mus"))),
+C("vinctus es","vincio","4","2sg","m-sg","Tu as été attaché // Tu fus attaché",D("r:vinx","d:isti")),
+C("captum est","capio","3m","3sg","n-sg","Cela a été pris // Cela fut pris",D("r:cep","d:it")," <b>Participe neutre</b> : sans contexte, on ne voit pas le sujet, mais ce peut être un nom neutre, par exemple <i>templum</i> : <i>templum captum est</i> = « le temple a été pris »."),
+S("legistis","lego3","3","A","pft","2pl","Vous avez lu // Vous lûtes",D("r:leg","d:istis"),"Forme simple : radical du parfait <i>leg-</i> + <b>-istis</b> (2e pers. pl.) : parfait <b>actif</b>. Terminaison caractéristique du parfait actif.","Au passif, ce parfait serait une <b>forme composée</b> : par exemple <i>lecti estis</i>."),
+S("vicerunt","vinco","3","A","pft","3pl","Ils ont vaincu // Ils vainquirent",D("r:vic","d:erunt"),"Forme simple : radical du parfait <i>vic-</i> + <b>-erunt</b>. La terminaison <b>-erunt</b> est forcément celle de la 3e pers. pl. du <b>parfait actif</b>. <b>Attention en français</b> : méfie-toi du passé simple des verbes du 3e groupe : « ils vainquirent » est un passé simple, à ne pas confondre avec le présent « ils vainquent ».","Au passif, ce parfait serait une <b>forme composée</b> : par exemple <i>victi sunt</i>."),
+C("victi estis","vinco","3","2pl","m-pl","Vous avez été vaincus // Vous fûtes vaincus",D("r:vic","d:istis")),
+C("legata est","lego1","1","3sg","f-sg","Elle a été léguée // Elle fut léguée",D("r:legav","d:it")),
+C("lecta sum","lego3","3","1sg","f-sg","J’ai été lue // Je fus lue",D("r:leg","d:i"))];
+const R=["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV"];
+let sel,done;
+function build(){sel=IT.map(()=>({}));done=IT.map(()=>0);
+ document.getElementById("grid").innerHTML=IT.map((it,i)=>`<div class="card" id="c${i}"><div class="num">${R[i]}</div><div class="word">${it.f}</div><div class="lemma">${VP[it.vb]}</div>${QS.map(q=>`<div class="rl">${q.l}</div><div class="chips">${q.o.map(o=>`<button type="button" class="chip" data-o="${o[0]}" data-i="${i}" data-k="${q.k}" onclick="pick(this)">${o[1]}</button>`).join("")}</div>`).join("")}<div class="rl">Traduction (facultatif)</div><input class="tr" aria-label="traduction" placeholder="ta traduction"><div class="vb"><button id="b${i}" onclick="ver(${i})">Vérifier</button></div><div class="fb" id="f${i}"></div></div>`).join("");
+ upd()}
+function pick(b){const i=+b.dataset.i;if(done[i])return;const k=b.dataset.k;sel[i][k]=b.dataset.o;
+ document.querySelectorAll(`#c${i} [data-k=${k}]`).forEach(c=>c.classList.toggle("sel",c===b))}
+function ver(i){if(done[i])return;const it=IT[i];let pts=0,bad=[];
+ QS.forEach(q=>{const good=sel[i][q.k]===it[q.k];if(good)pts++;else bad.push(lab(q.k,it[q.k]));
+  document.querySelectorAll(`#c${i} [data-k=${q.k}]`).forEach(c=>{c.classList.remove("sel");c.classList.add("lock");const o=c.dataset.o;
+   if(o===sel[i][q.k]&&good)c.classList.add("ok");else if(o===sel[i][q.k])c.classList.add("ko");else if(o===it[q.k]&&!good)c.classList.add("mi")})});
+ done[i]=pts+1;document.getElementById("b"+i).disabled=true;document.getElementById("c"+i).classList.add(it.v);
+ const f=document.getElementById("f"+i);f.className="fb show";
+ f.innerHTML=`<span class="tag ${pts==4?"ok":pts>1?"pa":"ko"}">${pts==4?"Tout juste":pts+" / 4"}</span>${pts<4?`À corriger : ${bad.join(", ")}.`:""}<p class="ex"><b>Signe de reconnaissance — Conjugaison ${CT[it.c]}</b></p><div class="dec"><span class="${it.v=="A"?"a":"p"}" style="font-size:15px">${it.v=="A"?"actif":"passif"}</span> &nbsp;${it.dec}</div><p class="ex">${it.ex}</p><p class="ex">${it.ot}</p><p class="ex"><b>Traduction :</b> ${it.tr}</p>`;
+ upd()}
+function upd(){const n=done.filter(x=>x).length,p=done.reduce((s,x)=>s+(x?x-1:0),0);
+ document.getElementById("score").textContent=`${n} / ${IT.length} formes vérifiées · ${p} / ${IT.length*4} points`}
+build();
+</script><script>(function(){function r(){parent.postMessage({conj05h:document.documentElement.scrollHeight},"*")}if(window.parent===window){document.getElementById("hf").hidden=false;document.body.classList.add("sa")}if(window.parent!==window){new ResizeObserver(r).observe(document.body);addEventListener("message",r);addEventListener("load",r)}})()</script>
+</body></html>

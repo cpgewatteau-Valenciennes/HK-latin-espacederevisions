@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Paronymes et formes doubles</title>
+<style>
+:root{--bg:#f1e6ce;--card:#f7efdc;--ink:#2c1810;--mut:#7a6650;--bd:#d9a94f;--bur:#6b1e23;--act:#a8731a;--pas:#7a2f6b;--ok:#4a6b2a;--okb:#e4ebd8;--ko:#a01d1d;--kob:#f3d9d9;--am:#b9601a;--amb:#f3e3d0;--r:#1f4fa3;--l:#1e7a44;--d:#c0262d;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1812;--card:#2a231a;--ink:#f0e6d2;--mut:#b5a58a;--bd:#7a5d2a;--bur:#e08a8f;--act:#e0b05a;--pas:#d58cc6;--ok:#9bd07a;--okb:#27381b;--ko:#f09a9a;--kob:#472222;--am:#f0a860;--amb:#43301a;--r:#8fb4ff;--l:#7fd69a;--d:#ff8f94;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1d1812;--card:#2a231a;--ink:#f0e6d2;--mut:#b5a58a;--bd:#7a5d2a;--bur:#e08a8f;--act:#e0b05a;--pas:#d58cc6;--ok:#9bd07a;--okb:#27381b;--ko:#f09a9a;--kob:#472222;--am:#f0a860;--amb:#43301a;--r:#8fb4ff;--l:#7fd69a;--d:#ff8f94;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 'Iowan Old Style','Palatino Linotype',Georgia,serif}
+.wrap{max-width:760px;margin:0 auto;padding:28px 16px 60px}
+header{text-align:center;margin-bottom:26px}
+h1{font-size:clamp(24px,4vw,32px);font-weight:600;color:var(--bur);margin:0 0 6px}
+.sub{color:var(--mut);margin:0 0 14px}
+.rule{width:120px;height:1px;margin:0 auto 16px;background:linear-gradient(90deg,transparent,var(--bd),transparent)}
+.intro{max-width:600px;margin:0 auto;font-size:16px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center;margin:14px 0 0;font-size:14px}
+.r{color:var(--r);font-style:normal;font-weight:700}.l{color:var(--l);font-style:normal;font-weight:700}.d{color:var(--d);font-style:normal;font-weight:700}
+.a{color:var(--act);font-weight:700}.p{color:var(--pas);font-weight:700}
+details{background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:8px 14px;margin:14px 0;font-size:15px}
+summary{cursor:pointer;font-weight:600;color:var(--bur)}
+summary:focus-visible,button:focus-visible{outline:2px solid var(--bur);outline-offset:2px}
+.vl{margin:6px 0 0;padding-left:18px;color:var(--mut)}
+.score{text-align:center;margin:18px 0 0;font-size:14px;letter-spacing:.06em;color:var(--bur)}
+.grid{display:flex;flex-direction:column;gap:24px;margin-top:26px}
+.card{background:var(--card);border:1px solid var(--bd);border-left-width:5px;border-radius:6px;padding:22px 22px 18px;position:relative}
+.card.A{border-left-color:var(--act)}.card.P{border-left-color:var(--pas)}
+.num{position:absolute;top:-13px;left:20px;background:var(--bur);color:var(--bg);font-size:12px;letter-spacing:.12em;padding:2px 10px;border-radius:3px}
+.word{font-size:28px;font-weight:700;margin:6px 0 0}
+.lemma{font-size:15px;color:var(--mut);font-style:italic;margin-bottom:8px}
+.rl{font-size:13px;color:var(--mut);margin:10px 0 5px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font:600 15px 'Iowan Old Style','Palatino Linotype',Georgia,serif;color:var(--ink);background:transparent;border:1px solid var(--bd);border-radius:20px;padding:5px 14px;cursor:pointer}
+.chip:hover{border-color:var(--bur)}
+.chip[data-o=A]{border-color:var(--act);color:var(--act)}.chip[data-o=P]{border-color:var(--pas);color:var(--pas)}
+.chip.sel{background:var(--bur);border-color:var(--bur);color:var(--bg)}
+.chip.sel[data-o=A]{background:var(--act);border-color:var(--act);color:var(--bg)}
+.chip.sel[data-o=P]{background:var(--pas);border-color:var(--pas);color:var(--bg)}
+.chip.lock{cursor:default}
+.chip.ok{background:var(--okb);border-color:var(--ok);color:var(--ok)}.chip.ok::after{content:" ✓"}
+.chip.ko{background:var(--kob);border-color:var(--ko);color:var(--ko)}.chip.ko::after{content:" ✗"}
+.chip.mi{background:var(--amb);border-color:var(--am);color:var(--am);border-style:dashed}.chip.mi::after{content:" (réponse)";font-size:12px;font-style:italic}
+.vb{text-align:right;margin-top:14px}
+.vb button,.reset{font:inherit;font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:8px 18px;border-radius:3px;border:1px solid var(--bur);background:var(--bur);color:var(--bg);cursor:pointer}
+.vb button:disabled{opacity:.5;cursor:default;background:none;color:var(--mut);border-color:var(--bd)}
+.fb{display:none;margin-top:14px;padding-top:12px;border-top:1px dashed var(--bd);font-size:16px}
+.fb.show{display:block}
+.tag{font-size:13px;padding:3px 10px;border-radius:3px;margin-right:8px}
+.tag.ok{background:var(--okb);color:var(--ok)}.tag.ko{background:var(--kob);color:var(--ko)}.tag.pa{background:var(--amb);color:var(--am)}
+.dec{font-size:24px;margin:10px 0 4px;letter-spacing:.04em}
+.ex{color:var(--mut);margin:6px 0 0}.ex b{color:var(--ink)}.dec2{font-size:19px;letter-spacing:.04em}
+.tr{width:100%;box-sizing:border-box;font:inherit;font-size:16px;padding:6px 10px;border:1px solid var(--bd);border-radius:5px;background:transparent;color:var(--ink)}
+.end{text-align:center;margin-top:34px}
+.reset{background:none;color:var(--bur)}
+table{border-collapse:collapse;width:100%;font-size:15px}td,th{border-bottom:1px solid var(--bd);padding:4px 6px;text-align:left}
+.gh{font-size:19px;font-weight:600;color:var(--bur);margin:34px 0 -8px;text-align:center}.warn{background:var(--amb);border-left:4px solid var(--am);padding:10px 14px;margin:18px auto;max-width:620px;border-radius:4px;font-size:16px}.bks{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:0 24px}.bt{font-size:21px;font-weight:700;margin:16px 0 0;padding-top:8px;border-top:1px dashed var(--bd)}.bkf{margin-top:12px;padding-top:6px;border-top:1px dashed var(--bd)}.home-fab{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:14px;z-index:999;background:linear-gradient(135deg,#b9812a,#6b1e23);color:#fff;font-size:.82rem;font-weight:700;text-decoration:none;padding:8px 14px;border-radius:20px;box-shadow:0 3px 10px rgba(0,0,0,.25)}.home-fab[hidden]{display:none}body.sa .wrap{padding-top:64px}@media (max-width:480px){.home-fab{font-size:.72rem;padding:6px 10px;top:8px;left:8px}}</style></head><body><a class="home-fab" id="hf" href="https://cpgewatteau-valenciennes.github.io/Kh2026-2027/index.html" hidden>🏠 Accueil du site</a><div class="wrap">
+<header>
+<h1>Paronymes et formes doubles</h1>
+<p class="sub">Quand deux formes se ressemblent, ou quand une forme a deux analyses</p>
+<div class="rule"></div>
+<p class="intro"><b>Les verbes ici utilisés sont ceux qui figurent sur l’exercice distribué le 26/11.</b></p>
+<p class="intro"><b>Paronymes</b> : formes très proches (cela se joue parfois à une seule lettre) mais qui viennent de verbes différents ou de temps différents. Tu te doutes que cela peut être source d’erreurs en traduction (surtout quand, plus tard, tu devras aller dans le dictionnaire !).</p>
+<p class="intro"><b>Forme double</b> : une même forme a, sans contexte, deux analyses possibles. Soit deux temps, soit deux verbes.</p>
+<p class="intro">Ici, pour les paronymes à analyser, tu auras les deux verbes concernés. À toi de bien regarder avant de cocher et traduire !</p>
+<div class="warn"><b>À ne faire que si tu es à l’aise avec les exercices précédents.</b> Si tu n’es pas du tout à l’aise, ne le fais pas : reprends d’abord les terminaisons actives et passives, puis le parfait passif.</div>
+<p class="intro">Choisis le <b>numéro de conjugaison</b>, puis la <b>voix</b>, le <b>temps</b> et la <b>personne</b>. Dans la première partie, les formes sont proches mais n’ont pas le même sens : méfie-toi. Dans la seconde, <b>une même forme a deux analyses possibles</b> : coche alors toutes les possibilités (les verbes possibles sont indiqués sous la forme).</p>
+<p class="intro">Écris la traduction sur une feuille ou donne-la dans ta tête. Clique ensuite sur « Vérifier ».</p>
+<div class="legend"><span><span class="a">Actif</span> / <span class="p">passif</span></span><span><i class="r">radical</i> · <i class="l">voyelle de liaison ou éventuel suffixe temporel</i> · <i class="d">désinence</i></span><span>Abréviations : <b>pers.</b> = personne · <b>sg.</b> = singulier · <b>pl.</b> = pluriel</span></div>
+</header>
+<div class="score" id="score"></div>
+<div class="grid" id="grid"></div>
+<div class="end"><button class="reset" onclick="build()">Tout recommencer</button></div>
+</div>
+<script>
+const VP={do:"do, das, dare, dedi, datum : donner",lego1:"lego, as, are, legavi, legatum : léguer",lego3:"lego, is, ere, legi, lectum : lire",capio:"capio, is, ere, cepi, captum : prendre",scio:"scio, is, ire, scivi, scitum : savoir",jubeo:"jubeo, es, ere, jussi, jussum : ordonner",vinco:"vinco, is, ere, vici, victum : vaincre",vincio:"vincio, is, ire, vinxi, vinctum : attacher"};
+const LBL={do:"do",lego1:"lego₁",lego3:"lego₃",capio:"capio",vinco:"vinco",vincio:"vincio"};
+const VC={do:"1",lego1:"1",lego3:"3",capio:"3m",vinco:"3",vincio:"4"};
+const QS=[{k:"c",l:"Conjugaison du verbe",o:[["1","1re"],["2","2e"],["3","3e"],["3m","3e mixte"],["4","4e"]]},{k:"v",l:"Voix",o:[["A","actif"],["P","passif"]]},{k:"t",l:"Temps",o:[["pres","présent"],["impft","imparfait"],["pft","parfait"]]},{k:"p",l:"Personne",o:[["1sg","1re pers. sg."],["2sg","2e pers. sg."],["3sg","3e pers. sg."],["1pl","1re pers. pl."],["2pl","2e pers. pl."],["3pl","3e pers. pl."]]}];
+const FLD={c:"c",v:"v",t:"tm",p:"p"};
+const D=(...a)=>a.map(s=>`<i class="${s[0]}">${s.slice(2)}</i>`).join("-");
+const CT={"1":"1re : 1re pers. sg. en -o, infinitif en -are (-ARE = forcément la 1re conjugaison).","2":"2e : 1re pers. sg. en -eo, infinitif en -ere (à distinguer de la 3e, dont la 1re pers. sg. est en -o).","3":"3e : 1re pers. sg. en -o, infinitif en -ere (à distinguer de la 2e, dont la 1re pers. sg. est en -eo).","3m":"3e mixte : 1re pers. sg. en -io (comme la 4e), infinitif en -ere (comme la 3e) — c’est un « mixte » de la 3e et de la 4e.","4":"4e : 1re pers. sg. en -io, infinitif en -ire (-IRE = forcément la 4e conjugaison)."};
+const lab=(k,c)=>QS.find(q=>q.k==k).o.find(o=>o[0]==c)[1];
+const B=(t,c,v,tm,p,dec,ex,tr)=>({t,c,v,tm,p,dec,ex,tr}),K=(f,vb,bl,d)=>({f,vb,bl,d}),H=h=>({h});
+const EA=(a,b)=>` Cela se joue à un <b>${a}</b> / <b>${b}</b> !`;
+const FPC=(x,y)=>`Je sais que tu as parfois pu le traduire par un passé composé ou un passé simple (« ${x} », « ${y} ») en le confondant avec le parfait`;
+const FPR=x=>`Je sais que tu as parfois pu le traduire par un présent (« ${x} ») en le confondant avec le présent`;
+const IT=[H("Première partie : paronymes. Les deux formes sont présentées ensemble : compare-les !"),
+K("capit / cepit",["capio"],[
+B("capit","3m","A",["pres"],"3sg",D("r:capi","d:t"),"Radical du présent <i>capi-</i> + <b>-t</b> : présent. "+FPC("il a pris","il prit")+" <i>cepit</i>."+EA("A","E"),"Il prend"),
+B("cepit","3m","A",["pft"],"3sg",D("r:cep","d:it"),"Radical du parfait <i>cep-</i> (<i>cepi</i>) + <b>-it</b> : parfait. "+FPR("il prend")+" <i>capit</i>."+EA("E","A"),"Il a pris // Il prit")]),
+K("capimus / cepimus",["capio"],[
+B("capimus","3m","A",["pres"],"1pl",D("r:capi","d:mus"),"Radical du présent <i>capi-</i> + <b>-mus</b> : présent. "+FPC("nous avons pris","nous prîmes")+" <i>cepimus</i>."+EA("A","E"),"Nous prenons"),
+B("cepimus","3m","A",["pft"],"1pl",D("r:cep","d:imus"),"Radical du parfait <i>cep-</i> + <b>-imus</b> : parfait. Cette terminaison n’est pas caractéristique du parfait (c’est aussi celle du présent de la 3e) : seul le radical permet de conclure. "+FPR("nous prenons")+" <i>capimus</i>."+EA("E","A"),"Nous avons pris // Nous prîmes")]),
+K("legitur / legatur",["lego1","lego3"],[
+B("legitur","3","P",["pres"],"3sg",D("r:leg","l:i","d:tur"),"Radical <i>leg-</i> + voyelle de liaison <b>-i-</b> + <b>-tur</b> : présent passif de <i>lego₃</i> (« lire »). Ce n’est pas le même verbe que <i>legatur</i>."+EA("I","A"),"Il est lu"),
+B("legatur","1","P",["pres"],"3sg",D("r:lega","d:tur"),"Radical <i>lega-</i> (1re conjugaison) + <b>-tur</b> : présent passif de <i>lego₁</i> (« léguer »). Ce n’est pas le même verbe que <i>legitur</i>."+EA("A","I"),"Il est légué")]),
+K("legis / legas",["lego1","lego3"],[
+B("legis","3","A",["pres"],"2sg",D("r:leg","l:i","d:s"),"Radical <i>leg-</i> + voyelle de liaison <b>-i-</b> + <b>-s</b> : présent actif de <i>lego₃</i> (« lire »)."+EA("I","A"),"Tu lis"),
+B("legas","1","A",["pres"],"2sg",D("r:lega","d:s"),"Radical <i>lega-</i> + <b>-s</b> : présent actif de <i>lego₁</i> (« léguer »)."+EA("A","I"),"Tu lègues")]),
+H("Seconde partie : formes doubles. Sans contexte, il faut donner les deux analyses !"),
+K("legit",["lego3"],[B("","3","A",["pres","pft"],"3sg",D("r:leg","l:i","d:t")+" (présent) ou "+D("r:leg","d:it")+" (parfait)","Retour sur les <b>deux radicaux</b> de <i>lego, is, ere, legi, lectum</i> : le radical du présent s’obtient en enlevant le -O de la 1re pers. sg. (<i>lego</i> → <i>leg-</i>) ; le radical du parfait, en enlevant le -I de la 4e forme des temps primitifs (<i>legi</i> → <i>leg-</i>). Les deux radicaux sont identiques, d’où la forme double. Présent : <i>leg-</i> + voyelle de liaison <b>-i-</b> + <b>-t</b>. Parfait : <i>leg-</i> + <b>-it</b>. Seul le contexte permet de trancher.","Il lit OU Il a lu // Il lut")],1),
+K("legimus",["lego3"],[B("","3","A",["pres","pft"],"1pl",D("r:leg","l:i","d:mus")+" (présent) ou "+D("r:leg","d:imus")+" (parfait)","Même raisonnement que <i>legit</i> : les deux radicaux sont identiques (<i>leg-</i>, tiré de <i>lego</i> pour le présent et de <i>legi</i> pour le parfait). Présent : <i>leg-</i> + voyelle de liaison <b>-i-</b> + <b>-mus</b>. Parfait : <i>leg-</i> + <b>-imus</b>. Ne confonds pas avec <i>legamus</i> (<i>lego₁</i>).","Nous lisons OU Nous avons lu // Nous lûmes")],1),
+K("lego",["lego1","lego3"],[
+B("lego₁","1","A",["pres"],"1sg",D("r:leg","d:o"),"1re pers. sg. du présent de <i>legare</i> : radical <i>lega-</i> + <b>-o</b> (le -a- disparaît devant -o).","Je lègue"),
+B("lego₃","3","A",["pres"],"1sg",D("r:leg","d:o"),"1re pers. sg. du présent de <i>legere</i> : radical <i>leg-</i> + <b>-o</b>.","Je lis")],1),
+K("vincis",["vinco","vincio"],[
+B("vinco","3","A",["pres"],"2sg",D("r:vinc","l:i","d:s"),"3e : radical <i>vinc-</i> + voyelle de liaison <b>-i-</b> + <b>-s</b>.","Tu vaincs"),
+B("vincio","4","A",["pres"],"2sg",D("r:vinci","d:s"),"4e : radical <i>vinci-</i> + <b>-s</b>.","Tu attaches")],1),
+K("vincitur",["vinco","vincio"],[
+B("vinco","3","P",["pres"],"3sg",D("r:vinc","l:i","d:tur"),"3e : radical <i>vinc-</i> + voyelle de liaison <b>-i-</b> + <b>-tur</b> : présent passif.","Il est vaincu"),
+B("vincio","4","P",["pres"],"3sg",D("r:vinci","d:tur"),"4e : radical <i>vinci-</i> + <b>-tur</b> : présent passif.","Il est attaché")],1),
+K("vincimus",["vinco","vincio"],[
+B("vinco","3","A",["pres"],"1pl",D("r:vinc","l:i","d:mus"),"3e : radical <i>vinc-</i> + voyelle de liaison <b>-i-</b> + <b>-mus</b>. Ne confonds pas avec <i>vicimus</i>, parfait de <i>vinco</i>.","Nous vainquons"),
+B("vincio","4","A",["pres"],"1pl",D("r:vinci","d:mus"),"4e : radical <i>vinci-</i> + <b>-mus</b>.","Nous attachons")],1)];
+const CARDS=IT.filter(x=>!x.h),R=["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV"],TOT=CARDS.reduce((s,c)=>s+c.bl.length*4,0);
+let sel,done;
+function card(it,i){return `<div class="card" id="c${i}"><div class="num">${R[i]}</div><div class="word">${it.f}</div>${it.vb.map(v=>`<div class="lemma">${VP[v]}</div>`).join("")}<div class="bks">${it.bl.map((b,j)=>`<div>${b.t?`<div class="bt">${b.t}</div>`:""}${QS.map(q=>`<div class="rl">${q.k=="t"&&it.d?"Temps (coche toutes les possibilités)":q.l}</div><div class="chips">${q.o.map(o=>`<button type="button" class="chip" data-o="${o[0]}" data-i="${i}" data-b="${j}" data-k="${q.k}" onclick="pick(this)">${o[1]}</button>`).join("")}</div>`).join("")}</div>`).join("")}</div><div class="vb"><button id="b${i}" onclick="ver(${i})">Vérifier</button></div><div class="fb" id="f${i}"></div></div>`}
+function build(){sel=CARDS.map(()=>({}));done=CARDS.map(()=>0);let n=0;
+ document.getElementById("grid").innerHTML=IT.map(it=>it.h?`<h2 class="gh">${it.h}</h2>`:card(it,n++)).join("");upd()}
+function pick(b){const i=+b.dataset.i,j=+b.dataset.b;if(done[i])return;const k=b.dataset.k,o=b.dataset.o;sel[i][j]=sel[i][j]||{};const S=sel[i][j][k]=sel[i][j][k]||new Set();
+ if(k=="t"&&CARDS[i].d){S.has(o)?S.delete(o):S.add(o)}else{S.clear();S.add(o)}
+ document.querySelectorAll(`#c${i} [data-b="${j}"][data-k=${k}]`).forEach(c=>c.classList.toggle("sel",S.has(c.dataset.o)))}
+function ver(i){if(done[i])return;const it=CARDS[i];let pts=0,tot=0,bad=[];
+ it.bl.forEach((bl,j)=>QS.forEach(q=>{tot++;const v=bl[FLD[q.k]],A=new Set(Array.isArray(v)?v:[v]),S=(sel[i][j]||{})[q.k]||new Set(),good=A.size==S.size&&[...A].every(x=>S.has(x));
+  if(good)pts++;else bad.push((bl.t?bl.t+" : ":"")+[...A].map(x=>lab(q.k,x)).join(" + "));
+  document.querySelectorAll(`#c${i} [data-b="${j}"][data-k=${q.k}]`).forEach(c=>{const o=c.dataset.o;c.classList.remove("sel");c.classList.add("lock");
+   if(S.has(o)&&A.has(o))c.classList.add("ok");else if(S.has(o))c.classList.add("ko");else if(A.has(o))c.classList.add("mi")})}));
+ done[i]=pts+1;document.getElementById("b"+i).disabled=true;document.getElementById("c"+i).classList.add(it.bl[0].v);
+ const bk=it.bl.map(bl=>`<div class="bkf">${bl.t?`<p class="ex"><b>${bl.t}</b></p>`:""}<p class="ex"><b>Signe de reconnaissance — Conjugaison ${CT[bl.c]}</b>${it.vb.length>1?` (<i>${LBL[it.vb.find(v=>VC[v]==bl.c)]}</i>)`:""}</p><div class="dec"><span class="${bl.v=="A"?"a":"p"}" style="font-size:15px">${bl.v=="A"?"actif":"passif"}</span> &nbsp;${bl.dec}</div><p class="ex">${bl.ex}</p><p class="ex"><b>Traduction :</b> ${bl.tr}</p></div>`).join("");
+ const f=document.getElementById("f"+i);f.className="fb show";
+ f.innerHTML=`<span class="tag ${pts==tot?"ok":pts>tot/4?"pa":"ko"}">${pts==tot?"Tout juste":pts+" / "+tot}</span>${pts<tot?`À corriger : ${bad.join(" ; ")}.`:""}${bk}`;
+ upd()}
+function upd(){const n=done.filter(x=>x).length,p=done.reduce((s,x)=>s+(x?x-1:0),0);
+ document.getElementById("score").textContent=`${n} / ${CARDS.length} cartes vérifiées · ${p} / ${TOT} points`}
+build();
+</script><script>(function(){function r(){parent.postMessage({conj05h:document.documentElement.scrollHeight},"*")}if(window.parent===window){document.getElementById("hf").hidden=false;document.body.classList.add("sa")}if(window.parent!==window){new ResizeObserver(r).observe(document.body);addEventListener("message",r);addEventListener("load",r)}})()</script>
+</body></html>
